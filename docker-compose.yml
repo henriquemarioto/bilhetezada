@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  api:
+    depends_on:
+      - mongodb
+      - redisdb
+    build: ./api
+    restart: unless-stopped
+    env_file: ./api/.env
+    environment:
+      REDIS_HOST: redisdb
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: root
+      MONGODB_URL: mongodb://mongodb:27017/node-boilerplate
+    ports:
+      - 3000:3000
+    networks:
+      - bilhetezada-network
+
+  mongodb:
+    image: mongo:6-jammy
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: bilhetezada
+      MONGO_INITDB_ROOT_PASSWORD: 123@456
+      MONGO_INITDB_DATABASE: bilhetezada
+    volumes:
+      - bilhetezada-db:/data/db
+    networks:
+      - bilhetezada-network
+
+  redisdb:
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    volumes:
+      - bilhetezada-redis-data:/data
+    networks:
+      - bilhetezada-network
+
+volumes:
+  bilhetezada-redis-data:
+  bilhetezada-db:
+
+networks:
+  bilhetezada-network:
