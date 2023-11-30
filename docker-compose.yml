@@ -12,7 +12,7 @@ services:
       REDIS_HOST: redisdb
       REDIS_PORT: 6379
       REDIS_PASSWORD: root
-      MONGODB_URL: mongodb://mongodb:27017/node-boilerplate
+      MONGODB_URL: mongodb://mongodb:27017/biilhetezada?authMechanism=DEFAULT
     ports:
       - 3000:3000
     networks:
@@ -23,8 +23,6 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: bilhetezada
-      MONGO_INITDB_ROOT_PASSWORD: 123@456
       MONGO_INITDB_DATABASE: bilhetezada
     volumes:
       - bilhetezada-db:/data/db
@@ -35,7 +33,7 @@ services:
     image: redis:7
     restart: unless-stopped
     ports:
-      - 6379:6379
+      - 6380:6379
     volumes:
       - bilhetezada-redis-data:/data
     networks:
