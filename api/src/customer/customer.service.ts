@@ -11,24 +11,35 @@ export class CustomerService {
     @InjectModel(Customer.name) private customerModel: Model<Customer>,
   ) {}
 
-  create(createCustomerDto: CreateCustomerDto) {
-    const createdCustomer = new this.customerModel(createCustomerDto);
-    return createdCustomer.save();
+  async create(createCustomerDto: CreateCustomerDto) {
+    const customerInstance = new this.customerModel(createCustomerDto);
+    const createdCustomer = await customerInstance.save();
+
+    if (createdCustomer) return true;
+    return false;
   }
 
-  findAll() {
-    return `This action returns all customer`;
+  async update(id: string, updateCustomerDto: UpdateCustomerDto) {
+    const updated = await this.customerModel.findByIdAndUpdate(
+      id,
+      updateCustomerDto,
+      {
+        new: true,
+      },
+    );
+
+    if (updated) return true;
+    return false;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
-  }
+  async disable(id: string) {
+    const disbled = await this.customerModel.findByIdAndUpdate(
+      id,
+      { active: false },
+      { new: true },
+    );
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+    if (disbled) true;
+    return false;
   }
 }

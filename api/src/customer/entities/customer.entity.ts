@@ -17,6 +17,9 @@ export class Customer {
   @Prop({ required: true, unique: true })
   email: string;
 
+  @Prop({ default: true })
+  active: boolean;
+
   @Prop({ default: new Date() })
   created_at: Date;
 
