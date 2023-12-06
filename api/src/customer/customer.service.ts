@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,34 +16,55 @@ export class CustomerService {
   ) {}
 
   async create(createCustomerDto: CreateCustomerDto) {
+    const customersFound = await Promise.all([
+      this.customerModel.findOne({ email: createCustomerDto.email }),
+      this.customerModel.findOne({ document: createCustomerDto.document }),
+    ]);
+
+    if (
+      customersFound.some((item) => {
+        if (item) return true;
+      })
+    ) {
+      throw new ConflictException(`Document or email already in use`);
+    }
+
     const customerInstance = new this.customerModel(createCustomerDto);
-    const createdCustomer = await customerInstance.save();
-
-    if (createdCustomer) return true;
-    return false;
+    try {
+      return customerInstance.save();
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException(
+        `An error occurred while creating customer`,
+      );
+    }
   }
 
-  async update(id: string, updateCustomerDto: UpdateCustomerDto) {
-    const updated = await this.customerModel.findByIdAndUpdate(
-      id,
-      updateCustomerDto,
-      {
+  update(id: string, updateCustomerDto: UpdateCustomerDto) {
+    try {
+      return this.customerModel.findByIdAndUpdate(id, updateCustomerDto, {
         new: true,
-      },
-    );
-
-    if (updated) return true;
-    return false;
+      });
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException(
+        `An error occurred while updating customer`,
+      );
+    }
   }
 
-  async disable(id: string) {
-    const disbled = await this.customerModel.findByIdAndUpdate(
-      id,
-      { active: false },
-      { new: true },
-    );
-
-    if (disbled) true;
-    return false;
+  disable(id: string) {
+    try {
+      return this.customerModel.findByIdAndUpdate(
+        id,
+        { active: false },
+        { new: true },
+      );
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException(
+        `An error occurred while updating customer`,
+      );
+    }
   }
 }
