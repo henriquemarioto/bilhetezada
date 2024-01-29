@@ -8,10 +8,10 @@ export class Customer {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ unique: true })
   document: string;
 
-  @Prop({ required: true })
+  @Prop()
   birth_date: Date;
 
   @Prop({ required: true, unique: true })
@@ -19,6 +19,12 @@ export class Customer {
 
   @Prop({ default: true })
   active: boolean;
+
+  @Prop()
+  password: string;
+
+  @Prop()
+  picture: string;
 
   @Prop({ default: new Date() })
   created_at: Date;

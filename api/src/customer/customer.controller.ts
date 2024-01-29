@@ -1,17 +1,27 @@
-import { Controller, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { CustomerService } from './customer.service';
-import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { AuthenticatedGuard } from 'src/auth/utils/Guards/authenticated.guard';
 
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
-    return this.customerService.create(createCustomerDto);
+  @UseGuards(AuthenticatedGuard)
+  @Get('')
+  findAll() {
+    return this.customerService.findAll();
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -20,6 +30,7 @@ export class CustomerController {
     return this.customerService.update(id, updateCustomerDto);
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Delete(':id')
   disable(@Param('id') id: string) {
     return this.customerService.disable(id);

@@ -1,15 +1,8 @@
-import { IsEmail, IsString } from 'class-validator';
-
 export class CreateCustomerDto {
-  @IsString()
   name: string;
-
-  @IsString()
-  document: string;
-
-  @IsString()
-  birth_date: Date;
-
-  @IsEmail()
+  document?: string;
+  birth_date?: Date;
   email: string;
+  password?: string;
+  picture?: string;
 }
