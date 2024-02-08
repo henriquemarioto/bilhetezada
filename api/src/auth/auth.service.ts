@@ -31,10 +31,7 @@ export class AuthService {
     if (customersFound) {
       throw new ConflictException(`Document or email already in use`);
     }
-    createCustomerDto.password = bcrypt.hashSync(
-      createCustomerDto.password,
-      10,
-    );
+    createCustomerDto.password = bcrypt.hashSync(createCustomerDto.password, 8);
     return this.customerService.create(createCustomerDto);
   }
 
@@ -43,15 +40,18 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException();
     }
+
+    const { password: userPassword, ...restUser } = user.toObject();
+
     if (password) {
-      const passwordMatch = await this.passwordMatch(password, user.password);
+      const passwordMatch = await this.passwordMatch(password, userPassword);
       if (passwordMatch) {
-        const { ...result } = user.toObject();
-        return result;
+        return restUser;
       }
       throw new UnauthorizedException();
     }
-    return user;
+
+    return restUser;
   }
 
   async passwordMatch(password: string, encryptPassword: string) {

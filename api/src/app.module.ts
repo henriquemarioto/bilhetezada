@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { CustomerModule } from './customer/customer.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
+import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 
 @Module({
@@ -16,9 +14,7 @@ import configuration from './config/configuration';
       isGlobal: true,
       load: [configuration],
     }),
-    CustomerModule,
-    MongooseModule.forRoot(process.env.MONGODB_URL),
-    AuthModule,
+    MongooseModule.forRoot(process.env.MONGODB_URL ?? ''),
     CacheModule.register({
       isGlobal: true,
       store: redisStore,
@@ -26,8 +22,10 @@ import configuration from './config/configuration';
       ttl: 86400,
     }),
     PassportModule.register({ session: true }),
+    CustomerModule,
+    AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

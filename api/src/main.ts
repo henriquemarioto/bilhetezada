@@ -5,12 +5,16 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 import RedisStore from 'connect-redis';
 import { createClient } from 'redis';
+import { ConfigService } from '@nestjs/config';
+import { Env } from './config/configuration';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const configService = app.get<ConfigService<Env, true>>(ConfigService);
+
   const redisClient = createClient({
-    url: process.env.REDIS_URL,
+    url: configService.get('redisUrl'),
   });
   redisClient.connect();
   redisClient.on('connect', () =>
@@ -24,11 +28,13 @@ async function bootstrap() {
     session({
       store: new RedisStore({ client: redisClient }),
       name: 'Bilhetezada',
-      secret: process.env.SESSION_SECRET,
-      resave: Boolean(process.env.SESSION_RESAVE),
-      saveUninitialized: Boolean(process.env.SESSION_SAVE_UNINITIALIZED),
+      secret: configService.get('session.secret', { infer: true }),
+      resave: configService.get('session.reSave', { infer: true }),
+      saveUninitialized: configService.get('session.saveUninitialized', {
+        infer: true,
+      }),
       cookie: {
-        maxAge: Number(process.env.SESSION_MAX_AGE),
+        maxAge: configService.get('session.cookieMaxAge', { infer: true }),
       },
     }),
   );
@@ -37,6 +43,6 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(3000);
+  await app.listen(configService.get('port'));
 }
 bootstrap();

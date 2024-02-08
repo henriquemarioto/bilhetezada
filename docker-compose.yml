@@ -7,21 +7,24 @@ services:
   #     - redisdb
   #   build: ./api
   #   restart: unless-stopped
-  #   env_file: ./api/.env
   #   environment:
   #     REDIS_HOST: redisdb
   #     REDIS_PORT: 6379
   #     REDIS_PASSWORD: root
   #     MONGODB_URL: mongodb://mongodb:27017/bilhetezada?authMechanism=DEFAULT
   #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - bilhetezada-api
+  #     - 3132:3132
   #   networks:
   #     - bilhetezada-network
+  #   volumes:
+  #     - type: bind
+  #       source: ./api
+  #       target: /api
+  #     - /app/node_modules # POG to prevent container's node_modules be overridden from host;
 
   mongodb:
     image: mongo:6-jammy
+    container_name: bilhetezada-mongodb
     ports:
       - 27017:27017
     environment:
@@ -33,6 +36,7 @@ services:
 
   redisdb:
     image: redis:7
+    container_name: bilhetezada-redis
     restart: unless-stopped
     ports:
       - 6380:6379
@@ -44,7 +48,6 @@ services:
 volumes:
   bilhetezada-redis-data:
   bilhetezada-db:
-  bilhetezada-api:
 
 networks:
   bilhetezada-network:

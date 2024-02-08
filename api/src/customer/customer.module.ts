@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { CustomerService } from './customer.service';
-import { CustomerController } from './customer.controller';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CustomerService } from './customer.service';
 import { Customer, CustomerSchema } from './entities/customer.entity';
+import { DisableCustomerController } from './controllers/disable-customer.controller';
+import { UpdateCustomerController } from './controllers/update-customer.controller';
 
 @Module({
   imports: [
@@ -10,7 +11,7 @@ import { Customer, CustomerSchema } from './entities/customer.entity';
       { name: Customer.name, schema: CustomerSchema },
     ]),
   ],
-  controllers: [CustomerController],
+  controllers: [DisableCustomerController, UpdateCustomerController],
   providers: [CustomerService],
   exports: [CustomerService],
 })
