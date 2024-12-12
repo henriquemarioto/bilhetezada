@@ -1,73 +1,113 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+Esses comandos são scripts relacionados à ferramenta **TypeORM**, utilizada em projetos Node.js para interagir com bancos de dados usando mapeamento objeto-relacional (ORM). Cada comando se refere a uma funcionalidade específica para lidar com **migrações** no banco de dados.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Aqui está o que cada comando faz e quando você deve usá-lo:
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
+### **1. `migration:run`**
 ```bash
-$ npm install
+npm run typeorm migration:run -- -d ./src/config/typeorm.ts
 ```
 
-## Running the app
+#### **O que faz?**
+Esse comando executa as migrações pendentes no banco de dados. Ele aplica as mudanças definidas nos arquivos de migração (normalmente na pasta `src/migrations`) que ainda não foram aplicadas.
 
+#### **Quando usar?**
+- Após criar novas migrações e precisar aplicá-las ao banco.
+- Ao configurar o ambiente (ex.: local, staging ou produção) e precisar garantir que o esquema do banco esteja atualizado.
+
+#### **Exemplo de uso:**
+Você adicionou uma nova coluna a uma tabela e criou uma migração para isso. Agora, use `migration:run` para aplicar essa mudança ao banco de dados.
+
+---
+
+### **2. `migration:generate`**
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run typeorm -- -d ./src/config/typeorm.ts migration:generate ./src/migrations/$npm_config_name
 ```
 
-## Test
+#### **O que faz?**
+Esse comando gera automaticamente um arquivo de migração com base nas alterações detectadas no esquema das entidades TypeORM. Ele compara o estado atual do banco de dados com as entidades definidas no código.
 
+- O valor de `$npm_config_name` será substituído pelo nome da migração que você passar no momento da execução.
+
+#### **Quando usar?**
+- Quando você modificou as entidades (ex.: adicionou ou removeu colunas/tabelas) e precisa criar um arquivo de migração correspondente.
+
+#### **Exemplo de uso:**
+Você adicionou uma nova propriedade `status` à entidade `User`:
+```typescript
+@Column({ default: 'active' })
+status: string;
+```
+Use o comando para criar uma migração que reflita essa alteração no banco:
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run migration:generate --name add-status-to-user
 ```
 
-## Support
+O arquivo gerado conterá as instruções para criar a coluna `status` na tabela correspondente.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+### **3. `migration:create`**
+```bash
+npm run typeorm -- migration:create ./src/migrations/$npm_config_name
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+#### **O que faz?**
+Esse comando cria um arquivo de migração vazio. Diferente do `migration:generate`, ele não analisa as entidades automaticamente. É útil quando você precisa escrever manualmente a lógica de migração.
 
-## License
+- O valor de `$npm_config_name` será substituído pelo nome da migração que você passar.
 
-Nest is [MIT licensed](LICENSE).
+#### **Quando usar?**
+- Quando você quer criar uma migração personalizada que não pode ser gerada automaticamente.
+- Para casos complexos, como execuções específicas de SQL ou manipulação de dados.
+
+#### **Exemplo de uso:**
+Você quer criar uma migração para renomear uma tabela:
+```bash
+npm run migration:create --name rename-user-table
+```
+Depois, você edita o arquivo gerado e adiciona a lógica de migração:
+```typescript
+public async up(queryRunner: QueryRunner): Promise<void> {
+  await queryRunner.renameTable('user', 'users');
+}
+
+public async down(queryRunner: QueryRunner): Promise<void> {
+  await queryRunner.renameTable('users', 'user');
+}
+```
+
+---
+
+### **4. `migration:revert`**
+```bash
+npm run typeorm -- -d ./src/config/typeorm.ts migration:revert
+```
+
+#### **O que faz?**
+Esse comando reverte a última migração aplicada ao banco de dados. Ele usa a lógica definida no método `down` de cada migração para desfazer as alterações.
+
+#### **Quando usar?**
+- Quando você aplicou uma migração incorretamente e precisa reverter.
+- Para testes, quando precisa desfazer mudanças no banco após validar uma migração.
+
+#### **Exemplo de uso:**
+Você aplicou uma migração que adiciona uma coluna ao banco, mas percebeu que ela está errada. Use:
+```bash
+npm run migration:revert
+```
+Isso removerá a coluna ou desfará qualquer outra mudança feita pela última migração.
+
+---
+
+### **Resumo dos comandos e seu uso**
+| Comando             | O que faz?                                              | Quando usar?                                         |
+|---------------------|---------------------------------------------------------|----------------------------------------------------|
+| `migration:run`     | Executa todas as migrações pendentes.                   | Após criar novas migrações ou configurar o ambiente. |
+| `migration:generate`| Gera uma migração automaticamente a partir das entidades. | Quando modifica as entidades e quer refletir isso no banco. |
+| `migration:create`  | Cria uma migração vazia para escrita manual.            | Para migrações personalizadas ou complexas.         |
+| `migration:revert`  | Reverte a última migração aplicada.                     | Para desfazer mudanças ou corrigir erros.           |
+
+Com esses comandos, você consegue gerenciar e versionar o esquema do banco de dados de forma eficiente em projetos TypeORM.

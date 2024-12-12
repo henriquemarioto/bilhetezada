@@ -1,20 +1,26 @@
-import { Module } from '@nestjs/common';
-import { CustomerModule } from './customer/customer.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from './auth/auth.module';
-import { PassportModule } from '@nestjs/passport';
 import { CacheModule } from '@nestjs/cache-manager';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
-import { ConfigModule } from '@nestjs/config';
-import configuration from './config/configuration';
+import { AuthModule } from './modules/auth/auth.module';
+import { CustomerModule } from './modules/customer/customer.module';
+import { EventModule } from './modules/event/event.module';
+import configuration from './shared/config/configuration';
+import typeorm from './database/typeorm/typeorm';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration],
+      load: [configuration, typeorm],
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URL ?? ''),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) =>
+        configService.get('typeorm'),
+    }),
     CacheModule.register({
       isGlobal: true,
       store: redisStore,
@@ -22,8 +28,9 @@ import configuration from './config/configuration';
       ttl: 86400,
     }),
     PassportModule.register({ session: true }),
-    CustomerModule,
     AuthModule,
+    CustomerModule,
+    EventModule,
   ],
   controllers: [],
   providers: [],

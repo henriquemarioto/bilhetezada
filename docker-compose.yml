@@ -1,53 +1,56 @@
 version: "3.9"
 
 services:
-  # api:
-  #   depends_on:
-  #     - mongodb
-  #     - redisdb
-  #   build: ./api
-  #   restart: unless-stopped
-  #   environment:
-  #     REDIS_HOST: redisdb
-  #     REDIS_PORT: 6379
-  #     REDIS_PASSWORD: root
-  #     MONGODB_URL: mongodb://mongodb:27017/bilhetezada?authMechanism=DEFAULT
-  #   ports:
-  #     - 3132:3132
-  #   networks:
-  #     - bilhetezada-network
-  #   volumes:
-  #     - type: bind
-  #       source: ./api
-  #       target: /api
-  #     - /app/node_modules # POG to prevent container's node_modules be overridden from host;
-
-  mongodb:
-    image: mongo:6-jammy
-    container_name: bilhetezada-mongodb
-    ports:
-      - 27017:27017
+  api:
+    depends_on:
+      - mysqldb
+      - redisdb
+    build: ./api
+    restart: unless-stopped
     environment:
-      MONGO_INITDB_DATABASE: bilhetezada
-    volumes:
-      - bilhetezada-db:/data/db
+      REDIS_URL: redis://redisdb:6379
+      DATABASE_HOST: mysqldb
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: 12345
+      DATABASE_PORT: 3306
+      DATABASE_NAME: bilhetezada
+    ports:
+      - 3132:3132
     networks:
-      - bilhetezada-network
+      - network
+    volumes:
+      - type: bind
+        source: ./api
+        target: /api
+      - /app/node_modules # POG to prevent container's node_modules be overridden from host;
+
+  mysqldb:
+    image: mysql:8.0.21
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_PASSWORD: 12345
+      MYSQL_DATABASE: bilhetezada
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - network
 
   redisdb:
     image: redis:7
     container_name: bilhetezada-redis
     restart: unless-stopped
     ports:
-      - 6380:6379
+      - 6379:6379
     volumes:
-      - bilhetezada-redis-data:/data
+      - redis-data:/data
     networks:
-      - bilhetezada-network
+      - network
 
 volumes:
-  bilhetezada-redis-data:
-  bilhetezada-db:
+  redis-data:
+  db:
 
 networks:
-  bilhetezada-network:
+  network:

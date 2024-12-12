@@ -1,12 +1,13 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import RedisStore from 'connect-redis';
 import * as session from 'express-session';
 import * as passport from 'passport';
-import RedisStore from 'connect-redis';
 import { createClient } from 'redis';
-import { ConfigService } from '@nestjs/config';
-import { Env } from './config/configuration';
+import { AppModule } from './app.module';
+import { Env } from './shared/config/configuration';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -42,6 +43,17 @@ async function bootstrap() {
   app.use(passport.session());
 
   app.useGlobalPipes(new ValidationPipe());
+
+  const config = new DocumentBuilder()
+    .setTitle('Bilhetezada API')
+    .setDescription('API for Bilhetezada application')
+    .setVersion('1.0')
+    .addTag('Bilhetezada')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, documentFactory, {
+    jsonDocumentUrl: 'docs/json',
+  });
 
   await app.listen(configService.get('port'));
 }
