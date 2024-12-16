@@ -1,20 +1,30 @@
-import { Body, Controller, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { CurrentUser } from 'src/modules/auth/utils/current-user-decorator';
-import { AuthenticatedGuard } from 'src/modules/auth/utils/guards/authenticated.guard';
 import { CustomerService } from '../customer.service';
-import { CreateCustomerPartialDTO } from '../dto/create-customer.dto';
-import { Customer } from 'src/database/typeorm/entities/customer.entity';
+import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { UpdateCustomerDTO } from '../dto/update-customer.dto';
+import { RequestUser } from 'src/shared/dto/request-user.dto';
 
 @Controller('update-customer')
 export class UpdateCustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @UseGuards(AuthenticatedGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch()
   handle(
-    @CurrentUser() user: Customer,
-    @Body() updateCustomerDto: CreateCustomerPartialDTO,
+    @CurrentUser() user: RequestUser,
+    @Body() updateCustomerDto: UpdateCustomerDTO,
   ) {
-    return this.customerService.update(user.id, updateCustomerDto);
+    this.customerService.update(user.userId, updateCustomerDto);
   }
 }

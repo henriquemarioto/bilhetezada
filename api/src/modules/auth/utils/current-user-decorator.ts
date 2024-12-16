@@ -1,9 +1,9 @@
 import { ExecutionContext, createParamDecorator } from '@nestjs/common';
-import { Customer } from 'src/database/typeorm/entities/customer.entity';
+import { RequestUser } from 'src/shared/dto/request-user.dto';
 
 export const CurrentUser = createParamDecorator(
   (_: never, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest();
-    return request.user as Customer;
+    return request.user as RequestUser;
   },
 );

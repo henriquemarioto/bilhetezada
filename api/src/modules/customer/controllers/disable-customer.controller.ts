@@ -6,18 +6,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from 'src/modules/auth/utils/current-user-decorator';
-import { AuthenticatedGuard } from 'src/modules/auth/utils/guards/authenticated.guard';
 import { CustomerService } from '../customer.service';
-import { Customer } from 'src/database/typeorm/entities/customer.entity';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
+import { RequestUser } from 'src/shared/dto/request-user.dto';
 
 @Controller('delete-customer')
 export class DisableCustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @UseGuards(AuthenticatedGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete()
-  async handle(@CurrentUser() user: Customer) {
-    await this.customerService.disable(user.id);
+  async handle(@CurrentUser() user: RequestUser) {
+    await this.customerService.disable(user.userId);
   }
 }

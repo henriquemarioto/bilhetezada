@@ -82,6 +82,10 @@ export class AuthService {
       return null;
     }
 
+    if (!user?.active) {
+      throw new UnauthorizedException('Non-active customer.');
+    }
+
     const { password: userPassword, ...restUser } = user;
 
     if (provider == AuthProviders.LOCAL) {

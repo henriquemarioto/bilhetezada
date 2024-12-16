@@ -5,14 +5,24 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../../auth.service';
+import { CustomerService } from 'src/modules/customer/customer.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private authService: AuthService) {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly customerService: CustomerService,
+  ) {
     super();
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const canActivate = await super.canActivate(context);
+
+    if (!canActivate) {
+      throw new UnauthorizedException();
+    }
+
     const request = context.switchToHttp().getRequest();
     const authorization = request.headers.authorization;
 
@@ -22,6 +32,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       throw new UnauthorizedException('Invalid or expired token.');
     }
 
-    return super.canActivate(context) as Promise<boolean>;
+    const user = await this.customerService.findById(request.user.userId);
+
+    if (!user?.active) {
+      throw new UnauthorizedException('Non-active user.');
+    }
+
+    return true;
   }
 }

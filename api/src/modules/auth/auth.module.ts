@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { CustomerModule } from '../customer/customer.module';
@@ -16,6 +16,7 @@ import { JwtStrategy } from './utils/strategies/jwt.strategy';
 import { LocalStrategy } from './utils/strategies/local.strategy';
 import { Logout } from 'src/database/typeorm/entities/logout.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtAuthGuard } from './utils/guards/jwt.guard';
 
 @Module({
   controllers: [
@@ -31,9 +32,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     JwtStrategy,
     LocalStrategy,
     SessionSerializer,
+    JwtAuthGuard,
   ],
   imports: [
-    CustomerModule,
+    forwardRef(() => CustomerModule),
     PassportModule.register({ session: true }),
     ConfigModule,
     SharedModule,
@@ -46,5 +48,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     TypeOrmModule.forFeature([Logout]),
   ],
+  exports: [AuthService, JwtAuthGuard],
 })
 export class AuthModule {}
