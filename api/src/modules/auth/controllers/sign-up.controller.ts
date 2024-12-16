@@ -1,3 +1,4 @@
+import AuthProviders from 'src/shared/enums/auth-providers.enum';
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { CreateCustomerDto } from 'src/modules/customer/dto/create-customer.dto';
 import { AuthService } from '../auth.service';
@@ -13,6 +14,6 @@ export class CreateAccountController {
   @HttpCode(HttpStatus.CREATED)
   @Post('sign-up')
   async handle(@Body() createCustomerDto: CreateCustomerDto) {
-    await this.authService.register(createCustomerDto);
+    await this.authService.register(AuthProviders.LOCAL, createCustomerDto);
   }
 }

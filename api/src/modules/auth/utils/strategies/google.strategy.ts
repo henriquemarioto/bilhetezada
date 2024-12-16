@@ -2,13 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
-import { CustomerService } from 'src/modules/customer/customer.service';
 import { AuthService } from '../../auth.service';
+import AuthProviders from 'src/shared/enums/auth-providers.enum';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
-    private readonly customerService: CustomerService,
     private readonly authService: AuthService,
     configService: ConfigService,
   ) {
@@ -32,15 +31,19 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       email: emails[0].value,
       name: displayName,
       picture_url: photos ? photos[0].value : '',
-      auth_provider: 'google',
-      accessToken,
     };
-    const user = await this.authService.validateUser(userPayload.email);
+    const user = await this.authService.validateUser(
+      AuthProviders.GOOGLE,
+      userPayload.email,
+    );
     if (user) {
       done(null, user);
       return user;
     }
-    const newUser = await this.customerService.create(userPayload);
+    const newUser = await this.authService.register(
+      AuthProviders.GOOGLE,
+      userPayload,
+    );
     done(null, newUser);
     return newUser;
   }

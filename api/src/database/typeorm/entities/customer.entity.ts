@@ -1,3 +1,4 @@
+import AuthProviders from '../../../shared/enums/auth-providers.enum';
 import { Event } from './event.entity';
 import {
   Column,
@@ -16,10 +17,10 @@ export class Customer {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ unique: true })
+  @Column({ nullable: true, unique: true })
   document: string;
 
-  @Column()
+  @Column({ nullable: true, default: null })
   birth_date: Date;
 
   @Column({ nullable: false, unique: true })
@@ -28,14 +29,14 @@ export class Customer {
   @Column({ default: true })
   active: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column({ default: null })
   picture_url: string | null;
 
-  @Column({ default: 'local' })
-  auth_provider: string;
+  @Column({ nullable: false, type: 'enum', enum: AuthProviders })
+  auth_provider: AuthProviders;
 
   @CreateDateColumn()
   created_at: Date;

@@ -49,10 +49,12 @@ async function bootstrap() {
     .setDescription('API for Bilhetezada application')
     .setVersion('1.0')
     .addTag('Bilhetezada')
+    .addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory, {
     jsonDocumentUrl: 'docs/json',
+    customSiteTitle: 'Bilhetezada docs',
   });
 
   await app.listen(configService.get('port'));

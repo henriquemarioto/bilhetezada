@@ -14,6 +14,8 @@ import SharedModule from 'src/shared/shared.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './utils/strategies/jwt.strategy';
 import { LocalStrategy } from './utils/strategies/local.strategy';
+import { Logout } from 'src/database/typeorm/entities/logout.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   controllers: [
@@ -42,6 +44,7 @@ import { LocalStrategy } from './utils/strategies/local.strategy';
         signOptions: { expiresIn: '10m' },
       }),
     }),
+    TypeOrmModule.forFeature([Logout]),
   ],
 })
 export class AuthModule {}

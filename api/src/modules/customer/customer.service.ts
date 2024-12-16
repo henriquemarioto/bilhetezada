@@ -1,3 +1,4 @@
+import AuthProviders from 'src/shared/enums/auth-providers.enum';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,10 +16,14 @@ export class CustomerService {
   ) {}
 
   async create(
+    provider: AuthProviders,
     createCustomerDto: CreateCustomerDto | CreateCustomerPartialDTO,
   ) {
     try {
-      const customer = await this.customersRepository.save(createCustomerDto);
+      const customer = await this.customersRepository.save({
+        ...createCustomerDto,
+        auth_provider: provider,
+      });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...data } = customer;
       return data;
@@ -30,17 +35,16 @@ export class CustomerService {
     }
   }
 
-  async findByEmailOrDocument(
-    email: string | null = null,
-    doc: string | null = null,
-  ) {
+  async findByEmailOrDocument(email: string = '', doc: string = '') {
     const [customerByEmail, customerByDocument] = await Promise.all([
       this.customersRepository.findOne({
         where: {
           email: email,
         },
       }),
-      this.customersRepository.findOne({ where: { document: doc } }),
+      this.customersRepository.findOne({
+        where: { document: doc },
+      }),
     ]);
     if (customerByEmail || customerByDocument)
       return customerByEmail || customerByDocument;

@@ -6,14 +6,19 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { LocalAuthGuard } from '../utils/guards/local.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthService } from '../auth.service';
+import { JwtAuthGuard } from '../utils/guards/jwt.guard';
 
 @Controller()
 export class LogoutController {
-  @UseGuards(LocalAuthGuard)
+  constructor(private readonly authService: AuthService) {}
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Request() req) {
-    return req.logout();
+    return this.authService.logout(req.headers.authorization);
   }
 }

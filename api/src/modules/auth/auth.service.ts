@@ -11,6 +11,10 @@ import {
 } from '../customer/dto/create-customer.dto';
 import CryptoService from 'src/shared/services/crypto.service';
 import { JwtService } from '@nestjs/jwt';
+import AuthProviders from 'src/shared/enums/auth-providers.enum';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Logout } from 'src/database/typeorm/entities/logout.entity';
+import { Repository } from 'typeorm';
 
 type GoogleUser = {
   email: string;
@@ -25,6 +29,8 @@ export class AuthService {
     private readonly customerService: CustomerService,
     private readonly cryptoService: CryptoService,
     private readonly jwtService: JwtService,
+    @InjectRepository(Logout)
+    private logoutRepository: Repository<Logout>,
   ) {}
   googleLogin(req: Request) {
     const user: GoogleUser = req.user as GoogleUser;
@@ -32,43 +38,53 @@ export class AuthService {
   }
 
   async register(
+    provider: AuthProviders,
     createCustomerDto: CreateCustomerDto | CreateCustomerPartialDTO,
   ) {
     createCustomerDto.email = this.cryptoService.encrypt(
       createCustomerDto.email,
     );
-    createCustomerDto.document = this.cryptoService.encrypt(
-      createCustomerDto.document,
-    );
+    if (createCustomerDto.document)
+      createCustomerDto.document = this.cryptoService.encrypt(
+        createCustomerDto.document,
+      );
     const customerFound = await this.customerService.findByEmailOrDocument(
       createCustomerDto.email,
       createCustomerDto.document,
     );
     if (customerFound) {
-      throw new ConflictException(`Document or email already in use`);
+      throw new ConflictException(`Document or email already in use for this.`);
     }
-    createCustomerDto.password = this.cryptoService.encryptSalt(
-      createCustomerDto.password,
-    );
-    return await this.customerService.create(createCustomerDto);
+    if (createCustomerDto.password)
+      createCustomerDto.password = this.cryptoService.encryptSalt(
+        createCustomerDto.password,
+      );
+    return await this.customerService.create(provider, createCustomerDto);
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+    const payload = { username: user.name, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
 
-  async validateUser(email?: string, password?: string) {
+  async validateUser(
+    provider: AuthProviders,
+    email: string,
+    password?: string,
+  ) {
     const user = await this.customerService.findByEmailOrDocument(
       this.cryptoService.encrypt(email),
     );
+
     if (!user) {
-      throw new UnauthorizedException();
+      return null;
     }
+
     const { password: userPassword, ...restUser } = user;
-    if (password) {
+
+    if (provider == AuthProviders.LOCAL) {
       const passwordMatch = this.cryptoService.compareHashWithSalt(
         password,
         userPassword,
@@ -80,5 +96,29 @@ export class AuthService {
     }
 
     return restUser;
+  }
+
+  async logout(authorization: string) {
+    const [_, jwt] = authorization.split('Bearer ');
+
+    await this.logoutRepository.save({ token: jwt });
+
+    return true;
+  }
+
+  async hasLogout(authorization: string) {
+    const [_, jwt] = authorization.split('Bearer ');
+
+    if (
+      await this.logoutRepository.findOne({
+        where: {
+          token: jwt,
+        },
+      })
+    ) {
+      return true;
+    }
+
+    return false;
   }
 }

@@ -46,11 +46,11 @@ export function isValidCNPJ(cnpj: string): boolean {
 @ValidatorConstraint({ name: 'isValidDocument', async: false })
 export class IsValidDocumentConstraint implements ValidatorConstraintInterface {
   validate(value: string, _args: ValidationArguments): boolean {
-    const cleanedValue = value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    const cleanedValue = value.replace(/\D/g, '');
     return isValidCPF(cleanedValue) || isValidCNPJ(cleanedValue);
   }
 
   defaultMessage(_args: ValidationArguments): string {
-    return 'The document provided is not valid..';
+    return 'The document provided is not valid.';
   }
 }
