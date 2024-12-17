@@ -6,12 +6,12 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { CurrentUser } from 'src/modules/auth/utils/current-user-decorator';
-import { CustomerService } from '../customer.service';
-import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { CurrentUser } from 'src/modules/auth/utils/current-user-decorator';
+import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
+import { RequestUser } from 'src/modules/shared/dto/request-user.dto';
+import { CustomerService } from '../customer.service';
 import { UpdateCustomerDTO } from '../dto/update-customer.dto';
-import { RequestUser } from 'src/shared/dto/request-user.dto';
 
 @Controller('update-customer')
 export class UpdateCustomerController {

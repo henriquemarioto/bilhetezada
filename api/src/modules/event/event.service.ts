@@ -5,13 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import TimezoneService from 'src/modules/shared/services/timezone.service';
 import { Repository } from 'typeorm';
 import { Event } from '../../database/typeorm/entities/event.entity';
-import { SlugService } from '../../shared/services/slug.service';
+import { CustomerService } from '../customer/customer.service';
+import { SlugService } from '../shared/services/slug.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
-import { CustomerService } from '../customer/customer.service';
-import TimezoneService from 'src/shared/services/timezone.service';
 
 @Injectable()
 export class EventService {
@@ -24,44 +24,35 @@ export class EventService {
   ) {}
 
   async create(customerId: string, createEventDto: CreateEventDto) {
-    try {
-      const isValidTimezone = await this.timezoneService.isValidTimezone(
-        createEventDto.time_zone,
-      );
+    const isValidTimezone = await this.timezoneService.isValidTimezone(
+      createEventDto.time_zone,
+    );
 
-      if (!isValidTimezone) {
-        throw new BadRequestException('Unsupported timezone');
-      }
-
-      console.log(
-        createEventDto,
-        await this.timezoneService.isValidTimezone(createEventDto.time_zone),
-      );
-
-      const slug = this.slugService.slug(createEventDto.name);
-
-      const slugAlreadyInUse = await this.eventsRepository.findOne({
-        where: {
-          slug: slug,
-        },
-      });
-
-      if (slugAlreadyInUse) {
-        throw new ConflictException('Slug already exists.');
-      }
-
-      const customer = await this.customerService.findById(customerId);
-
-      const event = await this.eventsRepository.save({
-        ...createEventDto,
-        slug,
-        customer,
-      });
-
-      return event;
-    } catch (error) {
-      throw new BadRequestException(error.message);
+    if (!isValidTimezone) {
+      throw new BadRequestException('Unsupported timezone');
     }
+
+    const slug = this.slugService.slug(createEventDto.name);
+
+    const slugAlreadyInUse = await this.eventsRepository.findOne({
+      where: {
+        slug: slug,
+      },
+    });
+
+    if (slugAlreadyInUse) {
+      throw new ConflictException('Slug already exists.');
+    }
+
+    const customer = await this.customerService.findById(customerId);
+
+    const event = await this.eventsRepository.save({
+      ...createEventDto,
+      slug,
+      customer,
+    });
+
+    return event;
   }
 
   async findMany(customerId: string) {
@@ -87,12 +78,33 @@ export class EventService {
     return event;
   }
 
-  update(eventId: string, updateEventDto: UpdateEventDTO) {
-    return this.eventsRepository.update(eventId, updateEventDto);
+  async update(
+    customerId: string,
+    eventId: string,
+    updateEventDto: UpdateEventDTO,
+  ) {
+    const event = await this.eventsRepository.findOne({
+      where: {
+        id: eventId,
+        customer: {
+          id: customerId,
+        },
+      },
+      relations: ['customer'],
+    });
+
+    if (!event) {
+      throw new NotFoundException(
+        'Event not found or the customer does not own this event.',
+      );
+    }
+
+    await this.eventsRepository.update(eventId, updateEventDto);
+    return true;
   }
 
-  async disable(eventId: string) {
-    await this.update(eventId, { active: false });
+  async disable(customerId: string, eventId: string) {
+    await this.update(customerId, eventId, { active: false });
     return true;
   }
 }

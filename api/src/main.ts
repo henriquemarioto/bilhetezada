@@ -7,7 +7,7 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 import { createClient } from 'redis';
 import { AppModule } from './app.module';
-import { Env } from './shared/config/configuration';
+import { Env } from './modules/shared/config/configuration';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -55,6 +55,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Bilhetezada')
     .addBearerAuth()
+    .addServer('http://localhost:3132')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory, {

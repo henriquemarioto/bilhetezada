@@ -3,18 +3,18 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
+import { Logout } from 'src/database/typeorm/entities/logout.entity';
+import AuthProviders from 'src/modules/shared/enums/auth-providers.enum';
+import CryptoService from 'src/modules/shared/services/crypto.service';
+import { Repository } from 'typeorm';
 import { CustomerService } from '../customer/customer.service';
 import {
   CreateCustomerDto,
   CreateCustomerPartialDTO,
 } from '../customer/dto/create-customer.dto';
-import CryptoService from 'src/shared/services/crypto.service';
-import { JwtService } from '@nestjs/jwt';
-import AuthProviders from 'src/shared/enums/auth-providers.enum';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Logout } from 'src/database/typeorm/entities/logout.entity';
-import { Repository } from 'typeorm';
 
 type GoogleUser = {
   email: string;

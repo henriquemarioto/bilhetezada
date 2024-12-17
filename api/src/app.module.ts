@@ -4,11 +4,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
+import typeorm from './database/typeorm/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { EventModule } from './modules/event/event.module';
-import configuration from './shared/config/configuration';
-import typeorm from './database/typeorm/typeorm';
+import configuration from './modules/shared/config/configuration';
 
 @Module({
   imports: [

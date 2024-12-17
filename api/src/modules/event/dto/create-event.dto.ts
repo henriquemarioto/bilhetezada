@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateEventDto {
@@ -22,7 +22,7 @@ export class CreateEventDto {
   @IsDateString()
   end_time: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsDateString()
   @IsOptional()
   entrance_limit_time: string;

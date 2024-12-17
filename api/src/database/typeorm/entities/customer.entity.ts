@@ -1,5 +1,3 @@
-import AuthProviders from '../../../shared/enums/auth-providers.enum';
-import { Event } from './event.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import AuthProviders from '../../../modules/shared/enums/auth-providers.enum';
+import { Event } from './event.entity';
 
 @Entity()
 export class Customer {

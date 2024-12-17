@@ -9,7 +9,7 @@ import {
   Matches,
   Validate,
 } from 'class-validator';
-import { IsValidDocumentConstraint } from 'src/shared/utils/validators/validateDocument';
+import { IsValidDocumentConstraint } from 'src/modules/shared/utils/validators/validateDocument';
 
 export class CreateCustomerDto {
   @ApiProperty()

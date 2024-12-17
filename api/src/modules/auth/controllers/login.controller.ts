@@ -6,7 +6,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { LocalAuthGuard } from '../utils/guards/local.guard';
 import { AuthService } from '../auth.service';
 
@@ -25,6 +25,17 @@ export class LoginController {
           type: 'string',
         },
         password: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: 'JWT token',
+    schema: {
+      type: 'object',
+      properties: {
+        access_token: {
           type: 'string',
         },
       },

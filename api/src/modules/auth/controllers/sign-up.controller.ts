@@ -1,8 +1,8 @@
-import AuthProviders from 'src/shared/enums/auth-providers.enum';
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { CreateCustomerDto } from 'src/modules/customer/dto/create-customer.dto';
-import { AuthService } from '../auth.service';
 import { ApiOperation } from '@nestjs/swagger';
+import { CreateCustomerDto } from 'src/modules/customer/dto/create-customer.dto';
+import AuthProviders from 'src/modules/shared/enums/auth-providers.enum';
+import { AuthService } from '../auth.service';
 
 @Controller()
 export class CreateAccountController {

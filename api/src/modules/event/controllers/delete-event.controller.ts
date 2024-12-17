@@ -6,17 +6,21 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { AuthenticatedGuard } from 'src/modules/auth/utils/guards/authenticated.guard';
 import { EventService } from '../event.service';
+import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { RequestUser } from 'src/modules/shared/dto/request-user.dto';
+import { CurrentUser } from 'src/modules/auth/utils/current-user-decorator';
 
 @Controller()
 export class DeleteEventController {
   constructor(private readonly eventService: EventService) {}
 
-  @UseGuards(AuthenticatedGuard)
-  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('delete-event')
-  async handle(@Query('id') eventId: string) {
-    await this.eventService.disable(eventId);
+  async handle(@Query('id') eventId: string, @CurrentUser() user: RequestUser) {
+    await this.eventService.disable(user.userId, eventId);
   }
 }

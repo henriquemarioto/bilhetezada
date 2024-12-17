@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import SharedModule from 'src/modules/shared/shared.module';
 import { Event } from '../../database/typeorm/entities/event.entity';
+import { AuthModule } from '../auth/auth.module';
+import { CustomerModule } from '../customer/customer.module';
 import { CreateEventController } from './controllers/create-event.controller';
 import { DeleteEventController } from './controllers/delete-event.controller';
 import { GetEventController } from './controllers/get-event.controller';
 import { UpdateEventController } from './controllers/update-event.controller';
 import { EventService } from './event.service';
-import SharedModule from 'src/shared/shared.module';
-import { CustomerModule } from '../customer/customer.module';
-import { AuthModule } from '../auth/auth.module';
+import { GetCustomerEventsController } from './controllers/get-customer-events.controller';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthModule } from '../auth/auth.module';
     GetEventController,
     UpdateEventController,
     DeleteEventController,
+    GetCustomerEventsController,
   ],
 })
 export class EventModule {}

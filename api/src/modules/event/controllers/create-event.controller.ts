@@ -6,12 +6,12 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { CurrentUser } from 'src/modules/auth/utils/current-user-decorator';
+import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
+import { RequestUser } from 'src/modules/shared/dto/request-user.dto';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { EventService } from '../event.service';
-import { RequestUser } from 'src/shared/dto/request-user.dto';
-import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller()
 export class CreateEventController {

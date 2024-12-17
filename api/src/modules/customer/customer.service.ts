@@ -1,12 +1,12 @@
-import AuthProviders from 'src/shared/enums/auth-providers.enum';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Customer } from 'src/database/typeorm/entities/customer.entity';
+import AuthProviders from 'src/modules/shared/enums/auth-providers.enum';
 import { Repository } from 'typeorm';
 import {
   CreateCustomerDto,
   CreateCustomerPartialDTO,
 } from './dto/create-customer.dto';
-import { Customer } from 'src/database/typeorm/entities/customer.entity';
 
 @Injectable()
 export class CustomerService {
