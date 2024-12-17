@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -14,9 +15,6 @@ export class Event {
   id: string;
 
   @Column({ nullable: false })
-  customerId: string;
-
-  @Column({ nullable: false })
   name: string;
 
   @Column({ nullable: false })
@@ -25,7 +23,7 @@ export class Event {
   @Column({ nullable: false })
   address: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   slug: string;
 
   @Column({ nullable: false })
@@ -40,8 +38,8 @@ export class Event {
   @Column({ nullable: false, default: 'America/Sao_Paulo' })
   time_zone: string;
 
-  @Column({ nullable: false })
-  price: string;
+  @Column({ nullable: false, type: 'decimal', precision: 10, scale: 2 })
+  price: number;
 
   @Column({ default: true })
   active: boolean;
@@ -52,6 +50,7 @@ export class Event {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Customer, (customer) => customer.id)
+  @ManyToOne(() => Customer, (customer) => customer.events)
+  @JoinColumn({ name: 'customer_id' })
   customer: Customer;
 }

@@ -1,9 +1,8 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateEventDto } from './create-event.dto';
-import { IsBoolean, IsOptional } from 'class-validator';
+import { Exclude } from 'class-transformer';
 
 export class UpdateEventDTO extends PartialType(CreateEventDto) {
-  @IsOptional()
-  @IsBoolean()
+  @Exclude()
   active: boolean;
 }

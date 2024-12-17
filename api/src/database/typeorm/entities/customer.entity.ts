@@ -44,6 +44,6 @@ export class Customer {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => Event, (event) => event.customerId)
+  @OneToMany(() => Event, (event) => event.customer)
   events: Event[];
 }

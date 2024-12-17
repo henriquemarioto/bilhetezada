@@ -33,5 +33,5 @@ export class CreateEventDto {
 
   @ApiProperty()
   @IsNumber()
-  price: string;
+  price: number;
 }

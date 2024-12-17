@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,6 +10,8 @@ import { Event } from '../../database/typeorm/entities/event.entity';
 import { SlugService } from '../../shared/services/slug.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
+import { CustomerService } from '../customer/customer.service';
+import TimezoneService from 'src/shared/services/timezone.service';
 
 @Injectable()
 export class EventService {
@@ -16,27 +19,60 @@ export class EventService {
     @InjectRepository(Event)
     private eventsRepository: Repository<Event>,
     private slugService: SlugService,
+    private customerService: CustomerService,
+    private timezoneService: TimezoneService,
   ) {}
-
-  async findMany(customerId: string) {
-    const events = this.eventsRepository.find({ where: { customerId } });
-    if (!events) {
-      throw new NotFoundException('no events found');
-    }
-    return events;
-  }
 
   async create(customerId: string, createEventDto: CreateEventDto) {
     try {
+      const isValidTimezone = await this.timezoneService.isValidTimezone(
+        createEventDto.time_zone,
+      );
+
+      if (!isValidTimezone) {
+        throw new BadRequestException('Unsupported timezone');
+      }
+
+      console.log(
+        createEventDto,
+        await this.timezoneService.isValidTimezone(createEventDto.time_zone),
+      );
+
+      const slug = this.slugService.slug(createEventDto.name);
+
+      const slugAlreadyInUse = await this.eventsRepository.findOne({
+        where: {
+          slug: slug,
+        },
+      });
+
+      if (slugAlreadyInUse) {
+        throw new ConflictException('Slug already exists.');
+      }
+
+      const customer = await this.customerService.findById(customerId);
+
       const event = await this.eventsRepository.save({
         ...createEventDto,
-        slug: this.slugService.slug(createEventDto.name),
+        slug,
+        customer,
       });
+
       return event;
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException(`An error occurred while creating event`);
+      throw new BadRequestException(error.message);
     }
+  }
+
+  async findMany(customerId: string) {
+    const events = this.eventsRepository.find({
+      where: { customer: { id: customerId } },
+      relations: ['customer'],
+    });
+    if (!events) {
+      throw new NotFoundException('No events found for this customer.');
+    }
+    return events;
   }
 
   async getById(eventId: string) {

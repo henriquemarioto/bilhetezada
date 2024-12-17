@@ -1,22 +1,30 @@
-import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CurrentUser } from 'src/modules/auth/utils/current-user-decorator';
-import { AuthenticatedGuard } from 'src/modules/auth/utils/guards/authenticated.guard';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { EventService } from '../event.service';
-import { Customer } from 'src/database/typeorm/entities/customer.entity';
+import { RequestUser } from 'src/shared/dto/request-user.dto';
+import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller()
 export class CreateEventController {
-  @Inject() eventService: EventService;
+  constructor(private readonly eventService: EventService) {}
 
-  constructor() {}
-
-  @UseGuards(AuthenticatedGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.CREATED)
   @Post('create-event')
-  handle(
+  async handle(
     @Body() createEventDto: CreateEventDto,
-    @CurrentUser() user: Customer,
+    @CurrentUser() user: RequestUser,
   ) {
-    return this.eventService.create(user.id, createEventDto);
+    await this.eventService.create(user.userId, createEventDto);
   }
 }

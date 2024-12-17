@@ -4,5 +4,8 @@ import { Exclude } from 'class-transformer';
 
 export class UpdateCustomerDTO extends PartialType(CreateCustomerDto) {
   @Exclude()
+  active: boolean;
+
+  @Exclude()
   password?: string;
 }
