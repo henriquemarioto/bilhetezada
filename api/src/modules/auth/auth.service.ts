@@ -6,9 +6,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { Logout } from 'src/database/typeorm/entities/logout.entity';
-import AuthProviders from 'src/modules/shared/enums/auth-providers.enum';
-import CryptoService from 'src/modules/shared/services/crypto.service';
+import { Logout } from '../../database/typeorm/entities/logout.entity';
+import AuthProviders from '../shared/enums/auth-providers.enum';
+import CryptoService from '../shared/services/crypto.service';
 import { Repository } from 'typeorm';
 import { CustomerService } from '../customer/customer.service';
 import {
@@ -30,14 +30,14 @@ export class AuthService {
     private readonly cryptoService: CryptoService,
     private readonly jwtService: JwtService,
     @InjectRepository(Logout)
-    private logoutRepository: Repository<Logout>,
+    private readonly logoutRepository: Repository<Logout>,
   ) {}
   googleLogin(req: Request) {
     const user: GoogleUser = req.user as GoogleUser;
     return { message: 'Logado', user };
   }
 
-  async register(
+  async signUp(
     provider: AuthProviders,
     createCustomerDto: CreateCustomerDto | CreateCustomerPartialDTO,
   ) {

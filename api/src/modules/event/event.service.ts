@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import TimezoneService from 'src/modules/shared/services/timezone.service';
+import TimezoneService from '../timezone/timezone.service';
 import { Repository } from 'typeorm';
 import { Event } from '../../database/typeorm/entities/event.entity';
 import { CustomerService } from '../customer/customer.service';

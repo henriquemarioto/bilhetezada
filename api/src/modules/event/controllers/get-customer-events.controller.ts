@@ -6,9 +6,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import { CurrentUser } from 'src/modules/auth/utils/current-user-decorator';
-import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
-import { RequestUser } from 'src/modules/shared/dto/request-user.dto';
+import { CurrentUser } from '../../auth/utils/current-user-decorator';
+import { JwtAuthGuard } from '../../auth/utils/guards/jwt.guard';
+import { RequestUser } from '../../shared/dto/request-user.dto';
 import { EventService } from '../event.service';
 import { plainToInstance } from 'class-transformer';
 import { EventResponseDto } from '../dto/event-response.dto';

@@ -4,7 +4,9 @@ export class TimezoneDto {
   @ApiProperty()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'America/Sao_Paulo',
+  })
   name: string;
 
   @ApiProperty()

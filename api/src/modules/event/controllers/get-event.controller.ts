@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { EventService } from '../event.service';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
+import { JwtAuthGuard } from '../../auth/utils/guards/jwt.guard';
 import { EventResponseDto } from '../dto/event-response.dto';
 import { plainToInstance } from 'class-transformer';
 

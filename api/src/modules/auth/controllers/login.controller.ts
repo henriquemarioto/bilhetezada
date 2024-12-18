@@ -3,12 +3,14 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LocalAuthGuard } from '../utils/guards/local.guard';
 import { AuthService } from '../auth.service';
+import { CurrentUser } from '../utils/current-user-decorator';
+import { RequestUser } from 'src/modules/shared/dto/request-user.dto';
+import { LoginResponseDto } from '../dto/login-response.dto';
 
 @Controller()
 export class LoginController {
@@ -30,21 +32,15 @@ export class LoginController {
       },
     },
   })
-  @ApiOkResponse({
+  @ApiResponse({
+    status: 200,
     description: 'JWT token',
-    schema: {
-      type: 'object',
-      properties: {
-        access_token: {
-          type: 'string',
-        },
-      },
-    },
+    type: LoginResponseDto,
   })
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async handle(@Request() req) {
-    return this.authService.login(req.user);
+  async handle(@CurrentUser() user: RequestUser) {
+    return this.authService.login(user);
   }
 }

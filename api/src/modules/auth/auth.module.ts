@@ -2,9 +2,9 @@ import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Logout } from 'src/database/typeorm/entities/logout.entity';
-import SharedModule from 'src/modules/shared/shared.module';
+import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { Logout } from '../../database/typeorm/entities/logout.entity';
+import SharedModule from '../shared/shared.module';
 import { CustomerModule } from '../customer/customer.module';
 import { AuthService } from './auth.service';
 import { LoginGoogleCallbackController } from './controllers/login-google-callback.controller';
@@ -19,6 +19,21 @@ import { JwtStrategy } from './utils/strategies/jwt.strategy';
 import { LocalStrategy } from './utils/strategies/local.strategy';
 
 @Module({
+  imports: [
+    ConfigModule,
+    PassportModule.register({ session: true }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('jwtSecret'),
+        signOptions: { expiresIn: '20m' },
+      }),
+    }),
+    TypeOrmModule.forFeature([Logout]),
+    forwardRef(() => CustomerModule),
+    SharedModule,
+  ],
   controllers: [
     CreateAccountController,
     LoginController,
@@ -33,20 +48,6 @@ import { LocalStrategy } from './utils/strategies/local.strategy';
     LocalStrategy,
     SessionSerializer,
     JwtAuthGuard,
-  ],
-  imports: [
-    forwardRef(() => CustomerModule),
-    PassportModule.register({ session: true }),
-    ConfigModule,
-    SharedModule,
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('jwtSecret'),
-        signOptions: { expiresIn: '10m' },
-      }),
-    }),
-    TypeOrmModule.forFeature([Logout]),
   ],
   exports: [AuthService, JwtAuthGuard],
 })

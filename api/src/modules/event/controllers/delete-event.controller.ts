@@ -7,10 +7,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { EventService } from '../event.service';
-import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
+import { JwtAuthGuard } from '../../auth/utils/guards/jwt.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { RequestUser } from 'src/modules/shared/dto/request-user.dto';
-import { CurrentUser } from 'src/modules/auth/utils/current-user-decorator';
+import { RequestUser } from '../../shared/dto/request-user.dto';
+import { CurrentUser } from '../../auth/utils/current-user-decorator';
 
 @Controller()
 export class DeleteEventController {

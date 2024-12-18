@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Timezone } from 'src/database/typeorm/entities/timezone.entity';
-import CacheService from 'src/modules/shared/services/cache.service';
+import { Timezone } from '../../database/typeorm/entities/timezone.entity';
+import CacheService from '../shared/services/cache.service';
 import { Repository } from 'typeorm';
 
 @Injectable()

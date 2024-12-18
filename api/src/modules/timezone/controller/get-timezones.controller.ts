@@ -5,10 +5,10 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/modules/auth/utils/guards/jwt.guard';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import TimezoneService from '../services/timezone.service';
+import { JwtAuthGuard } from '../../auth/utils/guards/jwt.guard';
 import { TimezoneDto } from '../dto/timezone.dto';
+import TimezoneService from '../timezone.service';
 
 @Controller()
 export class GetTimezonesController {

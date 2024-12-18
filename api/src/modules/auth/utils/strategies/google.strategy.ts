@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
-import AuthProviders from 'src/modules/shared/enums/auth-providers.enum';
+import AuthProviders from '../../../shared/enums/auth-providers.enum';
 import { AuthService } from '../../auth.service';
 
 @Injectable()
@@ -40,7 +40,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       done(null, user);
       return user;
     }
-    const newUser = await this.authService.register(
+    const newUser = await this.authService.signUp(
       AuthProviders.GOOGLE,
       userPayload,
     );

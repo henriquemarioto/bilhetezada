@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
-import { CreateCustomerDto } from 'src/modules/customer/dto/create-customer.dto';
-import AuthProviders from 'src/modules/shared/enums/auth-providers.enum';
+import { CreateCustomerDto } from '../../customer/dto/create-customer.dto';
+import AuthProviders from '../../shared/enums/auth-providers.enum';
 import { AuthService } from '../auth.service';
 
 @Controller()
@@ -14,6 +14,6 @@ export class CreateAccountController {
   @HttpCode(HttpStatus.CREATED)
   @Post('sign-up')
   async handle(@Body() createCustomerDto: CreateCustomerDto) {
-    await this.authService.register(AuthProviders.LOCAL, createCustomerDto);
+    await this.authService.signUp(AuthProviders.LOCAL, createCustomerDto);
   }
 }

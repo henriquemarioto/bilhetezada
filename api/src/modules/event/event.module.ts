@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import SharedModule from 'src/modules/shared/shared.module';
+import SharedModule from '../shared/shared.module';
 import { Event } from '../../database/typeorm/entities/event.entity';
 import { AuthModule } from '../auth/auth.module';
 import { CustomerModule } from '../customer/customer.module';
@@ -10,6 +10,7 @@ import { GetEventController } from './controllers/get-event.controller';
 import { UpdateEventController } from './controllers/update-event.controller';
 import { EventService } from './event.service';
 import { GetCustomerEventsController } from './controllers/get-customer-events.controller';
+import { TimezoneModule } from '../timezone/timezone.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { GetCustomerEventsController } from './controllers/get-customer-events.c
     SharedModule,
     CustomerModule,
     AuthModule,
+    TimezoneModule,
   ],
   providers: [EventService],
   controllers: [

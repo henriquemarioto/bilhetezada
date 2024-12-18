@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsDateString,
@@ -9,7 +9,7 @@ import {
   Matches,
   Validate,
 } from 'class-validator';
-import { IsValidDocumentConstraint } from 'src/modules/shared/utils/validators/validateDocument';
+import { IsValidDocumentConstraint } from '../../shared/utils/validators/validateDocument';
 
 export class CreateCustomerDto {
   @ApiProperty()
