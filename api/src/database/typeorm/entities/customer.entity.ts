@@ -18,10 +18,10 @@ export class Customer {
   name: string;
 
   @Column({ nullable: true, unique: true })
-  document: string;
+  document: string | null;
 
   @Column({ nullable: true, default: null })
-  birth_date: Date;
+  birth_date: Date | null;
 
   @Column({ nullable: false, unique: true })
   email: string;
@@ -30,7 +30,7 @@ export class Customer {
   active: boolean;
 
   @Column({ nullable: true })
-  password: string;
+  password: string | null;
 
   @Column({ default: null })
   picture_url: string | null;

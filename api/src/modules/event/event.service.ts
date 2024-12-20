@@ -1,15 +1,14 @@
 import {
   BadRequestException,
-  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import TimezoneService from '../timezone/timezone.service';
 import { Repository } from 'typeorm';
 import { Event } from '../../database/typeorm/entities/event.entity';
 import { CustomerService } from '../customer/customer.service';
 import { SlugService } from '../shared/services/slug.service';
+import TimezoneService from '../shared/services/timezone.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
 
@@ -24,7 +23,7 @@ export class EventService {
   ) {}
 
   async create(customerId: string, createEventDto: CreateEventDto) {
-    const isValidTimezone = await this.timezoneService.isValidTimezone(
+    const isValidTimezone = this.timezoneService.isValidTimezone(
       createEventDto.time_zone,
     );
 
@@ -32,7 +31,7 @@ export class EventService {
       throw new BadRequestException('Unsupported timezone');
     }
 
-    const slug = this.slugService.slug(createEventDto.name);
+    let slug = this.slugService.slug(createEventDto.name);
 
     const slugAlreadyInUse = await this.eventsRepository.findOne({
       where: {
@@ -41,7 +40,7 @@ export class EventService {
     });
 
     if (slugAlreadyInUse) {
-      throw new ConflictException('Slug already exists.');
+      slug = this.slugService.slugWithUUID(createEventDto.name);
     }
 
     const customer = await this.customerService.findById(customerId);

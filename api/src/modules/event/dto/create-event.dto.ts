@@ -1,5 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsISO8601,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Validate,
+} from 'class-validator';
+import {
+  IsDateAfterDate,
+  IsDateBetweenDates,
+  IsDateGreaterThanTodayConstraint,
+} from 'src/modules/shared/utils/validators/validate-date.validator';
 
 export class CreateEventDto {
   @ApiProperty()
@@ -15,16 +26,19 @@ export class CreateEventDto {
   address: string;
 
   @ApiProperty()
-  @IsDateString()
+  @IsISO8601()
+  @Validate(IsDateGreaterThanTodayConstraint)
   start_time: string;
 
   @ApiProperty()
-  @IsDateString()
+  @IsISO8601()
+  @IsDateAfterDate('start_time')
   end_time: string;
 
   @ApiPropertyOptional()
-  @IsDateString()
   @IsOptional()
+  @IsISO8601()
+  @IsDateBetweenDates('start_time', 'end_time')
   entrance_limit_time: string;
 
   @ApiProperty()

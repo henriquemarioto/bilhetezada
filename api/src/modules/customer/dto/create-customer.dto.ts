@@ -1,15 +1,16 @@
 import { PartialType } from '@nestjs/swagger';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsDateString,
   IsEmail,
+  IsISO8601,
   IsOptional,
   IsString,
   IsStrongPassword,
+  IsUrl,
   Matches,
   Validate,
 } from 'class-validator';
-import { IsValidDocumentConstraint } from '../../shared/utils/validators/validateDocument';
+import { IsValidDocumentConstraint } from '../../shared/utils/validators/validate-document.validator';
 
 export class CreateCustomerDto {
   @ApiProperty()
@@ -24,8 +25,10 @@ export class CreateCustomerDto {
   @Validate(IsValidDocumentConstraint)
   document: string;
 
-  @ApiProperty()
-  @IsDateString()
+  @ApiProperty({
+    example: '2000-10-10T00:00:00.000Z',
+  })
+  @IsISO8601()
   @IsString()
   birth_date: Date;
 
@@ -46,6 +49,7 @@ export class CreateCustomerDto {
 
   @ApiPropertyOptional()
   @IsString()
+  @IsUrl()
   @IsOptional()
   picture_url?: string;
 }

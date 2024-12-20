@@ -4,7 +4,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 
-export function isValidCPF(cpf: string): boolean {
+function isValidCPF(cpf: string): boolean {
   cpf = cpf.replace(/\D/g, ''); // Remove caracteres não numéricos
   if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
 
@@ -22,7 +22,7 @@ export function isValidCPF(cpf: string): boolean {
   return checkDigit === Number(cpf[10]);
 }
 
-export function isValidCNPJ(cnpj: string): boolean {
+function isValidCNPJ(cnpj: string): boolean {
   cnpj = cnpj.replace(/\D/g, ''); // Remove caracteres não numéricos
   if (cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) return false;
 

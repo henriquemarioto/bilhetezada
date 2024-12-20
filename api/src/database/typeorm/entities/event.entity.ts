@@ -5,9 +5,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Order } from './order.entity';
 
 @Entity()
 export class Event {
@@ -33,7 +35,7 @@ export class Event {
   end_time: Date;
 
   @Column({ nullable: true })
-  entrance_limit_time?: Date;
+  entrance_limit_time?: Date | null;
 
   @Column({ nullable: false, default: 'America/Sao_Paulo' })
   time_zone: string;
@@ -53,4 +55,7 @@ export class Event {
   @ManyToOne(() => Customer, (customer) => customer.events)
   @JoinColumn({ name: 'customer_id' })
   customer: Customer;
+
+  @OneToMany(() => Order, (order) => order.event)
+  orders: Order;
 }

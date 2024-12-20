@@ -10,7 +10,6 @@ import { GetEventController } from './controllers/get-event.controller';
 import { UpdateEventController } from './controllers/update-event.controller';
 import { EventService } from './event.service';
 import { GetCustomerEventsController } from './controllers/get-customer-events.controller';
-import { TimezoneModule } from '../timezone/timezone.module';
 
 @Module({
   imports: [
@@ -18,7 +17,6 @@ import { TimezoneModule } from '../timezone/timezone.module';
     SharedModule,
     CustomerModule,
     AuthModule,
-    TimezoneModule,
   ],
   providers: [EventService],
   controllers: [
@@ -28,5 +26,6 @@ import { TimezoneModule } from '../timezone/timezone.module';
     DeleteEventController,
     GetCustomerEventsController,
   ],
+  exports: [EventService],
 })
 export class EventModule {}

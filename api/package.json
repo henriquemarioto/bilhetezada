@@ -19,10 +19,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "NODE_ENV=test jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node ./node_modules/typeorm/cli",
-    "migration:run": "npm run typeorm migration:run -- -d ./src/database/typeorm/typeorm.ts",
-    "migration:generate": "npm run typeorm -- -d ./src/database/typeorm/typeorm.ts migration:generate ./src/database/typeorm/migrations/$npm_config_name",
+    "migration:run": "npm run typeorm migration:run -- -d ./src/database/typeorm/typeorm.config.ts",
+    "migration:generate": "npm run typeorm -- -d ./src/database/typeorm/typeorm.config.ts migration:generate ./src/database/typeorm/migrations/$npm_config_name",
     "migration:create": "npm run typeorm -- migration:create ./src/database/typeorm/migrations/$npm_config_name",
-    "migration:revert": "npm run typeorm -- -d ./src/database/typeorm/typeorm.ts migration:revert"
+    "migration:revert": "npm run typeorm -- -d ./src/database/typeorm/typeorm.config.ts migration:revert"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^2.2.0",
@@ -48,6 +48,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "qrcode": "^1.5.4",
     "redis": "^4.6.12",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
@@ -68,6 +69,7 @@
     "@types/passport-google-oauth20": "^2.0.14",
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
+    "@types/qrcode": "^1.5.5",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",

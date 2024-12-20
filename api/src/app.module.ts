@@ -10,7 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { EventModule } from './modules/event/event.module';
 import configuration from './modules/shared/config/configuration';
-import { TimezoneModule } from './modules/timezone/timezone.module';
+import { SalesModule } from './modules/sales/sales.module';
 
 @Module({
   imports: [
@@ -38,7 +38,7 @@ import { TimezoneModule } from './modules/timezone/timezone.module';
     AuthModule,
     CustomerModule,
     EventModule,
-    TimezoneModule,
+    SalesModule,
   ],
   controllers: [],
   providers: [],
