@@ -2,21 +2,17 @@ import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { Logout } from '../../database/typeorm/entities/logout.entity';
 import SharedModule from '../shared/shared.module';
 import { CustomerModule } from '../customer/customer.module';
 import { AuthService } from './auth.service';
-import { LoginGoogleCallbackController } from './controllers/login-google-callback.controller';
-import { LoginGoogleController } from './controllers/login-google.controller';
-import { LoginController } from './controllers/login.controller';
-import { LogoutController } from './controllers/logout.controller';
-import { CreateAccountController } from './controllers/sign-up.controller';
 import { JwtAuthGuard } from './utils/guards/jwt.guard';
 import { SessionSerializer } from './utils/serializer';
 import { GoogleStrategy } from './utils/strategies/google.strategy';
 import { JwtStrategy } from './utils/strategies/jwt.strategy';
 import { LocalStrategy } from './utils/strategies/local.strategy';
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
@@ -34,13 +30,7 @@ import { LocalStrategy } from './utils/strategies/local.strategy';
     forwardRef(() => CustomerModule),
     SharedModule,
   ],
-  controllers: [
-    CreateAccountController,
-    LoginController,
-    LoginGoogleCallbackController,
-    LoginGoogleController,
-    LogoutController,
-  ],
+  controllers: [AuthController],
   providers: [
     AuthService,
     GoogleStrategy,
