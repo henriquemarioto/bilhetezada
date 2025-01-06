@@ -42,10 +42,10 @@ export class Order {
     nullable: true,
     cascade: ['update'],
   })
-  @JoinColumn()
+  @JoinColumn({ name: 'payment_id' })
   payment: Payment | null;
 
   @OneToOne(() => Buyer, (buyer) => buyer.order)
-  @JoinColumn()
+  @JoinColumn({ name: 'buyer_id' })
   buyer: Buyer;
 }

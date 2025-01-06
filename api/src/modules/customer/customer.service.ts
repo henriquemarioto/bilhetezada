@@ -1,3 +1,4 @@
+import { SlugService } from './../shared/services/slug.service';
 import {
   BadRequestException,
   ConflictException,
@@ -22,6 +23,7 @@ export class CustomerService {
     @InjectRepository(Customer)
     private customersRepository: Repository<Customer>,
     private cryptoService: CryptoService,
+    private slugService: SlugService,
   ) {}
 
   async create(
@@ -49,6 +51,10 @@ export class CustomerService {
         createCustomerDto.password = this.cryptoService.encryptSalt(
           createCustomerDto.password,
         );
+      if (!createCustomerDto.picture_url)
+        createCustomerDto.picture_url = `https://api.dicebear.com/9.x/identicon/svg?seed=${this.slugService.slug(
+          createCustomerDto.name,
+        )}`;
       const customer = await this.customersRepository.save({
         ...createCustomerDto,
         auth_provider: provider,
