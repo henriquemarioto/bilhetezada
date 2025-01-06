@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Buyer } from 'src/database/typeorm/entities/buyer.entity';
 import { Order } from 'src/database/typeorm/entities/order.entity';
@@ -33,5 +33,21 @@ export class SalesService {
     });
 
     return true;
+  }
+
+  async getEventOrders(eventId: string, userId: string) {
+    await this.eventService.getById(eventId, userId);
+
+    const orders = await this.ordersRepository.find({
+      where: {
+        event: {
+          id: eventId,
+        },
+      },
+    });
+
+    if (!orders.length) throw new NotFoundException();
+
+    return orders;
   }
 }

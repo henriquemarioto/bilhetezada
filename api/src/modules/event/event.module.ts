@@ -6,10 +6,11 @@ import { AuthModule } from '../auth/auth.module';
 import { CustomerModule } from '../customer/customer.module';
 import { EventService } from './event.service';
 import { EventController } from './event.controller';
+import { PaymentLink } from '../../database/typeorm/entities/payment-link.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Event]),
+    TypeOrmModule.forFeature([Event, PaymentLink]),
     SharedModule,
     CustomerModule,
     AuthModule,

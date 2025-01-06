@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,12 +12,16 @@ import { SlugService } from '../shared/services/slug.service';
 import TimezoneService from '../shared/services/timezone.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
+import { PaymentLink } from '../../database/typeorm/entities/payment-link.entity';
+import { PaymentLinkOwner } from '../shared/enums/payment-link-owner.enum';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectRepository(Event)
     private eventsRepository: Repository<Event>,
+    @InjectRepository(PaymentLink)
+    private paymentLinksRepository: Repository<PaymentLink>,
     private slugService: SlugService,
     private customerService: CustomerService,
     private timezoneService: TimezoneService,
@@ -51,13 +56,18 @@ export class EventService {
       customer,
     });
 
+    await this.paymentLinksRepository.save({
+      owner: PaymentLinkOwner.EVENT,
+      url: slug,
+      event: event,
+    });
+
     return event;
   }
 
   async findMany(customerId: string) {
-    const events = this.eventsRepository.find({
+    const events = await this.eventsRepository.find({
       where: { customer: { id: customerId } },
-      relations: ['customer'],
     });
     if (!events) {
       throw new NotFoundException('No events found for this customer.');
@@ -65,14 +75,28 @@ export class EventService {
     return events;
   }
 
-  async getById(eventId: string) {
+  async getById(eventId: string, userId?: string) {
     const event = await this.eventsRepository.findOne({
       where: {
         id: eventId,
+        customer: {
+          id: userId,
+        },
+      },
+      relations: {
+        customer: true,
+        paymentLinks: true,
+        orders: true,
       },
     });
 
     if (!event) throw new NotFoundException('Event not found');
+
+    if (userId && event.customer.id != userId) {
+      throw new UnauthorizedException(
+        'This event does not belong to this customer',
+      );
+    }
 
     return event;
   }

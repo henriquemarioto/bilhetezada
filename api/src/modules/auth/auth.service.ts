@@ -10,7 +10,10 @@ import { Logout } from '../../database/typeorm/entities/logout.entity';
 import AuthProviders from '../shared/enums/auth-providers.enum';
 import CryptoService from '../shared/services/crypto.service';
 import { Repository } from 'typeorm';
-import { CustomerService } from '../customer/customer.service';
+import {
+  CustomerService,
+  CustomerWithoutPassword,
+} from '../customer/customer.service';
 import {
   CreateCustomerDto,
   CreateCustomerPartialDTO,
@@ -40,25 +43,7 @@ export class AuthService {
   async signUp(
     provider: AuthProviders,
     createCustomerDto: CreateCustomerDto | CreateCustomerPartialDTO,
-  ) {
-    createCustomerDto.email = this.cryptoService.encrypt(
-      createCustomerDto.email,
-    );
-    if (createCustomerDto.document)
-      createCustomerDto.document = this.cryptoService.encrypt(
-        createCustomerDto.document,
-      );
-    const customerFound = await this.customerService.findByEmailOrDocument(
-      createCustomerDto.email,
-      createCustomerDto.document,
-    );
-    if (customerFound) {
-      throw new ConflictException(`Document or email already in use for this.`);
-    }
-    if (createCustomerDto.password)
-      createCustomerDto.password = this.cryptoService.encryptSalt(
-        createCustomerDto.password,
-      );
+  ): Promise<CustomerWithoutPassword> {
     return await this.customerService.create(provider, createCustomerDto);
   }
 

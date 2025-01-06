@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Order } from './order.entity';
+import { PaymentLink } from './payment-link.entity';
 
 @Entity()
 export class Event {
@@ -58,4 +59,7 @@ export class Event {
 
   @OneToMany(() => Order, (order) => order.event)
   orders: Order;
+
+  @OneToMany(() => PaymentLink, (paymentLink) => paymentLink.event)
+  paymentLinks: PaymentLink;
 }

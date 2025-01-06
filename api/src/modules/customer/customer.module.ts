@@ -4,9 +4,14 @@ import { Customer } from '../../database/typeorm/entities/customer.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
 import { CustomerController } from './customer.controller';
+import SharedModule from '../shared/shared.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Customer]), forwardRef(() => AuthModule)],
+  imports: [
+    TypeOrmModule.forFeature([Customer]),
+    forwardRef(() => AuthModule),
+    SharedModule,
+  ],
   controllers: [CustomerController],
   providers: [CustomerService],
   exports: [CustomerService],

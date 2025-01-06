@@ -8,6 +8,7 @@ export default class TimezoneService {
   }
 
   isValidTimezone(timezone: string): boolean {
-    return !!Timezones[timezone];
+    const timezones = Object.values(Timezones) as string[];
+    return timezones.includes(timezone);
   }
 }

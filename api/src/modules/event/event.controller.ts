@@ -43,8 +43,11 @@ export class EventController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get('get-event')
-  async getEvent(@Query('id') eventId: string) {
-    const event = await this.eventService.getById(eventId);
+  async getEvent(
+    @Query('id') eventId: string,
+    @CurrentUser() user: RequestUser,
+  ) {
+    const event = await this.eventService.getById(eventId, user.userId);
     return plainToInstance(EventResponseDto, event);
   }
 
