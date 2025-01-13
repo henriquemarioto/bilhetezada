@@ -1,4 +1,47 @@
-Esses comandos são scripts relacionados à ferramenta **TypeORM**, utilizada em projetos Node.js para interagir com bancos de dados usando mapeamento objeto-relacional (ORM). Cada comando se refere a uma funcionalidade específica para lidar com **migrações** no banco de dados.
+# Bilhetezada
+
+**Bilhetezada** é uma aplicação para facilitar a criação, gestão e venda de ingressos para eventos. Nosso objetivo é oferecer uma plataforma completa para organizadores e participantes, simplificando a experiência desde a criação do evento até o gerenciamento de acessos.
+
+---
+
+## Funcionalidades
+
+- **Criação e Administração de Eventos**: Crie eventos personalizados com informações detalhadas, categorias e preços de ingressos.
+- **Customização de Ingressos**: Personalize ingressos com diferentes tipos e opções.
+- **Controle de Acessos**: Validação de ingressos por QR Code, com sistema de cache para alta performance.
+- **Relatórios em Tempo Real**: Acompanhe vendas, acessos e métricas de desempenho do seu evento.
+- **Integração com Sistemas de Pagamento**: Simplifique o pagamento de ingressos diretamente na plataforma.
+
+---
+
+## Tecnologias Utilizadas
+
+- **Backend**: [NestJS](https://nestjs.com/) (API Rest)
+- **Banco de Dados**: [MySql](https://www.mysql.com/) (Banco de dados)
+- **Cache**: [Redis](https://redis.io/)
+- **Autenticação**: JWT
+- **Validação de QR Code**: Criptografia com hash e chave secreta
+
+---
+
+## Como Rodar o Projeto Localmente
+
+1. Clone o repositório:
+   ```bash
+   git clone git@github.com:henriquemarioto/bilhetezada.git
+   cd bilhetezada
+   ```
+
+2. Rode com docker:
+   ```bash
+   docker compose up
+   ```
+
+O projeto estará disponível em `http://localhost:3132`.
+
+---
+
+## Migrations
 
 Aqui está o que cada comando faz e quando você deve usá-lo:
 
@@ -6,7 +49,7 @@ Aqui está o que cada comando faz e quando você deve usá-lo:
 
 ### **1. `migration:run`**
 ```bash
-npm run typeorm migration:run -- -d ./src/config/typeorm.ts
+npm run migration:run
 ```
 
 #### **O que faz?**
@@ -16,42 +59,26 @@ Esse comando executa as migrações pendentes no banco de dados. Ele aplica as m
 - Após criar novas migrações e precisar aplicá-las ao banco.
 - Ao configurar o ambiente (ex.: local, staging ou produção) e precisar garantir que o esquema do banco esteja atualizado.
 
-#### **Exemplo de uso:**
-Você adicionou uma nova coluna a uma tabela e criou uma migração para isso. Agora, use `migration:run` para aplicar essa mudança ao banco de dados.
-
 ---
 
 ### **2. `migration:generate`**
 ```bash
-npm run typeorm -- -d ./src/config/typeorm.ts migration:generate ./src/migrations/$npm_config_name
+npm run migration:generate --name add-status-to-user
 ```
 
 #### **O que faz?**
 Esse comando gera automaticamente um arquivo de migração com base nas alterações detectadas no esquema das entidades TypeORM. Ele compara o estado atual do banco de dados com as entidades definidas no código.
 
-- O valor de `$npm_config_name` será substituído pelo nome da migração que você passar no momento da execução.
+- O valor de `$npm_config_name` será substituído pelo nome da migração que você passar no momento da execução com a flag --name=nome_da_migration.
 
 #### **Quando usar?**
 - Quando você modificou as entidades (ex.: adicionou ou removeu colunas/tabelas) e precisa criar um arquivo de migração correspondente.
-
-#### **Exemplo de uso:**
-Você adicionou uma nova propriedade `status` à entidade `User`:
-```typescript
-@Column({ default: 'active' })
-status: string;
-```
-Use o comando para criar uma migração que reflita essa alteração no banco:
-```bash
-npm run migration:generate --name add-status-to-user
-```
-
-O arquivo gerado conterá as instruções para criar a coluna `status` na tabela correspondente.
 
 ---
 
 ### **3. `migration:create`**
 ```bash
-npm run typeorm -- migration:create ./src/migrations/$npm_config_name
+npm run migration:create --name rename-user-table
 ```
 
 #### **O que faz?**
@@ -63,27 +90,11 @@ Esse comando cria um arquivo de migração vazio. Diferente do `migration:genera
 - Quando você quer criar uma migração personalizada que não pode ser gerada automaticamente.
 - Para casos complexos, como execuções específicas de SQL ou manipulação de dados.
 
-#### **Exemplo de uso:**
-Você quer criar uma migração para renomear uma tabela:
-```bash
-npm run migration:create --name rename-user-table
-```
-Depois, você edita o arquivo gerado e adiciona a lógica de migração:
-```typescript
-public async up(queryRunner: QueryRunner): Promise<void> {
-  await queryRunner.renameTable('user', 'users');
-}
-
-public async down(queryRunner: QueryRunner): Promise<void> {
-  await queryRunner.renameTable('users', 'user');
-}
-```
-
 ---
 
 ### **4. `migration:revert`**
 ```bash
-npm run typeorm -- -d ./src/config/typeorm.ts migration:revert
+npm run migration:revert
 ```
 
 #### **O que faz?**
@@ -92,13 +103,6 @@ Esse comando reverte a última migração aplicada ao banco de dados. Ele usa a 
 #### **Quando usar?**
 - Quando você aplicou uma migração incorretamente e precisa reverter.
 - Para testes, quando precisa desfazer mudanças no banco após validar uma migração.
-
-#### **Exemplo de uso:**
-Você aplicou uma migração que adiciona uma coluna ao banco, mas percebeu que ela está errada. Use:
-```bash
-npm run migration:revert
-```
-Isso removerá a coluna ou desfará qualquer outra mudança feita pela última migração.
 
 ---
 
@@ -110,4 +114,12 @@ Isso removerá a coluna ou desfará qualquer outra mudança feita pela última m
 | `migration:create`  | Cria uma migração vazia para escrita manual.            | Para migrações personalizadas ou complexas.         |
 | `migration:revert`  | Reverte a última migração aplicada.                     | Para desfazer mudanças ou corrigir erros.           |
 
-Com esses comandos, você consegue gerenciar e versionar o esquema do banco de dados de forma eficiente em projetos TypeORM.
+---
+
+## Contato
+
+Se tiver dúvidas ou sugestões, entre em contato pelo e-mail: **henrique.marioto@outlook.com**.
+
+---
+
+**Vamos juntos transformar a experiência de eventos com o Bilhetezada!**
