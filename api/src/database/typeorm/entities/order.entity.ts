@@ -12,6 +12,7 @@ import { Event } from './event.entity';
 import { Payment } from './payment.entity';
 import { OrderStatus } from '../../../modules/shared/enums/orde-status.enum';
 import { Buyer } from './buyer.entity';
+import { Ticket } from './ticket.entity';
 
 @Entity()
 export class Order {
@@ -27,6 +28,9 @@ export class Order {
     default: OrderStatus.PENDING,
   })
   status: OrderStatus;
+
+  @Column()
+  transaction_reference: string;
 
   @CreateDateColumn()
   created_at: Date;
@@ -45,7 +49,11 @@ export class Order {
   @JoinColumn({ name: 'payment_id' })
   payment: Payment | null;
 
-  @OneToOne(() => Buyer, (buyer) => buyer.order)
+  @OneToOne(() => Buyer, (buyer) => buyer.order, { nullable: true })
   @JoinColumn({ name: 'buyer_id' })
-  buyer: Buyer;
+  buyer: Buyer | null;
+
+  @OneToOne(() => Ticket, (Ticket) => Ticket.order, { nullable: true })
+  @JoinColumn({ name: 'ticket_id' })
+  ticket: Ticket | null;
 }

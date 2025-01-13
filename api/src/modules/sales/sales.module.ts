@@ -8,10 +8,11 @@ import { EventModule } from '../event/event.module';
 import { SalesController } from './sales.controller';
 import { CustomerModule } from '../customer/customer.module';
 import { AuthModule } from '../auth/auth.module';
+import { Ticket } from 'src/database/typeorm/entities/ticket.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, Buyer, Payment]),
+    TypeOrmModule.forFeature([Order, Buyer, Payment, Ticket]),
     EventModule,
     CustomerModule,
     AuthModule,

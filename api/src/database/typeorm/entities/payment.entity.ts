@@ -31,7 +31,7 @@ export class Payment {
   @Column()
   transaction_reference: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @CreateDateColumn()

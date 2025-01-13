@@ -10,19 +10,27 @@ import {
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { SalesService } from './sales.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
 import { CurrentUser } from '../auth/utils/current-user-decorator';
 import { RequestUser } from '../shared/dto/request-user.dto';
+import { PixWebhookBody } from './dto/pix-webhook-body.dto';
+import { CreateOrderResponseDto } from './dto/create-order-response.dto';
 
 @Controller()
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
   @HttpCode(HttpStatus.CREATED)
+  @ApiResponse({
+    description: 'Pix QRCode and copy paste',
+    type: CreateOrderResponseDto,
+  })
   @Post('create-order')
-  async createOrder(@Body() createOrderDto: CreateOrderDto) {
-    await this.salesService.createOrder(createOrderDto);
+  async createOrder(
+    @Body() createOrderDto: CreateOrderDto,
+  ): Promise<CreateOrderResponseDto> {
+    return await this.salesService.createOrder(createOrderDto);
   }
 
   @ApiBearerAuth()
@@ -38,5 +46,12 @@ export class SalesController {
       totalValue: orders.reduce((acc, order) => acc + Number(order.value), 0),
       orders,
     };
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post('webhook/pix')
+  async webhookPixPayment(@Body() body: PixWebhookBody) {
+    await this.salesService.webhookPix(body);
+    return true;
   }
 }
