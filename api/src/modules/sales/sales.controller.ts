@@ -8,14 +8,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { SalesService } from './sales.service';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
 import { CurrentUser } from '../auth/utils/current-user-decorator';
+import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
 import { RequestUser } from '../shared/dto/request-user.dto';
-import { PixWebhookBody } from './dto/pix-webhook-body.dto';
 import { CreateOrderResponseDto } from './dto/create-order-response.dto';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { PixWebhookBody } from './dto/pix-webhook-body.dto';
+import { SalesService } from './services/sales.service';
 
 @Controller()
 export class SalesController {

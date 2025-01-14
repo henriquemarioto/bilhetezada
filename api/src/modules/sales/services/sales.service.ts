@@ -1,16 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { OpenPixService } from './openpix.service';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { randomInt } from 'crypto';
 import { Buyer } from 'src/database/typeorm/entities/buyer.entity';
 import { Order } from 'src/database/typeorm/entities/order.entity';
 import { Payment } from 'src/database/typeorm/entities/payment.entity';
-import { Repository } from 'typeorm';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { EventService } from '../event/event.service';
-import { PaymentMethods } from '../shared/enums/payment-methods.enum';
-import { PaymentStatus } from '../shared/enums/payment-status.enum';
 import { Ticket } from 'src/database/typeorm/entities/ticket.entity';
-import { PixWebhookBody } from './dto/pix-webhook-body.dto';
-import { randomInt } from 'crypto';
+import { Repository } from 'typeorm';
+import { EventService } from '../../event/event.service';
+import { PaymentMethods } from '../../shared/enums/payment-methods.enum';
+import { PaymentStatus } from '../../shared/enums/payment-status.enum';
+import { CreateOrderDto } from '../dto/create-order.dto';
+import { PixWebhookBody } from '../dto/pix-webhook-body.dto';
 
 @Injectable()
 export class SalesService {
@@ -24,6 +29,7 @@ export class SalesService {
     @InjectRepository(Ticket)
     private ticketsRepository: Repository<Ticket>,
     private eventService: EventService,
+    private openPixService: OpenPixService,
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto) {
@@ -33,23 +39,25 @@ export class SalesService {
 
     createOrderDto.eventId = undefined;
 
-    //Get pix for payment
-    const pixData = {
-      transactionReference: String(randomInt(9999)),
-      qrCodeBase64: 'aaaaaaaaaaaaaaaaaaaaa',
-      copyPaste: 'aaaaaaaaaaaaaaaaaaaaa',
-    };
+    const pixCharge = await this.openPixService.generatePixCharge(event.price);
+
+    if (pixCharge === false) {
+      throw new InternalServerErrorException('Error generating pix charge');
+    }
 
     await this.ordersRepository.save({
       ...createOrderDto,
-      transaction_reference: pixData.transactionReference,
+      value: event.price,
+      transaction_reference: pixCharge.data.correlationID,
       event,
       buyer,
     });
 
     return {
-      pixQRCodeBase64: pixData.qrCodeBase64,
-      pixCopyPaste: pixData.copyPaste,
+      transactionReference: pixCharge.data.correlationID,
+      qrcodeImageUrl: pixCharge.data.charge.qrCodeImage,
+      pixCopyPaste: pixCharge.data.brCode,
+      value: pixCharge.data.charge.value,
     };
   }
 

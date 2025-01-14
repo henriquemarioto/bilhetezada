@@ -25,6 +25,7 @@
     "migration:revert": "npm run typeorm -- -d ./src/database/typeorm/typeorm.config.ts migration:revert"
   },
   "dependencies": {
+    "@nestjs/axios": "^3.1.3",
     "@nestjs/cache-manager": "^2.2.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
@@ -35,6 +36,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^8.1.0",
     "@nestjs/typeorm": "^10.0.2",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "cache-manager": "^5.4.0",
     "cache-manager-redis-store": "^2.0.0",

@@ -2,8 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOrderResponseDto {
   @ApiProperty()
-  pixQRCodeBase64: string;
+  transactionReference: string;
+
+  @ApiProperty()
+  qrcodeImageUrl: string;
 
   @ApiProperty()
   pixCopyPaste: string;
+
+  @ApiProperty()
+  value: number;
 }

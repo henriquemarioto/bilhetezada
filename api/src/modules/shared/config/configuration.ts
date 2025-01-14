@@ -14,6 +14,8 @@ export type Env = {
   cryptSecretKey: string;
   cryptIv: string;
   jwtSecret: string;
+  openPixApiUrl: string;
+  openPixAppId: string;
 };
 
 export default (): Env => ({
@@ -32,4 +34,6 @@ export default (): Env => ({
   cryptSecretKey: process.env.CRYPT_SECRET_KEY,
   cryptIv: process.env.CRYPT_IV,
   jwtSecret: process.env.JWT_SECRET,
+  openPixApiUrl: process.env.OPENPIX_API_URL,
+  openPixAppId: process.env.OPENPIX_APPID,
 });
