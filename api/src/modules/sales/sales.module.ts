@@ -7,10 +7,10 @@ import { Ticket } from 'src/database/typeorm/entities/ticket.entity';
 import { AuthModule } from '../auth/auth.module';
 import { CustomerModule } from '../customer/customer.module';
 import { EventModule } from '../event/event.module';
-import { SalesController } from './sales.controller';
-import { SalesService } from './services/sales.service';
-import { OpenPixService } from './services/openpix.service';
 import SharedModule from '../shared/shared.module';
+import { SalesController } from './controllers/sales.controller';
+import { OpenPixService } from './services/openpix.service';
+import { SalesService } from './services/sales.service';
 
 @Module({
   imports: [

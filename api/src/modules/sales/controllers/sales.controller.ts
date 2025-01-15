@@ -9,13 +9,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import { CurrentUser } from '../auth/utils/current-user-decorator';
-import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
-import { RequestUser } from '../shared/dto/request-user.dto';
-import { CreateOrderResponseDto } from './dto/create-order-response.dto';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { PixWebhookBody } from './dto/pix-webhook-body.dto';
-import { SalesService } from './services/sales.service';
+import { CurrentUser } from '../../auth/utils/current-user-decorator';
+import { JwtAuthGuard } from '../../auth/utils/guards/jwt.guard';
+import { RequestUser } from '../../shared/dto/request-user.dto';
+import { CreateOrderResponseDto } from '../dto/create-order-response.dto';
+import { CreateOrderDto } from '../dto/create-order.dto';
+import { SalesService } from '../services/sales.service';
 
 @Controller()
 export class SalesController {
@@ -23,7 +22,7 @@ export class SalesController {
 
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
-    description: 'Pix QRCode and copy paste',
+    description: 'Pix informations',
     type: CreateOrderResponseDto,
   })
   @Post('create-order')
@@ -46,12 +45,5 @@ export class SalesController {
       totalValue: orders.reduce((acc, order) => acc + Number(order.value), 0),
       orders,
     };
-  }
-
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Post('webhook/pix')
-  async webhookPixPayment(@Body() body: PixWebhookBody) {
-    await this.salesService.webhookPix(body);
-    return true;
   }
 }

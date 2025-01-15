@@ -5,17 +5,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { randomInt } from 'crypto';
 import { Buyer } from 'src/database/typeorm/entities/buyer.entity';
 import { Order } from 'src/database/typeorm/entities/order.entity';
-import { Payment } from 'src/database/typeorm/entities/payment.entity';
-import { Ticket } from 'src/database/typeorm/entities/ticket.entity';
 import { Repository } from 'typeorm';
 import { EventService } from '../../event/event.service';
-import { PaymentMethods } from '../../shared/enums/payment-methods.enum';
-import { PaymentStatus } from '../../shared/enums/payment-status.enum';
 import { CreateOrderDto } from '../dto/create-order.dto';
-import { PixWebhookBody } from '../dto/pix-webhook-body.dto';
 
 @Injectable()
 export class SalesService {
@@ -24,10 +18,6 @@ export class SalesService {
     private ordersRepository: Repository<Order>,
     @InjectRepository(Buyer)
     private buyersRepository: Repository<Buyer>,
-    @InjectRepository(Payment)
-    private paymentsRepository: Repository<Payment>,
-    @InjectRepository(Ticket)
-    private ticketsRepository: Repository<Ticket>,
     private eventService: EventService,
     private openPixService: OpenPixService,
   ) {}
@@ -39,7 +29,9 @@ export class SalesService {
 
     createOrderDto.eventId = undefined;
 
-    const pixCharge = await this.openPixService.generatePixCharge(event.price);
+    const pixCharge = await this.openPixService.generatePixCharge(
+      event.price * 100,
+    );
 
     if (pixCharge === false) {
       throw new InternalServerErrorException('Error generating pix charge');
@@ -58,6 +50,7 @@ export class SalesService {
       qrcodeImageUrl: pixCharge.data.charge.qrCodeImage,
       pixCopyPaste: pixCharge.data.brCode,
       value: pixCharge.data.charge.value,
+      expiresDate: pixCharge.data.charge.expiresDate,
     };
   }
 
@@ -75,34 +68,5 @@ export class SalesService {
     if (!orders.length) throw new NotFoundException();
 
     return orders;
-  }
-
-  async webhookPix(body: PixWebhookBody) {
-    if (body.status === PaymentStatus.PAID) {
-      const order = await this.ordersRepository.findOne({
-        where: {
-          transaction_reference: body.transaction_id,
-        },
-        relations: {
-          event: true,
-        },
-      });
-
-      await this.paymentsRepository.save({
-        method: PaymentMethods.PIX,
-        transaction_reference: body.transaction_id,
-        status: PaymentStatus.PAID,
-        order: order,
-        value: body.value,
-      });
-
-      await this.ticketsRepository.save({
-        event: order.event,
-        order: order,
-      });
-
-      //Send ticker by email
-    }
-    return true;
   }
 }

@@ -28,7 +28,7 @@ export class HttpService {
     requestDto: HttpRequestDto,
   ): Promise<false | HttpResponse> {
     try {
-      const response = await await firstValueFrom(
+      const response = await firstValueFrom(
         this.nestJsAxiosHttpService.post(url, requestDto.body, {
           params: requestDto.queryParams,
           headers: requestDto.headers as AxiosHeaders,
