@@ -1,5 +1,6 @@
 import { OpenPixService } from './openpix.service';
 import {
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -24,6 +25,10 @@ export class SalesService {
 
   async createOrder(createOrderDto: CreateOrderDto) {
     const event = await this.eventService.getById(createOrderDto.eventId);
+
+    if (event.limit_time_for_ticket_purchase < new Date()) {
+      throw new ForbiddenException('Ticket purchase time expired');
+    }
 
     const buyer = await this.buyersRepository.save(createOrderDto.buyer);
 

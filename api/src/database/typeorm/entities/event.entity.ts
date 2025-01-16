@@ -38,6 +38,9 @@ export class Event {
   @Column({ nullable: true })
   entrance_limit_time?: Date | null;
 
+  @Column({ nullable: false })
+  limit_time_for_ticket_purchase: Date;
+
   @Column({ nullable: false, default: 'America/Sao_Paulo' })
   time_zone: string;
 

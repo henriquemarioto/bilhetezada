@@ -29,18 +29,12 @@ import { GoogleOauthGuard } from './utils/guards/google.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @ApiOperation({
-    tags: ['Create account'],
-  })
   @HttpCode(HttpStatus.CREATED)
   @Post('sign-up')
   async signUp(@Body() createCustomerDto: CreateCustomerDto) {
     await this.authService.signUp(AuthProviders.LOCAL, createCustomerDto);
   }
 
-  @ApiOperation({
-    tags: ['Login'],
-  })
   @ApiBody({
     schema: {
       type: 'object',
@@ -67,9 +61,6 @@ export class AuthController {
     return this.authService.login(user);
   }
 
-  @ApiOperation({
-    tags: ['SSO Login with google'],
-  })
   @ApiResponse({
     status: 200,
     description: 'JWT token after redirection',

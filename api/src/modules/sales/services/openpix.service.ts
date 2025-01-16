@@ -12,6 +12,7 @@ import { HttpService } from '../../shared/services/http.service';
 import { OpenPixChargeResponseDto } from '../dto/openpix-charge-response.dto';
 import { PixWebhookBodyDto } from '../dto/openpix-webhook-body.dto';
 import OpenPixWebhookStatus from '../../shared/enums/openpix-webhook-status.enum';
+import { OrderStatus } from 'src/modules/shared/enums/orde-status.enum';
 
 @Injectable()
 export class OpenPixService {
@@ -79,6 +80,10 @@ export class OpenPixService {
         status: PaymentStatus.PAID,
         order: order,
         value: body.pix.value / 100,
+      });
+
+      await this.ordersRepository.update(order.id, {
+        status: OrderStatus.CONFIRMED,
       });
 
       await this.ticketsRepository.save({

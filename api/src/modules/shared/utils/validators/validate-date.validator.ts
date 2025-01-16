@@ -14,6 +14,52 @@ function isDateLowerThanToday(date: string) {
   return new Date(date) < new Date();
 }
 
+export function IsDateAfterDate(
+  relatedFieldName: string,
+  validationOptions?: ValidationOptions,
+) {
+  return function (object: unknown, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      constraints: [relatedFieldName],
+      validator: IsDateAfterDateConstraint,
+    });
+  };
+}
+
+export function IsDateBeforeDate(
+  relatedFieldName: string,
+  validationOptions?: ValidationOptions,
+) {
+  return function (object: unknown, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      constraints: [relatedFieldName],
+      validator: IsDateBeforeDateConstraint,
+    });
+  };
+}
+
+export function IsDateBetweenDates(
+  relatedFieldStartName: string,
+  relatedFieldEndName: string,
+  validationOptions?: ValidationOptions,
+) {
+  return function (object: unknown, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      constraints: [relatedFieldStartName, relatedFieldEndName],
+      validator: IsDateBetweenDatesConstraint,
+    });
+  };
+}
+
 @ValidatorConstraint({ name: 'isDateGreaterThanToday', async: false })
 export class IsDateGreaterThanTodayConstraint
   implements ValidatorConstraintInterface
@@ -80,19 +126,24 @@ class IsDateAfterDateConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export function IsDateAfterDate(
-  relatedFieldName: string,
-  validationOptions?: ValidationOptions,
-) {
-  return function (object: unknown, propertyName: string) {
-    registerDecorator({
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      constraints: [relatedFieldName],
-      validator: IsDateAfterDateConstraint,
-    });
-  };
+@ValidatorConstraint({ name: 'isDateAfterDate', async: false })
+class IsDateBeforeDateConstraint implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    const object = args.object as any;
+    const [relatedFieldName] = args.constraints;
+    const relatedFieldValue = object[relatedFieldName];
+
+    if (!value || !relatedFieldValue) {
+      return false;
+    }
+
+    return new Date(value) < new Date(relatedFieldValue);
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    const [relatedFieldName] = args.constraints;
+    return `The ${args.property} must be later than ${relatedFieldName}`;
+  }
 }
 
 @ValidatorConstraint({ name: 'isDateAfterDate', async: false })
@@ -117,20 +168,4 @@ class IsDateBetweenDatesConstraint implements ValidatorConstraintInterface {
     const [relatedFieldStartName, relatedFieldEndName] = args.constraints;
     return `The ${args.property} must be later than ${relatedFieldStartName} and earlier than ${relatedFieldEndName}`;
   }
-}
-
-export function IsDateBetweenDates(
-  relatedFieldStartName: string,
-  relatedFieldEndName: string,
-  validationOptions?: ValidationOptions,
-) {
-  return function (object: unknown, propertyName: string) {
-    registerDecorator({
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      constraints: [relatedFieldStartName, relatedFieldEndName],
-      validator: IsDateBetweenDatesConstraint,
-    });
-  };
 }
