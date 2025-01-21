@@ -22,7 +22,7 @@ export class CustomerController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('update-customer')
-  async updateCustomer(
+  async update(
     @CurrentUser() user: RequestUser,
     @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
@@ -33,7 +33,7 @@ export class CustomerController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('delete-customer')
-  async handle(@CurrentUser() user: RequestUser) {
+  async delete(@CurrentUser() user: RequestUser) {
     await this.customerService.disable(user.userId);
   }
 }

@@ -14,22 +14,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-const mockCryptoService = () => ({
-  encrypt: jest.fn(),
-  encryptSalt: jest.fn(),
-});
-
-const mockSlugService = () => ({
-  slug: jest.fn(),
-});
-
-const mockRepository = () => ({
-  find: jest.fn(),
-  findOne: jest.fn(),
-  save: jest.fn(),
-  update: jest.fn(),
-});
-
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
 describe('CustomerService', () => {
@@ -45,15 +29,25 @@ describe('CustomerService', () => {
         CustomerService,
         {
           provide: CryptoService,
-          useValue: mockCryptoService(),
+          useValue: {
+            encrypt: jest.fn(),
+            encryptSalt: jest.fn(),
+          },
         },
         {
           provide: SlugService,
-          useValue: mockSlugService(),
+          useValue: {
+            slug: jest.fn(),
+          },
         },
         {
           provide: getRepositoryToken(Customer),
-          useValue: mockRepository(),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+            save: jest.fn(),
+            update: jest.fn(),
+          },
         },
       ],
     }).compile();
