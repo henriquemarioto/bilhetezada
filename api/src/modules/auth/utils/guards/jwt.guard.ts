@@ -24,9 +24,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     const request = context.switchToHttp().getRequest();
+
     const authorization = request.headers.authorization;
 
-    const isLoggedOut = await this.authService.hasLogout(authorization);
+    if (!authorization)
+      throw new UnauthorizedException('Authorization not granted');
+
+    const [_, jwt] = authorization.split('Bearer ');
+
+    const isLoggedOut = await this.authService.hasLogout(jwt);
 
     if (isLoggedOut) {
       throw new UnauthorizedException('Invalid or expired token.');

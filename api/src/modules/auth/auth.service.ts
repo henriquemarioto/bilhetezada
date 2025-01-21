@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
@@ -18,8 +14,9 @@ import {
   CreateCustomerDto,
   CreateCustomerPartialDTO,
 } from '../customer/dto/create-customer.dto';
+import { Customer } from '../../database/typeorm/entities/customer.entity';
 
-type GoogleUser = {
+export type GoogleUser = {
   email: string;
   firstName: string;
   picture: string;
@@ -47,7 +44,7 @@ export class AuthService {
     return await this.customerService.create(provider, createCustomerDto);
   }
 
-  async login(user: any) {
+  async login(user: Customer) {
     const payload = { username: user.name, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
@@ -67,7 +64,7 @@ export class AuthService {
       return null;
     }
 
-    if (!user?.active) {
+    if (!user.active) {
       throw new UnauthorizedException('Non-active customer.');
     }
 
@@ -87,17 +84,13 @@ export class AuthService {
     return restUser;
   }
 
-  async logout(authorization: string) {
-    const [_, jwt] = authorization.split('Bearer ');
-
+  async logout(jwt: string) {
     await this.logoutRepository.save({ token: jwt });
 
     return true;
   }
 
-  async hasLogout(authorization: string) {
-    const [_, jwt] = authorization.split('Bearer ');
-
+  async hasLogout(jwt: string) {
     if (
       await this.logoutRepository.findOne({
         where: {

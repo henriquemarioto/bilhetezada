@@ -6,13 +6,13 @@ import {
   HttpStatus,
   Post,
   Request,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiExcludeEndpoint,
-  ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
 import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
@@ -21,9 +21,9 @@ import { AuthService } from './auth.service';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { LocalAuthGuard } from './utils/guards/local.guard';
 import { CurrentUser } from './utils/current-user-decorator';
-import { RequestUser } from '../shared/dto/request-user.dto';
 import { JwtAuthGuard } from './utils/guards/jwt.guard';
 import { GoogleOauthGuard } from './utils/guards/google.guard';
+import { Customer } from '../../database/typeorm/entities/customer.entity';
 
 @Controller()
 export class AuthController {
@@ -57,7 +57,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@CurrentUser() user: RequestUser) {
+  async login(@CurrentUser() user: Customer) {
     return this.authService.login(user);
   }
 
@@ -73,7 +73,7 @@ export class AuthController {
   @ApiExcludeEndpoint()
   @UseGuards(GoogleOauthGuard)
   @Get('login/google/callback')
-  loginGoogleCallback(@CurrentUser() user: RequestUser) {
+  loginGoogleCallback(@CurrentUser() user: Customer) {
     return this.authService.login(user);
   }
 
@@ -82,6 +82,13 @@ export class AuthController {
   @Get('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Request() req) {
-    return this.authService.logout(req.headers.authorization);
+    const authorization = req.headers.authorization;
+
+    if (!authorization)
+      throw new UnauthorizedException('Authorization not granted');
+
+    const [_, jwt] = req.headers.authorization.split('Bearer ');
+
+    return this.authService.logout(jwt);
   }
 }
