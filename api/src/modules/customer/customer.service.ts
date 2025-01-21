@@ -3,6 +3,8 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from '../../database/typeorm/entities/customer.entity';
@@ -30,58 +32,60 @@ export class CustomerService {
     provider: AuthProviders,
     createCustomerDto: CreateCustomerDto | CreateCustomerPartialDTO,
   ): Promise<CustomerWithoutPassword> {
-    try {
-      createCustomerDto.email = this.cryptoService.encrypt(
-        createCustomerDto.email,
-      );
-      if (createCustomerDto.document)
-        createCustomerDto.document = this.cryptoService.encrypt(
-          createCustomerDto.document,
-        );
-      const customerFound = await this.findByEmailOrDocument(
-        createCustomerDto.email,
-        createCustomerDto.document,
-      );
-      if (customerFound) {
-        throw new ConflictException(
-          `Document or email already in use for this.`,
-        );
-      }
-      if (createCustomerDto.password)
-        createCustomerDto.password = this.cryptoService.encryptSalt(
-          createCustomerDto.password,
-        );
-      if (!createCustomerDto.picture_url)
-        createCustomerDto.picture_url = `https://api.dicebear.com/9.x/identicon/svg?seed=${this.slugService.slug(
-          createCustomerDto.name,
-        )}`;
-      const customer = await this.customersRepository.save({
-        ...createCustomerDto,
-        auth_provider: provider,
-      });
-      const { password, ...data } = customer;
-      return data;
-    } catch (error) {
-      console.error(error);
-      throw new BadRequestException(
-        `An error occurred while creating customer`,
-      );
+    const customerDtoToProcess = { ...createCustomerDto };
+
+    customerDtoToProcess.email = this.cryptoService.encrypt(
+      customerDtoToProcess.email,
+    );
+    if (!customerDtoToProcess.document && provider === AuthProviders.LOCAL) {
+      throw new BadRequestException('Document needed for local customers');
     }
+    if (customerDtoToProcess.document)
+      customerDtoToProcess.document = this.cryptoService.encrypt(
+        customerDtoToProcess.document,
+      );
+    const customerFound = await this.findByEmailOrDocument(
+      customerDtoToProcess.email,
+      customerDtoToProcess.document,
+    );
+    if (customerFound) {
+      throw new ConflictException(`Document or email already in use`);
+    }
+    if (customerDtoToProcess.password)
+      customerDtoToProcess.password = this.cryptoService.encryptSalt(
+        customerDtoToProcess.password,
+      );
+    if (!customerDtoToProcess.picture_url)
+      customerDtoToProcess.picture_url = `https://api.dicebear.com/9.x/identicon/svg?seed=${this.slugService.slug(
+        customerDtoToProcess.name,
+      )}`;
+    const customer = await this.customersRepository.save({
+      ...customerDtoToProcess,
+      auth_provider: provider,
+    });
+    const { password, ...data } = customer;
+    return data;
   }
 
-  async findByEmailOrDocument(email: string = '', doc: string = '') {
+  async findByEmailOrDocument(
+    email: string = '',
+    doc: string = '',
+  ): Promise<Customer | null> {
     const [customerByEmail, customerByDocument] = await Promise.all([
-      this.customersRepository.findOne({
-        where: {
-          email: email,
-        },
-      }),
-      this.customersRepository.findOne({
-        where: { document: doc },
-      }),
+      email
+        ? this.customersRepository.findOne({
+            where: {
+              email: email,
+            },
+          })
+        : null,
+      doc
+        ? this.customersRepository.findOne({
+            where: { document: doc },
+          })
+        : null,
     ]);
-    if (customerByEmail || customerByDocument)
-      return customerByEmail || customerByDocument;
+    return customerByEmail || customerByDocument;
   }
 
   async findById(id: string) {
@@ -92,34 +96,47 @@ export class CustomerService {
     });
   }
 
-  async findAll() {
-    return await this.customersRepository.find();
+  async findAll(): Promise<Customer[]> {
+    const customers = await this.customersRepository.find();
+    if (!customers.length) throw new NotFoundException('Customers not found');
+    return customers;
   }
 
-  async update(id: string, updateCustomerDto: UpdateCustomerDto) {
+  async update(
+    id: string,
+    updateCustomerDto: UpdateCustomerDto,
+  ): Promise<boolean> {
     try {
       if (updateCustomerDto.password)
         updateCustomerDto.password = this.cryptoService.encryptSalt(
           updateCustomerDto.password,
         );
+      if (updateCustomerDto.email)
+        updateCustomerDto.email = this.cryptoService.encrypt(
+          updateCustomerDto.email,
+        );
+      if (updateCustomerDto.document)
+        updateCustomerDto.document = this.cryptoService.encrypt(
+          updateCustomerDto.document,
+        );
       await this.customersRepository.update(id, updateCustomerDto);
-      return this.findById(id);
+      return true;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException(
-        `An error occurred while updating customer`,
+      throw new InternalServerErrorException(
+        'An error occurred while updating customer',
       );
     }
   }
 
-  async disable(id: string) {
+  async disable(id: string): Promise<boolean> {
     try {
       await this.customersRepository.update(id, { active: false });
       return true;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException(
-        `An error occurred while deleting customer`,
+      throw new InternalServerErrorException(
+        'An error occurred while deleting customer',
       );
     }
   }

@@ -22,11 +22,11 @@ export class CustomerController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('update-customer')
-  updateCustomer(
+  async updateCustomer(
     @CurrentUser() user: RequestUser,
     @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
-    this.customerService.update(user.userId, updateCustomerDto);
+    await this.customerService.update(user.userId, updateCustomerDto);
   }
 
   @ApiBearerAuth()
