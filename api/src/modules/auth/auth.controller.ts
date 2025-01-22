@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Post,
   Request,
   UnauthorizedException,
@@ -89,6 +90,10 @@ export class AuthController {
 
     const [_, jwt] = req.headers.authorization.split('Bearer ');
 
-    return this.authService.logout(jwt);
+    const result = await this.authService.logout(jwt);
+
+    if (!result) throw new NotFoundException('Token not found.');
+
+    return result;
   }
 }
