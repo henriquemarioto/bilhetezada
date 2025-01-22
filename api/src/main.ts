@@ -25,23 +25,6 @@ async function bootstrap() {
     console.log('Unable to connect to redis. ' + err),
   );
 
-  app.use(
-    session({
-      store: new RedisStore({ client: redisClient }),
-      name: 'Bilhetezada',
-      secret: configService.get('session.secret', { infer: true }),
-      resave: configService.get('session.reSave', { infer: true }),
-      saveUninitialized: configService.get('session.saveUninitialized', {
-        infer: true,
-      }),
-      cookie: {
-        maxAge: configService.get('session.cookieMaxAge', { infer: true }),
-      },
-    }),
-  );
-  app.use(passport.initialize());
-  app.use(passport.session());
-
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
