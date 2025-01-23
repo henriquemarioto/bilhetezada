@@ -61,8 +61,8 @@ export class Event {
   customer: Customer;
 
   @OneToMany(() => Order, (order) => order.event)
-  orders: Order;
+  orders: Order[];
 
   @OneToMany(() => PaymentLink, (paymentLink) => paymentLink.event)
-  paymentLinks: PaymentLink;
+  paymentLinks: PaymentLink[];
 }

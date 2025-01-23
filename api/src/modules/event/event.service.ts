@@ -28,6 +28,10 @@ export class EventService {
   ) {}
 
   async create(customerId: string, createEventDto: CreateEventDto) {
+    const customer = await this.customerService.findById(customerId);
+
+    if (!customer) throw new NotFoundException('Customer not found.');
+
     const isValidTimezone = this.timezoneService.isValidTimezone(
       createEventDto.time_zone,
     );
@@ -48,8 +52,6 @@ export class EventService {
       slug = this.slugService.slugWithUUID(createEventDto.name);
     }
 
-    const customer = await this.customerService.findById(customerId);
-
     const event = await this.eventsRepository.save({
       ...createEventDto,
       slug,
@@ -69,7 +71,7 @@ export class EventService {
     const events = await this.eventsRepository.find({
       where: { customer: { id: customerId } },
     });
-    if (!events) {
+    if (!events.length) {
       throw new NotFoundException('No events found for this customer.');
     }
     return events;
