@@ -1,18 +1,18 @@
+import { Order } from '@/entities/order.entity';
+import { Payment } from '@/entities/payment.entity';
+import { Ticket } from '@/entities/ticket.entity';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
 import { OrderStatus } from 'src/modules/shared/enums/orde-status.enum';
 import { Repository } from 'typeorm';
-import OpenPixWebhookStatus from '../../shared/enums/openpix-webhook-status.enum';
-import { PaymentMethods } from '../../shared/enums/payment-methods.enum';
-import { PaymentStatus } from '../../shared/enums/payment-status.enum';
-import { HttpService } from '../../shared/services/http.service';
-import { Order } from '@/entities/order.entity';
-import { Payment } from '@/entities/payment.entity';
-import { Ticket } from '@/entities/ticket.entity';
-import { OpenPixChargeResponseDto } from '../dto/openpix-charge-response.dto';
-import { PixWebhookBodyDto } from '../dto/openpix-webhook-body.dto';
+import { OpenPixChargeResponseDto } from '../../sales/dto/openpix-charge-response.dto';
+import { PixWebhookBodyDto } from '../../sales/dto/openpix-webhook-body.dto';
+import OpenPixWebhookStatus from '../enums/openpix-webhook-status.enum';
+import { PaymentMethods } from '../enums/payment-methods.enum';
+import { PaymentStatus } from '../enums/payment-status.enum';
+import { HttpService } from './http.service';
 
 @Injectable()
 export class OpenPixService {

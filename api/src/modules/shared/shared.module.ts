@@ -7,6 +7,11 @@ import { Module } from '@nestjs/common';
 import TimezoneService from './services/timezone.service';
 import { HttpService } from './services/http.service';
 import { HttpModule } from '@nestjs/axios';
+import { OpenPixService } from './services/openpix.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Order } from '@/entities/order.entity';
+import { Ticket } from '@/entities/ticket.entity';
+import { Payment } from '@/entities/payment.entity';
 
 @Module({
   imports: [
@@ -14,6 +19,7 @@ import { HttpModule } from '@nestjs/axios';
     HttpModule.register({
       timeout: 10000,
     }),
+    TypeOrmModule.forFeature([Order, Ticket, Payment]),
   ],
   providers: [
     SlugService,
@@ -22,6 +28,7 @@ import { HttpModule } from '@nestjs/axios';
     QRCodeService,
     TimezoneService,
     HttpService,
+    OpenPixService,
   ],
   exports: [
     SlugService,
@@ -30,6 +37,7 @@ import { HttpModule } from '@nestjs/axios';
     QRCodeService,
     TimezoneService,
     HttpService,
+    OpenPixService,
   ],
 })
 export default class SharedModule {}

@@ -1,6 +1,5 @@
 import { Customer } from '@/entities/customer.entity';
 import { Event } from '@/entities/event.entity';
-import { faker } from '@faker-js/faker/.';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CustomerService } from '../customer/customer.service';
 import { RequestUser } from '../shared/dto/request-user.dto';
@@ -11,22 +10,13 @@ import { EventController } from './event.controller';
 import { EventService } from './event.service';
 import { eventFactory } from '@/test/factories/entity/event.factory';
 import { customerFactory } from '@/test/factories/entity/customer.factory';
+import { createEventDtoFactory } from '@/test/factories/dto/create-event-dto.factory';
 
 const mockedCustomer: Customer = customerFactory();
 
 const mockedEvent: Event = eventFactory({ customer: mockedCustomer });
 
-const createEventDto: CreateEventDto = {
-  address: faker.location.streetAddress(),
-  description: 'Halloween party in te hood',
-  name: 'Halloween party',
-  price: 2000,
-  limit_time_for_ticket_purchase: new Date().toISOString(),
-  start_time: new Date().toISOString(),
-  end_time: new Date().toISOString(),
-  time_zone: 'America/Sao_Paulo',
-  entrance_limit_time: null,
-};
+const createEventDto: CreateEventDto = createEventDtoFactory();
 
 const updateEventDto: UpdateEventDTO = {
   name: 'Halloween cool party',

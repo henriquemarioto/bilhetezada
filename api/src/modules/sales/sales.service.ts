@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { EventService } from '../../event/event.service';
-import { CreateOrderDto } from '../dto/create-order.dto';
-import { OpenPixService } from './openpix.service';
+import { EventService } from '../event/event.service';
+import { OpenPixService } from '../shared/services/openpix.service';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Injectable()
 export class SalesService {
