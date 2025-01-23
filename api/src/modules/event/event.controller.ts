@@ -24,11 +24,6 @@ import { UpdateEventDTO } from './dto/update-event.dto';
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @Get('test')
-  async test() {
-    return await this.eventService.findMany('a');
-  }
-
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
