@@ -1,70 +1,38 @@
-import { EventService } from './event.service';
-import { Test, TestingModule } from '@nestjs/testing';
-import { Event } from '../../database/typeorm/entities/event.entity';
-import { Repository } from 'typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { Customer } from '@/entities/customer.entity';
+import { Event } from '@/entities/event.entity';
+import { PaymentLink } from '@/entities/payment-link.entity';
+import { customerFactory } from '@/test/factories/entity/customer.factory';
+import { eventFactory } from '@/test/factories/entity/event.factory';
+import { paymentLinkFactory } from '@/test/factories/entity/payment-link.factory';
 import { faker } from '@faker-js/faker/.';
-import { randomUUID } from 'crypto';
-import { PaymentLinkOwner } from '../shared/enums/payment-link-owner.enum';
-import { Customer } from '../../database/typeorm/entities/customer.entity';
-import { PaymentLink } from '../../database/typeorm/entities/payment-link.entity';
-import { SlugService } from '../shared/services/slug.service';
-import { CustomerService } from '../customer/customer.service';
-import TimezoneService from '../shared/services/timezone.service';
-import { CreateEventDto } from './dto/create-event.dto';
 import {
   BadRequestException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CustomerService } from '../customer/customer.service';
+import { PaymentLinkOwner } from '../shared/enums/payment-link-owner.enum';
+import { SlugService } from '../shared/services/slug.service';
+import TimezoneService from '../shared/services/timezone.service';
+import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
+import { EventService } from './event.service';
+import { createEventDtoFactory } from '@/test/factories/dto/create-event-dto.factory';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
-const customerId: string = randomUUID();
+const mockedCustomer: Customer = customerFactory();
 
-const mockedPaymentLink: PaymentLink = {
-  id: randomUUID(),
-  owner: PaymentLinkOwner.EVENT,
-  url: faker.internet.url(),
-  event: {} as Event,
-  created_at: new Date(),
-  updated_at: new Date(),
-};
+const mockedEvent: Event = eventFactory({ customer: mockedCustomer });
 
-const mockedEvent: Event = {
-  id: randomUUID(),
-  active: true,
-  address: faker.location.streetAddress(),
-  description: 'Halloween party in te hood',
-  name: 'Halloween party',
-  price: 2000,
-  slug: 'halloween-party',
-  limit_time_for_ticket_purchase: new Date(),
-  start_time: new Date(),
-  end_time: new Date(),
-  time_zone: 'America/Sao_Paulo',
-  created_at: new Date(),
-  updated_at: new Date(),
-  customer: {
-    id: customerId,
-  } as Customer,
-  orders: [],
-  entrance_limit_time: null,
-  paymentLinks: [mockedPaymentLink],
-};
+const mockedPaymentLink: PaymentLink = paymentLinkFactory({
+  event: mockedEvent,
+});
 
-const createEventDto: CreateEventDto = {
-  address: faker.location.streetAddress(),
-  description: 'Halloween party in te hood',
-  name: 'Halloween party',
-  price: 2000,
-  limit_time_for_ticket_purchase: new Date().toISOString(),
-  start_time: new Date().toISOString(),
-  end_time: new Date().toISOString(),
-  time_zone: 'America/Sao_Paulo',
-  entrance_limit_time: null,
-};
+const createEventDto: CreateEventDto = createEventDtoFactory();
 
 describe('EventService', () => {
   let eventService: EventService;
@@ -142,10 +110,15 @@ describe('EventService', () => {
     it('should create and return a event', async () => {
       eventRepository.findOne.mockResolvedValue(null);
 
-      const result = await eventService.create(customerId, createEventDto);
+      const result = await eventService.create(
+        mockedCustomer.id,
+        createEventDto,
+      );
 
       expect(result).toStrictEqual(mockedEvent);
-      expect(mockedCustomerService.findById).toHaveBeenCalledWith(customerId);
+      expect(mockedCustomerService.findById).toHaveBeenCalledWith(
+        mockedCustomer.id,
+      );
       expect(mockedTimeZoneService.isValidTimezone).toHaveBeenCalledWith(
         createEventDto.time_zone,
       );
@@ -169,10 +142,15 @@ describe('EventService', () => {
     });
 
     it('should create and return a event with existing slug', async () => {
-      const result = await eventService.create(customerId, createEventDto);
+      const result = await eventService.create(
+        mockedCustomer.id,
+        createEventDto,
+      );
 
       expect(result).toStrictEqual(mockedEvent);
-      expect(mockedCustomerService.findById).toHaveBeenCalledWith(customerId);
+      expect(mockedCustomerService.findById).toHaveBeenCalledWith(
+        mockedCustomer.id,
+      );
       expect(mockedTimeZoneService.isValidTimezone).toHaveBeenCalledWith(
         createEventDto.time_zone,
       );
@@ -247,14 +225,17 @@ describe('EventService', () => {
 
   describe('getById', () => {
     it('should be find and return a event', async () => {
-      const result = await eventService.getById(mockedEvent.id, customerId);
+      const result = await eventService.getById(
+        mockedEvent.id,
+        mockedCustomer.id,
+      );
 
       expect(result).toStrictEqual(mockedEvent);
       expect(eventRepository.findOne).toHaveBeenCalledWith({
         where: {
           id: mockedEvent.id,
           customer: {
-            id: customerId,
+            id: mockedCustomer.id,
           },
         },
         relations: {
@@ -269,7 +250,7 @@ describe('EventService', () => {
       eventRepository.findOne.mockResolvedValue(null);
 
       await expect(
-        eventService.getById(mockedEvent.id, customerId),
+        eventService.getById(mockedEvent.id, mockedCustomer.id),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -283,7 +264,7 @@ describe('EventService', () => {
   describe('update', () => {
     it('shold be update and return true', async () => {
       const result = await eventService.update(
-        customerId,
+        mockedCustomer.id,
         mockedEvent.id,
         {} as UpdateEventDTO,
       );
@@ -293,7 +274,7 @@ describe('EventService', () => {
         where: {
           id: mockedEvent.id,
           customer: {
-            id: customerId,
+            id: mockedCustomer.id,
           },
         },
         relations: ['customer'],
@@ -305,13 +286,17 @@ describe('EventService', () => {
       eventRepository.findOne.mockResolvedValue(null);
 
       await expect(
-        eventService.update(customerId, mockedEvent.id, {} as UpdateEventDTO),
+        eventService.update(
+          mockedCustomer.id,
+          mockedEvent.id,
+          {} as UpdateEventDTO,
+        ),
       ).rejects.toThrow(NotFoundException);
       expect(eventRepository.findOne).toHaveBeenCalledWith({
         where: {
           id: mockedEvent.id,
           customer: {
-            id: customerId,
+            id: mockedCustomer.id,
           },
         },
         relations: ['customer'],
@@ -326,12 +311,19 @@ describe('EventService', () => {
 
       updateSpy.mockResolvedValue(true);
 
-      const result = await eventService.disable(customerId, mockedEvent.id);
+      const result = await eventService.disable(
+        mockedCustomer.id,
+        mockedEvent.id,
+      );
 
       expect(result).toBe(true);
-      expect(updateSpy).toHaveBeenCalledWith(customerId, mockedEvent.id, {
-        active: false,
-      });
+      expect(updateSpy).toHaveBeenCalledWith(
+        mockedCustomer.id,
+        mockedEvent.id,
+        {
+          active: false,
+        },
+      );
     });
   });
 });

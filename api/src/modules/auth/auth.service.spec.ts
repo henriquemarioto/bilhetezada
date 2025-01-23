@@ -4,22 +4,17 @@ import { AuthService, GoogleUser } from './auth.service';
 import CryptoService from '../shared/services/crypto.service';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
-import { Logout } from '../../database/typeorm/entities/logout.entity';
+import { Logout } from '@/entities/logout.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Request } from 'express';
 import AuthProviders from '../shared/enums/auth-providers.enum';
-import { Customer } from '../../database/typeorm/entities/customer.entity';
+import { Customer } from '@/entities/customer.entity';
 import { UnauthorizedException } from '@nestjs/common';
+import { customerFactory } from '@/test/factories/entity/customer.factory';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
-const mockedCustomer = {
-  id: 'id',
-  name: 'name',
-  email: 'encryptedEmail',
-  password: 'encryptedPassword',
-  active: true,
-};
+const mockedCustomer: Customer = customerFactory();
 
 const { password: _, ...mockedCustomerWithoutPassword } = mockedCustomer;
 

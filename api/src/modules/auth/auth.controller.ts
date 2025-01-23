@@ -24,7 +24,7 @@ import { LocalAuthGuard } from './utils/guards/local.guard';
 import { CurrentUser } from './utils/current-user-decorator';
 import { JwtAuthGuard } from './utils/guards/jwt.guard';
 import { GoogleOauthGuard } from './utils/guards/google.guard';
-import { Customer } from '../../database/typeorm/entities/customer.entity';
+import { Customer } from '@/entities/customer.entity';
 
 @Controller()
 export class AuthController {

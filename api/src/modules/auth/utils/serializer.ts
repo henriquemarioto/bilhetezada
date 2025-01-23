@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { PassportSerializer } from '@nestjs/passport';
-import { Customer } from '../../../database/typeorm/entities/customer.entity';
+import { Customer } from '@/entities/customer.entity';
 import { CustomerService } from '../../customer/customer.service';
 import { Injectable } from '@nestjs/common';
 

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { PaymentLink } from 'src/database/typeorm/entities/payment-link.entity';
 
 export class EventResponseDto {
   @ApiProperty()

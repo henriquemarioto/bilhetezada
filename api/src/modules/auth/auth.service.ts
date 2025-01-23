@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { Logout } from '../../database/typeorm/entities/logout.entity';
+import { Logout } from '@/entities/logout.entity';
 import AuthProviders from '../shared/enums/auth-providers.enum';
 import CryptoService from '../shared/services/crypto.service';
 import { Repository } from 'typeorm';
@@ -14,7 +14,7 @@ import {
   CreateCustomerDto,
   CreateCustomerPartialDTO,
 } from '../customer/dto/create-customer.dto';
-import { Customer } from '../../database/typeorm/entities/customer.entity';
+import { Customer } from '@/entities/customer.entity';
 
 export type GoogleUser = {
   email: string;

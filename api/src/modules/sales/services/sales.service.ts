@@ -1,4 +1,5 @@
-import { OpenPixService } from './openpix.service';
+import { Buyer } from '@/entities/buyer.entity';
+import { Order } from '@/entities/order.entity';
 import {
   ForbiddenException,
   Injectable,
@@ -6,11 +7,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Buyer } from 'src/database/typeorm/entities/buyer.entity';
-import { Order } from 'src/database/typeorm/entities/order.entity';
 import { Repository } from 'typeorm';
 import { EventService } from '../../event/event.service';
 import { CreateOrderDto } from '../dto/create-order.dto';
+import { OpenPixService } from './openpix.service';
 
 @Injectable()
 export class SalesService {

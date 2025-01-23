@@ -1,12 +1,12 @@
+import { Event } from '@/entities/event.entity';
+import { PaymentLink } from '@/entities/payment-link.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import SharedModule from '../shared/shared.module';
-import { Event } from '../../database/typeorm/entities/event.entity';
 import { AuthModule } from '../auth/auth.module';
 import { CustomerModule } from '../customer/customer.module';
-import { EventService } from './event.service';
+import SharedModule from '../shared/shared.module';
 import { EventController } from './event.controller';
-import { PaymentLink } from '../../database/typeorm/entities/payment-link.entity';
+import { EventService } from './event.service';
 
 @Module({
   imports: [

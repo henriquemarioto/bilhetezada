@@ -5,7 +5,7 @@ import { CustomerService } from '../customer/customer.service';
 import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
 import { faker } from '@faker-js/faker';
 import AuthProviders from '../shared/enums/auth-providers.enum';
-import { Customer } from '../../database/typeorm/entities/customer.entity';
+import { Customer } from '@/entities/customer.entity';
 import { randomUUID } from 'crypto';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 

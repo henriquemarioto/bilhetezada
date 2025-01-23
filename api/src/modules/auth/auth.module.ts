@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Logout } from '../../database/typeorm/entities/logout.entity';
+import { Logout } from '@/entities/logout.entity';
 import SharedModule from '../shared/shared.module';
 import { CustomerModule } from '../customer/customer.module';
 import { AuthService } from './auth.service';

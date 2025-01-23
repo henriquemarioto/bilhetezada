@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CustomerService } from './customer.service';
 import { Repository } from 'typeorm';
-import { Customer } from '../../database/typeorm/entities/customer.entity';
+import { Customer } from '@/entities/customer.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import CryptoService from '../shared/services/crypto.service';
 import { SlugService } from '../shared/services/slug.service';
@@ -13,6 +13,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { createCustomerDtoFactory } from '@/test/factories/dto/create-customer-dto.factory';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
@@ -81,18 +82,12 @@ describe('CustomerService', () => {
   });
 
   describe('create', () => {
-    const customerDto = new CreateCustomerDto();
-    customerDto.document = '80686058003';
-    customerDto.email = 'test@test.com';
-    customerDto.name = 'Test Customer';
-    customerDto.picture_url = '';
-    customerDto.birth_date = new Date('2000-01-16T17:17:27.545Z');
-    customerDto.password = '123456AbC!@';
+    const createCustomerDto: CreateCustomerDto = createCustomerDtoFactory();
 
     it('should create and return customer data without password', async () => {
       const repositorySaveResult = {
         id: 'UUID',
-        name: customerDto.name,
+        name: createCustomerDto.name,
         email: 'encryptedEmail',
         password: 'encryptedPassword',
         document: 'encryptedDocument',
@@ -108,7 +103,7 @@ describe('CustomerService', () => {
 
       const result = await customerService.create(
         AuthProviders.LOCAL,
-        customerDto,
+        createCustomerDto,
       );
 
       expect(result).toBeDefined();
@@ -116,22 +111,22 @@ describe('CustomerService', () => {
       expect(result).toEqual(expectedResult);
       expect(cryptoService.encrypt).toHaveBeenNthCalledWith(
         1,
-        customerDto.email,
+        createCustomerDto.email,
       );
       expect(cryptoService.encrypt).toHaveBeenNthCalledWith(
         2,
-        customerDto.document,
+        createCustomerDto.document,
       );
       expect(cryptoService.encryptSalt).toHaveBeenCalledWith(
-        customerDto.password,
+        createCustomerDto.password,
       );
       expect(findByEmailOrDocumentSpy).toHaveBeenCalledWith(
         'encryptedEmail',
         'encryptedDocument',
       );
-      expect(slugService.slug).toHaveBeenCalledWith(customerDto.name);
+      expect(slugService.slug).toHaveBeenCalledWith(createCustomerDto.name);
       expect(repository.save).toHaveBeenCalledWith({
-        ...customerDto,
+        ...createCustomerDto,
         email: 'encryptedEmail',
         document: 'encryptedDocument',
         password: 'encryptedPassword',
@@ -148,7 +143,7 @@ describe('CustomerService', () => {
         document: _document,
         birth_date: _birth_date,
         ...googleCustomerDto
-      } = customerDto;
+      } = createCustomerDto;
 
       googleCustomerDto.picture_url = 'googlePictureUrl';
 
@@ -179,7 +174,7 @@ describe('CustomerService', () => {
       expect(result).toEqual(expectedResult);
       expect(cryptoService.encrypt).toHaveBeenNthCalledWith(
         1,
-        customerDto.email,
+        createCustomerDto.email,
       );
       expect(cryptoService.encrypt).not.toHaveBeenNthCalledWith(2);
       expect(findByEmailOrDocumentSpy).toHaveBeenCalledWith(
@@ -198,7 +193,7 @@ describe('CustomerService', () => {
 
     it('should not create a LOCAL customer without document', async () => {
       try {
-        const { document, ...customerDtoWithoutDocument } = customerDto;
+        const { document, ...customerDtoWithoutDocument } = createCustomerDto;
         await customerService.create(
           AuthProviders.LOCAL,
           customerDtoWithoutDocument,
@@ -213,7 +208,7 @@ describe('CustomerService', () => {
       try {
         findByEmailOrDocumentSpy.mockResolvedValue({} as Customer);
 
-        await customerService.create(AuthProviders.LOCAL, customerDto);
+        await customerService.create(AuthProviders.LOCAL, createCustomerDto);
       } catch (error) {
         expect(error).toBeInstanceOf(ConflictException);
         expect(error.message).toBe('Document or email already in use');

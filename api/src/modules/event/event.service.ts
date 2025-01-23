@@ -1,3 +1,5 @@
+import { Event } from '@/entities/event.entity';
+import { PaymentLink } from '@/entities/payment-link.entity';
 import {
   BadRequestException,
   Injectable,
@@ -6,14 +8,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Event } from '../../database/typeorm/entities/event.entity';
 import { CustomerService } from '../customer/customer.service';
+import { PaymentLinkOwner } from '../shared/enums/payment-link-owner.enum';
 import { SlugService } from '../shared/services/slug.service';
 import TimezoneService from '../shared/services/timezone.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
-import { PaymentLink } from '../../database/typeorm/entities/payment-link.entity';
-import { PaymentLinkOwner } from '../shared/enums/payment-link-owner.enum';
 
 @Injectable()
 export class EventService {

@@ -1,50 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { RequestUser } from '../shared/dto/request-user.dto';
-import { EventController } from './event.controller';
-import { EventService } from './event.service';
-import { randomUUID } from 'crypto';
+import { Customer } from '@/entities/customer.entity';
+import { Event } from '@/entities/event.entity';
 import { faker } from '@faker-js/faker/.';
-import { Customer } from '../../database/typeorm/entities/customer.entity';
-import { PaymentLinkOwner } from '../shared/enums/payment-link-owner.enum';
-import { PaymentLink } from '../../database/typeorm/entities/payment-link.entity';
-import { Event } from '../../database/typeorm/entities/event.entity';
-import { CreateEventDto } from './dto/create-event.dto';
+import { Test, TestingModule } from '@nestjs/testing';
 import { CustomerService } from '../customer/customer.service';
+import { RequestUser } from '../shared/dto/request-user.dto';
+import { CreateEventDto } from './dto/create-event.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
+import { EventController } from './event.controller';
+import { EventService } from './event.service';
+import { eventFactory } from '@/test/factories/entity/event.factory';
+import { customerFactory } from '@/test/factories/entity/customer.factory';
 
-const customerId: string = randomUUID();
+const mockedCustomer: Customer = customerFactory();
 
-const mockedPaymentLink: PaymentLink = {
-  id: randomUUID(),
-  owner: PaymentLinkOwner.EVENT,
-  url: faker.internet.url(),
-  event: {} as Event,
-  created_at: new Date(),
-  updated_at: new Date(),
-};
-
-const mockedEvent: Event = {
-  id: randomUUID(),
-  active: true,
-  address: faker.location.streetAddress(),
-  description: 'Halloween party in te hood',
-  name: 'Halloween party',
-  price: 2000,
-  slug: 'halloween-party',
-  limit_time_for_ticket_purchase: new Date(),
-  start_time: new Date(),
-  end_time: new Date(),
-  time_zone: 'America/Sao_Paulo',
-  created_at: new Date(),
-  updated_at: new Date(),
-  customer: {
-    id: customerId,
-  } as Customer,
-  orders: [],
-  entrance_limit_time: null,
-  paymentLinks: [mockedPaymentLink],
-};
+const mockedEvent: Event = eventFactory({ customer: mockedCustomer });
 
 const createEventDto: CreateEventDto = {
   address: faker.location.streetAddress(),
