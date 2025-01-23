@@ -5,7 +5,7 @@ import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateEventDTO extends PartialType(CreateEventDto) {
   @Exclude()
-  active: boolean;
+  active?: boolean;
 
   @IsString()
   @IsOptional()

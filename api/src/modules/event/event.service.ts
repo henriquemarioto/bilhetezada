@@ -27,7 +27,10 @@ export class EventService {
     private timezoneService: TimezoneService,
   ) {}
 
-  async create(customerId: string, createEventDto: CreateEventDto) {
+  async create(
+    customerId: string,
+    createEventDto: CreateEventDto,
+  ): Promise<Event> {
     const customer = await this.customerService.findById(customerId);
 
     if (!customer) throw new NotFoundException('Customer not found.');
@@ -67,7 +70,7 @@ export class EventService {
     return event;
   }
 
-  async findMany(customerId: string) {
+  async findMany(customerId: string): Promise<Event[]> {
     const events = await this.eventsRepository.find({
       where: { customer: { id: customerId } },
     });
@@ -77,7 +80,7 @@ export class EventService {
     return events;
   }
 
-  async getById(eventId: string, userId?: string) {
+  async getById(eventId: string, userId?: string): Promise<Event> {
     const event = await this.eventsRepository.findOne({
       where: {
         id: eventId,
@@ -107,7 +110,7 @@ export class EventService {
     customerId: string,
     eventId: string,
     updateEventDto: UpdateEventDTO,
-  ) {
+  ): Promise<boolean> {
     const event = await this.eventsRepository.findOne({
       where: {
         id: eventId,
@@ -128,7 +131,7 @@ export class EventService {
     return true;
   }
 
-  async disable(customerId: string, eventId: string) {
+  async disable(customerId: string, eventId: string): Promise<boolean> {
     await this.update(customerId, eventId, { active: false });
     return true;
   }
