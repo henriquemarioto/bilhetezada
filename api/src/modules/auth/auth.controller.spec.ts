@@ -3,37 +3,15 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { CustomerService } from '../customer/customer.service';
 import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
-import { faker } from '@faker-js/faker';
 import AuthProviders from '../shared/enums/auth-providers.enum';
 import { Customer } from '@/entities/customer.entity';
-import { randomUUID } from 'crypto';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { createCustomerDtoFactory } from '@/test/factories/dto/create-customer-dto.factory';
+import { customerFactory } from '@/test/factories/entity/customer.factory';
 
-const createCustomerDto: CreateCustomerDto = {
-  name: faker.person.fullName(),
-  email: faker.internet.email(),
-  password: faker.internet.password(),
-  document: String(faker.number.int({ min: 11111111111, max: 99999999999 })),
-  birth_date: faker.date.birthdate(),
-};
+const createCustomerDto: CreateCustomerDto = createCustomerDtoFactory();
 
-const customerDto: Customer = {
-  ...createCustomerDto,
-  id: randomUUID(),
-  active: true,
-  auth_provider: AuthProviders.LOCAL,
-  picture_url: faker.internet.url(),
-  events: [],
-  created_at: new Date(),
-  updated_at: new Date(),
-};
-
-const mockedCustomer = {
-  id: 'id',
-  name: 'name',
-  email: 'encryptedEmail',
-  active: true,
-};
+const customerDto: Customer = customerFactory();
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -46,7 +24,7 @@ describe('AuthController', () => {
         {
           provide: AuthService,
           useValue: {
-            signUp: jest.fn().mockResolvedValue(mockedCustomer),
+            signUp: jest.fn().mockResolvedValue(customerDto),
             login: jest.fn().mockResolvedValue({
               access_token: 'token',
             }),
