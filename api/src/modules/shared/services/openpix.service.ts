@@ -1,14 +1,14 @@
 import { Order } from '@/entities/order.entity';
 import { Payment } from '@/entities/payment.entity';
 import { Ticket } from '@/entities/ticket.entity';
+import { OrderStatus } from '@/modules/shared/enums/orde-status.enum';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
-import { OrderStatus } from '@/modules/shared/enums/orde-status.enum';
 import { Repository } from 'typeorm';
 import { OpenPixChargeResponseDto } from '../../sales/dto/openpix-charge-response.dto';
-import { PixWebhookBodyDto } from '../../sales/dto/openpix-webhook-body.dto';
+import { OpenPixPixWebhookBodyDto } from '../../sales/dto/openpix-pix-webhook-body.dto';
 import OpenPixChargeStatus from '../enums/openpix-charge-status.enum';
 import { PaymentMethods } from '../enums/payment-methods.enum';
 import { PaymentStatus } from '../enums/payment-status.enum';
@@ -65,7 +65,7 @@ export class OpenPixService {
     return chargeResult;
   }
 
-  async webhookPix(body: PixWebhookBodyDto) {
+  async webhookPix(body: OpenPixPixWebhookBodyDto): Promise<boolean> {
     if (body.charge.status === OpenPixChargeStatus.COMPLETED) {
       const order = await this.ordersRepository.findOne({
         where: {

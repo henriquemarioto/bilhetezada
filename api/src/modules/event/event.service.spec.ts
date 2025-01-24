@@ -1,10 +1,10 @@
 import { Customer } from '@/entities/customer.entity';
 import { Event } from '@/entities/event.entity';
 import { PaymentLink } from '@/entities/payment-link.entity';
+import { createEventDtoFactory } from '@/test/factories/dto/create-event.dto.factory';
 import { customerFactory } from '@/test/factories/entity/customer.factory';
 import { eventFactory } from '@/test/factories/entity/event.factory';
 import { paymentLinkFactory } from '@/test/factories/entity/payment-link.factory';
-import { faker } from '@faker-js/faker/.';
 import {
   BadRequestException,
   NotFoundException,
@@ -20,7 +20,6 @@ import TimezoneService from '../shared/services/timezone.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
 import { EventService } from './event.service';
-import { createEventDtoFactory } from '@/test/factories/dto/create-event-dto.factory';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 

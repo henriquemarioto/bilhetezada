@@ -14,5 +14,5 @@ export class CreateOrderResponseDto {
   value: number;
 
   @ApiProperty()
-  expiresDate: Date;
+  expiresDate: string;
 }

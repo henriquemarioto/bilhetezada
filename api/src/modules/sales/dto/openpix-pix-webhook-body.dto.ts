@@ -18,10 +18,10 @@ class ChargeDto {
   brCode: string;
 
   @ApiProperty()
-  createdAt: Date;
+  createdAt: string;
 
   @ApiProperty()
-  updatedAt: Date;
+  updatedAt: string;
 }
 
 class PixDto {
@@ -38,7 +38,7 @@ class PixDto {
   payer: unknown;
 
   @ApiProperty()
-  time: Date;
+  time: string;
 
   @ApiProperty()
   value: number;
@@ -53,7 +53,7 @@ class PixDto {
   raw: unknown;
 }
 
-export class PixWebhookBodyDto {
+export class OpenPixPixWebhookBodyDto {
   @ApiProperty()
   charge: ChargeDto;
 

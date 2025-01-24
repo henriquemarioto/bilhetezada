@@ -1,5 +1,8 @@
 import { Customer } from '@/entities/customer.entity';
 import { Event } from '@/entities/event.entity';
+import { createEventDtoFactory } from '@/test/factories/dto/create-event.dto.factory';
+import { customerFactory } from '@/test/factories/entity/customer.factory';
+import { eventFactory } from '@/test/factories/entity/event.factory';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CustomerService } from '../customer/customer.service';
 import { RequestUser } from '../shared/dto/request-user.dto';
@@ -8,9 +11,7 @@ import { EventResponseDto } from './dto/event-response.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
 import { EventController } from './event.controller';
 import { EventService } from './event.service';
-import { eventFactory } from '@/test/factories/entity/event.factory';
-import { customerFactory } from '@/test/factories/entity/customer.factory';
-import { createEventDtoFactory } from '@/test/factories/dto/create-event-dto.factory';
+import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
 
 const mockedCustomer: Customer = customerFactory();
 
@@ -41,12 +42,13 @@ describe('EventController', () => {
             disable: jest.fn().mockResolvedValue(true),
           },
         },
-        {
-          provide: CustomerService,
-          useValue: {},
-        },
       ],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({
+        canActivate: jest.fn(() => true),
+      })
+      .compile();
 
     eventController = module.get<EventController>(EventController);
     mockedEventService = module.get<jest.Mocked<EventService>>(EventService);

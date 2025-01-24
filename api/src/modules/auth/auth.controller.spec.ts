@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { CustomerService } from '../customer/customer.service';
 import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
 import AuthProviders from '../shared/enums/auth-providers.enum';
 import { Customer } from '@/entities/customer.entity';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { createCustomerDtoFactory } from '@/test/factories/dto/create-customer-dto.factory';
+import { createCustomerDtoFactory } from '@/test/factories/dto/create-customer.dto.factory';
 import { customerFactory } from '@/test/factories/entity/customer.factory';
+import { JwtAuthGuard } from './utils/guards/jwt.guard';
 
 const createCustomerDto: CreateCustomerDto = createCustomerDtoFactory();
 
@@ -31,12 +31,13 @@ describe('AuthController', () => {
             logout: jest.fn().mockResolvedValue(true),
           },
         },
-        {
-          provide: CustomerService,
-          useValue: {},
-        },
       ],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({
+        canActivate: jest.fn(() => true),
+      })
+      .compile();
 
     authController = module.get<AuthController>(AuthController);
     mockedAuthService = module.get<jest.Mocked<AuthService>>(AuthService);

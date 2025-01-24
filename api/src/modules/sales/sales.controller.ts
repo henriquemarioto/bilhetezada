@@ -19,7 +19,7 @@ import { RequestUser } from '../shared/dto/request-user.dto';
 import { OpenPixService } from '../shared/services/openpix.service';
 import { CreateOrderResponseDto } from './dto/create-order-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { PixWebhookBodyDto } from './dto/openpix-webhook-body.dto';
+import { OpenPixPixWebhookBodyDto } from './dto/openpix-pix-webhook-body.dto';
 import { SalesService } from './sales.service';
 
 @Controller()
@@ -59,7 +59,7 @@ export class SalesController {
   @ApiExcludeEndpoint()
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('webhook/openpix/pix')
-  async webhookPixPayment(@Body() body: PixWebhookBodyDto) {
+  async webhookOpenPixPixPayment(@Body() body: OpenPixPixWebhookBodyDto) {
     await this.openPixService.webhookPix(body);
     return true;
   }

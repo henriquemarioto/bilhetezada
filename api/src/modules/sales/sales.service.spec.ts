@@ -1,22 +1,21 @@
+import { Buyer } from '@/entities/buyer.entity';
 import { Event } from '@/entities/event.entity';
+import { Order } from '@/entities/order.entity';
+import { EventService } from '@/modules/event/event.service';
+import { createOrderDtoFactory } from '@/test/factories/dto/create-order.dto.factory';
+import { openPixChargeResponseDtoFactory } from '@/test/factories/dto/openpix-charge-response.dto.factory';
+import { buyerFactory } from '@/test/factories/entity/buyer.factory';
+import { customerFactory } from '@/test/factories/entity/customer.factory';
+import { eventFactory } from '@/test/factories/entity/event.factory';
+import { orderFactory } from '@/test/factories/entity/order.factory';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { EventService } from '@/modules/event/event.service';
-import { SalesService } from './sales.service';
 import { OpenPixService } from '../shared/services/openpix.service';
-import { Order } from '@/entities/order.entity';
-import { Buyer } from '@/entities/buyer.entity';
-import { eventFactory } from '@/test/factories/entity/event.factory';
-import { customerFactory } from '@/test/factories/entity/customer.factory';
-import { openPixChargeResponseDtoFactory } from '@/test/factories/dto/openpix-charge-response-dto.factory';
-import { buyerFactory } from '@/test/factories/entity/buyer.factory';
-import { orderFactory } from '@/test/factories/entity/order.factory';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { createOrderDtoFactory } from '@/test/factories/dto/create-order-dto.factory';
 import { OpenPixChargeResponseDto } from './dto/openpix-charge-response.dto';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { SalesService } from './sales.service';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 

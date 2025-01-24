@@ -13,7 +13,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { createCustomerDtoFactory } from '@/test/factories/dto/create-customer-dto.factory';
+import { createCustomerDtoFactory } from '@/test/factories/dto/create-customer.dto.factory';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
