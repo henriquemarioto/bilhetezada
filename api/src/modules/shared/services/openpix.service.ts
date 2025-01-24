@@ -1,15 +1,15 @@
 import { Order } from '@/entities/order.entity';
 import { Payment } from '@/entities/payment.entity';
 import { Ticket } from '@/entities/ticket.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
-import { OrderStatus } from 'src/modules/shared/enums/orde-status.enum';
+import { OrderStatus } from '@/modules/shared/enums/orde-status.enum';
 import { Repository } from 'typeorm';
 import { OpenPixChargeResponseDto } from '../../sales/dto/openpix-charge-response.dto';
 import { PixWebhookBodyDto } from '../../sales/dto/openpix-webhook-body.dto';
-import OpenPixWebhookStatus from '../enums/openpix-webhook-status.enum';
+import OpenPixChargeStatus from '../enums/openpix-charge-status.enum';
 import { PaymentMethods } from '../enums/payment-methods.enum';
 import { PaymentStatus } from '../enums/payment-status.enum';
 import { HttpService } from './http.service';
@@ -41,9 +41,7 @@ export class OpenPixService {
     };
   }
 
-  async generatePixCharge(
-    value: number,
-  ): Promise<OpenPixChargeResponseDto | false> {
+  async generatePixCharge(value: number): Promise<OpenPixChargeResponseDto> {
     const url = this.apiBaseUrl + '/charge';
     const chargeResult = (await this.httpService.post(url, {
       headers: this.headers,
@@ -58,13 +56,17 @@ export class OpenPixService {
         url: url,
         value,
       });
+
+      throw new InternalServerErrorException(
+        'Error generating pix payment with external provider',
+      );
     }
 
     return chargeResult;
   }
 
   async webhookPix(body: PixWebhookBodyDto) {
-    if (body.charge.status === OpenPixWebhookStatus.COMPLETED) {
+    if (body.charge.status === OpenPixChargeStatus.COMPLETED) {
       const order = await this.ordersRepository.findOne({
         where: {
           transaction_reference: body.charge.correlationID,

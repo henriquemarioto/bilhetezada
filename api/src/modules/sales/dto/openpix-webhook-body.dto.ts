@@ -1,9 +1,9 @@
+import OpenPixChargeStatus from '@/modules/shared/enums/openpix-charge-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import OpenPixWebhookStatus from 'src/modules/shared/enums/openpix-webhook-status.enum';
 
 class ChargeDto {
-  @ApiProperty({ enum: OpenPixWebhookStatus })
-  status: OpenPixWebhookStatus;
+  @ApiProperty({ enum: OpenPixChargeStatus })
+  status: OpenPixChargeStatus;
 
   @ApiProperty()
   customer?: unknown;

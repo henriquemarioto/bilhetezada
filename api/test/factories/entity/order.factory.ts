@@ -1,18 +1,30 @@
 import { Order } from '@/entities/order.entity';
 import { faker } from '@faker-js/faker/.';
-import { OrderStatus } from 'src/modules/shared/enums/orde-status.enum';
-import { buyerFactory } from './entities/buyer.factory';
-import { eventFactory } from './entities/event.factory';
-import { paymentFactory } from './payment.factory';
-import { ticketFactory } from './ticket.factory';
+import { OrderStatus } from '@/modules/shared/enums/orde-status.enum';
+import { Ticket } from '@/entities/ticket.entity';
+import { Buyer } from '@/entities/buyer.entity';
+import { Payment } from '@/entities/payment.entity';
+import { Event } from '@/entities/event.entity';
 
-export const orderFactory = (): Order => ({
+type OrderFactoryProps = {
+  event: Event;
+  ticket?: Ticket;
+  buyer?: Buyer;
+  payment?: Payment;
+};
+
+export const orderFactory = ({
+  event,
+  ticket = null,
+  buyer = null,
+  payment = null,
+}: OrderFactoryProps): Order => ({
   id: faker.string.uuid(),
-  buyer: buyerFactory(),
-  event: eventFactory(),
-  payment: paymentFactory(),
+  buyer: buyer,
+  event: event,
+  payment: payment,
   status: OrderStatus.PENDING,
-  ticket: ticketFactory(),
+  ticket: ticket,
   value: faker.number.int({
     min: 1000,
     max: 20000,

@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Event } from './event.entity';
 import { Payment } from './payment.entity';
-import { OrderStatus } from '../../../modules/shared/enums/orde-status.enum';
+import { OrderStatus } from '@/modules/shared/enums/orde-status.enum';
 import { Buyer } from './buyer.entity';
 import { Ticket } from './ticket.entity';
 

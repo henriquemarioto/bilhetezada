@@ -3,7 +3,6 @@ import { Order } from '@/entities/order.entity';
 import {
   ForbiddenException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -32,28 +31,24 @@ export class SalesService {
 
     const buyer = await this.buyersRepository.save(createOrderDto.buyer);
 
-    createOrderDto.eventId = undefined;
-
     const pixCharge = await this.openPixService.generatePixCharge(
       event.price * 100,
     );
 
-    if (pixCharge === false) {
-      throw new InternalServerErrorException('Error generating pix charge');
-    }
+    const { eventId: _, ...createOrderData } = createOrderDto;
 
     await this.ordersRepository.save({
-      ...createOrderDto,
+      ...createOrderData,
       value: event.price,
-      transaction_reference: pixCharge.data.correlationID,
+      transaction_reference: pixCharge.data.charge.correlationID,
       event,
       buyer,
     });
 
     return {
-      transactionReference: pixCharge.data.correlationID,
+      transactionReference: pixCharge.data.charge.correlationID,
       qrcodeImageUrl: pixCharge.data.charge.qrCodeImage,
-      pixCopyPaste: pixCharge.data.brCode,
+      pixCopyPaste: pixCharge.data.charge.brCode,
       value: pixCharge.data.charge.value,
       expiresDate: pixCharge.data.charge.expiresDate,
     };

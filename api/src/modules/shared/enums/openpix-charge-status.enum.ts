@@ -1,7 +1,7 @@
-enum OpenPixWebhookStatus {
+enum OpenPixChargeStatus {
   COMPLETED = 'COMPLETED',
   ACTIVE = 'ACTIVE',
   EXPIRED = 'EXPIRED',
 }
 
-export default OpenPixWebhookStatus;
+export default OpenPixChargeStatus;

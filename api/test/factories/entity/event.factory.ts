@@ -17,17 +17,25 @@ export const eventFactory = ({
   paymentLinks = [],
   orders = [],
 }: EventFactoryProps): Event => {
+  const startTime = new Date();
+  const endTime = new Date();
+  const limitTimeForTicketPurchase = new Date();
+
+  startTime.setDate(new Date().getDate() + 3);
+  endTime.setDate(new Date().getDate() + 4);
+  limitTimeForTicketPurchase.setDate(new Date().getDate() + 3);
+
   const event = {
     id: randomUUID(),
     active: true,
     address: faker.location.streetAddress(),
     description: faker.lorem.words(20),
     name: faker.lorem.words(5),
-    price: 2000,
+    price: faker.number.int({ min: 10, max: 300 }),
     slug: faker.lorem.slug(5),
-    limit_time_for_ticket_purchase: new Date(),
-    start_time: new Date(),
-    end_time: new Date(),
+    limit_time_for_ticket_purchase: limitTimeForTicketPurchase,
+    start_time: startTime,
+    end_time: endTime,
     time_zone: Timezones.AMERICA_SAO_PAULO,
     created_at: new Date(),
     updated_at: new Date(),
