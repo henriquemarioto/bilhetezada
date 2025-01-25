@@ -1,7 +1,7 @@
 import { Order } from '@/entities/order.entity';
 import { Payment } from '@/entities/payment.entity';
 import { Ticket } from '@/entities/ticket.entity';
-import { OrderStatus } from '@/modules/shared/enums/orde-status.enum';
+import { OrderStatus } from '@/modules/shared/enums/order-status.enum';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
