@@ -1,6 +1,6 @@
 import { Order } from '@/entities/order.entity';
 import { faker } from '@faker-js/faker/.';
-import { OrderStatus } from '@/modules/shared/enums/orde-status.enum';
+import { OrderStatus } from '@/modules/shared/enums/order-status.enum';
 import { Ticket } from '@/entities/ticket.entity';
 import { Buyer } from '@/entities/buyer.entity';
 import { Payment } from '@/entities/payment.entity';
