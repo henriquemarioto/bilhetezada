@@ -1,0 +1,32 @@
+name: Format, lint, test and build
+on:
+  pull_request:
+    branches:
+      - '**'
+jobs:
+  Lint_Tests_Build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.12.2'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run format
+        run: npm run format
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run Build
+        run: npm run build
