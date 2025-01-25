@@ -1,11 +1,18 @@
-name: Format, lint, test and build
+name: CI for API
+
 on:
+  push:
+    paths:
+      - "api/**"
   pull_request:
-    branches:
-      - '**'
+    paths:
+      - "api/**"
 jobs:
-  Lint_Tests_Build:
+  Format_Lint_Test_Build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
 
     steps:
       - name: Checkout code
