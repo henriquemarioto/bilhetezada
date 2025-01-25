@@ -4,7 +4,6 @@ import { createEventDtoFactory } from '@/test/factories/dto/create-event.dto.fac
 import { customerFactory } from '@/test/factories/entity/customer.factory';
 import { eventFactory } from '@/test/factories/entity/event.factory';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CustomerService } from '../customer/customer.service';
 import { RequestUser } from '../shared/dto/request-user.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { EventResponseDto } from './dto/event-response.dto';

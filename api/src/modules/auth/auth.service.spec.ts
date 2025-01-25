@@ -200,18 +200,11 @@ describe('AuthService', () => {
         mockCustomerUnactive as Customer,
       );
 
-      try {
-        await authService.validateUser(
-          AuthProviders.LOCAL,
-          'email',
-          'password',
-        );
-      } catch (error) {
-        expect(error).toBeInstanceOf(UnauthorizedException);
-        expect(error.message).toBe('Non-active customer.');
-        expect(mockedCustomerService.findByEmailOrDocument).toHaveBeenCalled();
-        expect(mockedCryptoService.encrypt).toHaveBeenCalled();
-      }
+      await expect(
+        authService.validateUser(AuthProviders.LOCAL, 'email', 'password'),
+      ).rejects.toThrow(UnauthorizedException);
+      expect(mockedCustomerService.findByEmailOrDocument).toHaveBeenCalled();
+      expect(mockedCryptoService.encrypt).toHaveBeenCalled();
     });
 
     it('should return UnauthorizedException if password not match using local provider', async () => {

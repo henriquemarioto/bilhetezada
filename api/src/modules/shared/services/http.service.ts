@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { HttpRequestDto } from '../dto/http-request.dto';
-import { AxiosHeaders } from 'axios';
+import { AxiosError, AxiosHeaders } from 'axios';
 import { HttpService as AxiosHttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { HttpResponse } from '../dto/http-response.dto';
@@ -38,13 +38,14 @@ export class HttpService {
         status: response.status,
         data: response.data,
       };
-    } catch (e) {
+    } catch (err) {
+      const error = err as Error | AxiosError;
       console.error('Error in post request', {
         url: url,
         request: requestDto,
-        stack: e.stack,
-        message: e.message,
-        response: e.response?.data,
+        stack: error.stack,
+        message: error.message,
+        // response: error.response?.data,
       });
       return false;
     }

@@ -192,27 +192,18 @@ describe('CustomerService', () => {
     });
 
     it('should not create a LOCAL customer without document', async () => {
-      try {
-        const { document, ...customerDtoWithoutDocument } = createCustomerDto;
-        await customerService.create(
-          AuthProviders.LOCAL,
-          customerDtoWithoutDocument,
-        );
-      } catch (error) {
-        expect(error).toBeInstanceOf(BadRequestException);
-        expect(error.message).toBe('Document needed for local customers');
-      }
+      const { document, ...customerDtoWithoutDocument } = createCustomerDto;
+      await expect(
+        customerService.create(AuthProviders.LOCAL, customerDtoWithoutDocument),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw an ConflictException when email or document is already in use', async () => {
-      try {
-        findByEmailOrDocumentSpy.mockResolvedValue({} as Customer);
+      findByEmailOrDocumentSpy.mockResolvedValue({} as Customer);
 
-        await customerService.create(AuthProviders.LOCAL, createCustomerDto);
-      } catch (error) {
-        expect(error).toBeInstanceOf(ConflictException);
-        expect(error.message).toBe('Document or email already in use');
-      }
+      await expect(
+        customerService.create(AuthProviders.LOCAL, createCustomerDto),
+      ).rejects.toThrow(ConflictException);
     });
   });
 
@@ -305,13 +296,10 @@ describe('CustomerService', () => {
     });
 
     it('should return NotFoundException if no exists any customer', async () => {
-      try {
-        repository.find.mockReturnValue([]);
-        await customerService.findAll();
-      } catch (error) {
-        expect(error).toBeInstanceOf(NotFoundException);
-        expect(error.message).toBe('Customers not found');
-      }
+      repository.find.mockReturnValue([]);
+      await expect(customerService.findAll()).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -352,27 +340,24 @@ describe('CustomerService', () => {
     });
 
     it('should throw InternalServerErrorException if update fails', async () => {
-      try {
-        repository.update.mockImplementation(() => {
-          throw new Error();
-        });
+      repository.update.mockImplementation(() => {
+        throw new Error();
+      });
 
-        await customerService.update('id', {
+      await expect(
+        customerService.update('id', {
           name: 'updated name',
           password: 'password',
           email: 'email',
           document: 'document',
-        });
-      } catch (error) {
-        expect(repository.update).toHaveBeenCalledWith('id', {
-          name: 'updated name',
-          password: 'encryptedPassword',
-          email: 'encryptedEmail',
-          document: 'encryptedDocument',
-        });
-        expect(error).toBeInstanceOf(InternalServerErrorException);
-        expect(error.message).toBe('An error occurred while updating customer');
-      }
+        }),
+      ).rejects.toThrow(InternalServerErrorException);
+      expect(repository.update).toHaveBeenCalledWith('id', {
+        name: 'updated name',
+        password: 'encryptedPassword',
+        email: 'encryptedEmail',
+        document: 'encryptedDocument',
+      });
     });
   });
 
@@ -387,17 +372,14 @@ describe('CustomerService', () => {
     });
 
     it('should throw InternalServerErrorException if delete fails', async () => {
-      try {
-        repository.update.mockImplementation(() => {
-          throw new Error();
-        });
+      repository.update.mockImplementation(() => {
+        throw new Error();
+      });
 
-        await customerService.disable('id');
-      } catch (error) {
-        expect(repository.update).toHaveBeenCalledWith('id', { active: false });
-        expect(error).toBeInstanceOf(InternalServerErrorException);
-        expect(error.message).toBe('An error occurred while deleting customer');
-      }
+      await expect(customerService.disable('id')).rejects.toThrow(
+        InternalServerErrorException,
+      );
+      expect(repository.update).toHaveBeenCalledWith('id', { active: false });
     });
   });
 });

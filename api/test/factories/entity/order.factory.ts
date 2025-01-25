@@ -8,9 +8,9 @@ import { Event } from '@/entities/event.entity';
 
 type OrderFactoryProps = {
   event: Event;
-  ticket?: Ticket;
-  buyer?: Buyer;
-  payment?: Payment;
+  ticket?: Ticket | null;
+  buyer?: Buyer | null;
+  payment?: Payment | null;
 };
 
 export const orderFactory = ({
