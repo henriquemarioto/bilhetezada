@@ -1,5 +1,4 @@
 name: CI for API
-
 on:
   push:
     paths:
@@ -7,12 +6,12 @@ on:
   pull_request:
     paths:
       - "api/**"
+defaults:
+  run:
+    working-directory: ./api
 jobs:
   Setup:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./api
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -20,7 +19,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20.12.2'
+          node-version: "20.12.2"
 
       - name: Install dependencies
         run: npm install
