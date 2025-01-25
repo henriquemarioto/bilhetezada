@@ -8,12 +8,11 @@ on:
     paths:
       - "api/**"
 jobs:
-  Format_Lint_Test_Build:
+  Setup:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./api
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -26,14 +25,34 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Cache Node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+  Format:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Run format
         run: npm run format
-
+  Lint:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Run lint
         run: npm run lint
-
+  Test:
+    needs: [Format, Lint]
+    runs-on: ubuntu-latest
+    steps:
       - name: Run tests
         run: npm test
-
+  Build:
+    needs: Test
+    runs-on: ubuntu-latest
+    steps:
       - name: Run Build
         run: npm run build
