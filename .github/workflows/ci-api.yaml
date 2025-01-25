@@ -31,20 +31,20 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-  Format:
+  Lint-Check:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Run format
-        run: npm run format
-  Lint:
+      - name: Run lint:check
+        run: npm run lint:check
+  Type-Check:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Run lint
-        run: npm run lint
+      - name: Run type:check
+        run: npm run type:check
   Test:
-    needs: [Format, Lint]
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Run tests
