@@ -1,4 +1,5 @@
 name: CI for API
+
 on:
   push:
     paths:
@@ -6,18 +7,18 @@ on:
   pull_request:
     paths:
       - "api/**"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./api
+
 jobs:
   Setup:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./api
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: List files
-        run: ls -R
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -34,45 +35,53 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+
   Lint-Check:
     needs: setup
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./api
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20.12.2"
       - name: List files
         run: ls -R
       - name: Run lint:check
         run: npm run lint:check
+
   Type-Check:
     needs: setup
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./api
     steps:
-      - name: List files
-        run: ls -R
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20.12.2"
       - name: Run type:check
         run: npm run type:check
+
   Test:
     needs: setup
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./api
     steps:
-      - name: List files
-        run: ls -R
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Run tests
         run: npm test
+
   Build:
     needs: Test
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./api
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20.12.2"
       - name: Run Build
         run: npm run build
