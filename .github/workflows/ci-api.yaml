@@ -8,7 +8,7 @@ on:
       - "api/**"
 defaults:
   run:
-    working-directory: ./api
+    working-directory: .
 jobs:
   Setup:
     runs-on: ubuntu-latest
@@ -38,18 +38,24 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: List files
+        run: ls -R
       - name: Run lint:check
         run: npm run lint:check
   Type-Check:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: List files
+        run: ls -R
       - name: Run type:check
         run: npm run type:check
   Test:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: List files
+        run: ls -R
       - name: Run tests
         run: npm test
   Build:
