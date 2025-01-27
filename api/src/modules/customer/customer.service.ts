@@ -39,6 +39,7 @@ export class CustomerService {
     customerDtoToProcess.email = this.cryptoService.encrypt(
       customerDtoToProcess.email,
     );
+    this.logger.log('teste');
     if (!customerDtoToProcess.document && provider === AuthProviders.LOCAL) {
       throw new BadRequestException('Document needed for local customers');
     }
