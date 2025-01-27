@@ -8,7 +8,7 @@ on:
       - "api/**"
 defaults:
   run:
-    working-directory: /api
+    working-directory: api
 jobs:
   Setup:
     runs-on: ubuntu-latest
