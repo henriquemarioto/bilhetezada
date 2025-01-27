@@ -8,13 +8,16 @@ on:
       - "api/**"
 defaults:
   run:
-    working-directory: api
+    working-directory: ./api
 jobs:
   Setup:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: List files
+        run: ls -R
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
