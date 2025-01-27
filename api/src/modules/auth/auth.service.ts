@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
@@ -25,6 +25,8 @@ export type GoogleUser = {
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly customerService: CustomerService,
     private readonly cryptoService: CryptoService,
@@ -46,6 +48,7 @@ export class AuthService {
 
   async login(user: Customer) {
     const payload = { username: user.name, sub: user.id };
+    this.logger.log('Login successful');
     return {
       access_token: this.jwtService.sign(payload),
     };

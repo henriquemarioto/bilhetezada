@@ -11,6 +11,7 @@ import { CustomerModule } from './modules/customer/customer.module';
 import { EventModule } from './modules/event/event.module';
 import configuration from './modules/shared/config/configuration';
 import { SalesModule } from './modules/sales/sales.module';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
@@ -35,12 +36,12 @@ import { SalesModule } from './modules/sales/sales.module';
       ttl: 86400,
     }),
     PassportModule.register({ session: true }),
+    LoggerModule.forRoot(),
     AuthModule,
     CustomerModule,
     EventModule,
     SalesModule,
   ],
   controllers: [],
-  providers: [],
 })
 export class AppModule {}
