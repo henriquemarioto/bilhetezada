@@ -8,7 +8,7 @@
 
 - **Criação e Administração de Eventos**: Crie eventos personalizados com informações detalhadas, categorias e preços de ingressos.
 - **Customização de Ingressos**: Personalize ingressos com diferentes tipos e opções.
-- **Controle de Acessos**: Validação de ingressos por QR Code, com sistema de cache para alta performance.
+- **Controle de Acessos**: Validação de ingressos por QR Code.
 - **Relatórios em Tempo Real**: Acompanhe vendas, acessos e métricas de desempenho do seu evento.
 - **Integração com Sistemas de Pagamento**: Simplifique o pagamento de ingressos diretamente na plataforma.
 
