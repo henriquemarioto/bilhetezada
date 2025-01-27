@@ -15,7 +15,6 @@ defaults:
 
 jobs:
   Lint-Check:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -33,7 +32,6 @@ jobs:
         run: npm run lint:check
 
   Type-Check:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -51,7 +49,6 @@ jobs:
         run: npm run type:check
 
   Test:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
