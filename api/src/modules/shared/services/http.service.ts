@@ -16,7 +16,6 @@ export class HttpService {
         headers: requestDto.headers as AxiosHeaders,
       }),
     );
-
     return {
       status: response.status,
       data: response.data,

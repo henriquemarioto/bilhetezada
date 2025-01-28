@@ -1,7 +1,7 @@
-import { LoggerService } from '@nestjs/common';
+import { LoggerService as NestjsLoggerService } from '@nestjs/common';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
-export class Logger implements LoggerService {
+export class LoggerService implements NestjsLoggerService {
   constructor(
     @InjectPinoLogger()
     private readonly logger: PinoLogger,

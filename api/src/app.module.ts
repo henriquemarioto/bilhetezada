@@ -12,6 +12,7 @@ import { EventModule } from './modules/event/event.module';
 import configuration from './modules/shared/config/configuration';
 import { SalesModule } from './modules/sales/sales.module';
 import { LoggerModule } from 'nestjs-pino';
+import { LoggerService } from './modules/shared/services/logger.service';
 
 @Module({
   imports: [
@@ -43,5 +44,6 @@ import { LoggerModule } from 'nestjs-pino';
     SalesModule,
   ],
   controllers: [],
+  providers: [LoggerService],
 })
 export class AppModule {}

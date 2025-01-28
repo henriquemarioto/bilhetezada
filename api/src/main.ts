@@ -6,6 +6,7 @@ import { createClient } from 'redis';
 import { AppModule } from './app.module';
 import { Env } from './modules/shared/config/configuration';
 import { Logger } from 'nestjs-pino';
+import { LoggerService } from './modules/shared/services/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -30,7 +31,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useLogger(app.get(Logger));
+  app.useLogger(app.get(LoggerService));
 
   const config = new DocumentBuilder()
     .setTitle('Bilhetezada API')
