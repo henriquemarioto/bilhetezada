@@ -4,15 +4,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
-import typeormConfig from './database/typeorm/typeorm.config';
+import { LoggerModule } from 'nestjs-pino';
 import typeormTestConfig from './database/typeorm/typeorm-test.config';
+import typeormConfig from './database/typeorm/typeorm.config';
+import { LoggerService } from './logger';
 import { AuthModule } from './modules/auth/auth.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { EventModule } from './modules/event/event.module';
-import configuration from './modules/shared/config/configuration';
 import { SalesModule } from './modules/sales/sales.module';
-import { LoggerModule } from 'nestjs-pino';
-import { LoggerService } from './modules/shared/services/logger.service';
+import configuration from './modules/shared/config/configuration';
 
 @Module({
   imports: [

@@ -4,8 +4,8 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createClient } from 'redis';
 import { AppModule } from './app.module';
+import { LoggerService } from './logger';
 import { Env } from './modules/shared/config/configuration';
-import { LoggerService } from './modules/shared/services/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
