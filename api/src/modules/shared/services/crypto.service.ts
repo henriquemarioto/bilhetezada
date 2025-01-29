@@ -5,9 +5,9 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export default class CryptoService {
-  private readonly algorithm = 'aes-256-ctr';
-  private readonly secretKey = undefined;
-  private readonly iv = undefined;
+  private readonly algorithm: string = 'aes-256-ctr';
+  private readonly secretKey: Buffer = undefined;
+  private readonly iv: Buffer = undefined;
 
   constructor(configService: ConfigService) {
     this.secretKey = Buffer.from(
@@ -32,7 +32,7 @@ export default class CryptoService {
     const decipher = crypto.createDecipheriv(
       this.algorithm,
       this.secretKey,
-      Buffer.from(iv, 'hex'),
+      this.iv,
     );
     const decrypted = Buffer.concat([
       decipher.update(Buffer.from(content, 'hex')),
@@ -41,11 +41,11 @@ export default class CryptoService {
     return decrypted.toString();
   }
 
-  encryptSalt(text: string) {
+  encryptSalt(text: string): string {
     return bcrypt.hashSync(text, 12);
   }
 
-  compareHashWithSalt(text: string, hash: string) {
+  compareHashWithSalt(text: string, hash: string): boolean {
     return bcrypt.compareSync(text, hash);
   }
 }
