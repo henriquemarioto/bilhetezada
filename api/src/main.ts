@@ -5,7 +5,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createClient } from 'redis';
 import { AppModule } from './app.module';
 import { Env } from './modules/shared/config/configuration';
-import { Logger } from 'nestjs-pino';
 import { LoggerService } from './modules/shared/services/logger.service';
 
 async function bootstrap() {
