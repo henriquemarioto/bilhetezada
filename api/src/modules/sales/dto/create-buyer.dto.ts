@@ -1,6 +1,6 @@
+import { IsMobilePhoneConstraint } from '@/modules/shared/validators/validate-phone.validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsString, Validate } from 'class-validator';
-import { IsMobilePhoneConstraint } from '@/modules/shared/utils/validators/validate-phone.validator';
 
 export class CreateBuyerDto {
   @ApiProperty()

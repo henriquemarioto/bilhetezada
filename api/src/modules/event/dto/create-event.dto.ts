@@ -11,7 +11,7 @@ import {
   IsDateBeforeDate,
   IsDateBetweenDates,
   IsDateGreaterThanTodayConstraint,
-} from '../../shared/utils/validators/validate-date.validator';
+} from '../../shared/validators/validate-date.validator';
 
 export class CreateEventDto {
   @ApiProperty()

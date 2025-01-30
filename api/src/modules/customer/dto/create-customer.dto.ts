@@ -1,5 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import {
   IsEmail,
   IsISO8601,
@@ -10,7 +9,7 @@ import {
   Matches,
   Validate,
 } from 'class-validator';
-import { IsValidDocumentConstraint } from '../../shared/utils/validators/validate-document.validator';
+import { IsValidDocumentConstraint } from '../../shared/validators/validate-document.validator';
 
 export class CreateCustomerDto {
   @ApiProperty()
