@@ -18,6 +18,7 @@ import { PaymentMethods } from '../enums/payment-methods.enum';
 import { OpenPixPixWebhookBodyDto } from '@/modules/sales/dto/openpix-pix-webhook-body.dto';
 import { PaymentStatus } from '../enums/payment-status.enum';
 import { OrderStatus } from '../enums/order-status.enum';
+import OpenPixChargeStatus from '../enums/openpix-charge-status.enum';
 
 const openPixApiUrl = 'https://test.com.br';
 
@@ -142,6 +143,17 @@ describe('OpenPixService', () => {
         event: mockedOrder.event,
         order: mockedOrder,
       });
+    });
+
+    it('should return true if charge status is not completed', async () => {
+      expect(
+        await openPixService.webhookPix(
+          openPixPixWebhookBodyDtoFactory(OpenPixChargeStatus.EXPIRED),
+        ),
+      ).toBe(true);
+      expect(paymentRepository.save).not.toHaveBeenCalled();
+      expect(orderRepository.update).not.toHaveBeenCalled();
+      expect(ticketRepository.save).not.toHaveBeenCalled();
     });
   });
 });

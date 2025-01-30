@@ -5,7 +5,6 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
 import { LoggerModule } from 'nestjs-pino';
-import typeormTestConfig from './database/typeorm/typeorm-test.config';
 import typeormConfig from './database/typeorm/typeorm.config';
 import { LoggerService } from './logger';
 import { AuthModule } from './modules/auth/auth.module';
@@ -18,15 +17,12 @@ import configuration from './modules/shared/config/configuration';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration, typeormConfig, typeormTestConfig],
+      load: [configuration, typeormConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        if (process.env.NODE_ENV === 'test') {
-          return configService.get('typeorm-test');
-        }
         return configService.get('typeorm');
       },
     }),
