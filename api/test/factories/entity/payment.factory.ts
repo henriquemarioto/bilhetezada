@@ -1,7 +1,7 @@
 import { Payment } from '@/entities/payment.entity';
 import { faker } from '@faker-js/faker/.';
-import { PaymentMethods } from 'src/modules/shared/enums/payment-methods.enum';
-import { PaymentStatus } from 'src/modules/shared/enums/payment-status.enum';
+import { PaymentMethods } from '@/modules/shared/enums/payment-methods.enum';
+import { PaymentStatus } from '@/modules/shared/enums/payment-status.enum';
 import { orderFactory } from './order.factory';
 import { Event } from '@/entities/event.entity';
 

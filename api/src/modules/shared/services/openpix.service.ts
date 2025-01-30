@@ -93,7 +93,7 @@ export class OpenPixService {
         order: order,
       });
 
-      //Send ticker by email
+      //Send ticket by email
     }
     return true;
   }
