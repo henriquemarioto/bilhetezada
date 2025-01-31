@@ -7,7 +7,7 @@ export const createCustomerDtoFactory = (
   const createCustomerDto: CreateCustomerDto = {
     name: faker.person.fullName(),
     document: String(faker.number.int({ min: 11111111111, max: 99999999999 })),
-    birth_date: new Date(),
+    birth_date: new Date().toJSON(),
     email: faker.internet.email(),
     password: faker.internet.password(),
   };

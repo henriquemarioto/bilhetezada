@@ -27,9 +27,8 @@ export class CreateCustomerDto {
   @ApiProperty({
     example: '2000-10-10T00:00:00.000Z',
   })
-  @IsISO8601()
-  @IsString()
-  birth_date: Date;
+  @IsISO8601({ strict: true, strictSeparator: true })
+  birth_date: string;
 
   @ApiProperty()
   @IsEmail()

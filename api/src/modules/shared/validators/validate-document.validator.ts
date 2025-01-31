@@ -5,7 +5,7 @@ import {
 } from 'class-validator';
 
 function isValidCPF(cpf: string): boolean {
-  cpf = cpf.replace(/\D/g, ''); // Remove caracteres não numéricos
+  cpf = cpf.replace(/\D/g, '');
   if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
 
   let sum = 0;
@@ -23,7 +23,7 @@ function isValidCPF(cpf: string): boolean {
 }
 
 function isValidCNPJ(cnpj: string): boolean {
-  cnpj = cnpj.replace(/\D/g, ''); // Remove caracteres não numéricos
+  cnpj = cnpj.replace(/\D/g, '');
   if (cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) return false;
 
   const calc = (cnpj: string, pos: number): number => {
@@ -43,10 +43,10 @@ function isValidCNPJ(cnpj: string): boolean {
   return digit1 === Number(cnpj[12]) && digit2 === Number(cnpj[13]);
 }
 
-@ValidatorConstraint({ name: 'isValidDocument', async: false })
+@ValidatorConstraint({ name: 'isValidDocument' })
 export class IsValidDocumentConstraint implements ValidatorConstraintInterface {
-  validate(value: string, _args: ValidationArguments): boolean {
-    const cleanedValue = value.replace(/\D/g, '');
+  validate(value: string | number, _args: ValidationArguments): boolean {
+    const cleanedValue = String(value).replace(/\D/g, '');
     return isValidCPF(cleanedValue) || isValidCNPJ(cleanedValue);
   }
 
