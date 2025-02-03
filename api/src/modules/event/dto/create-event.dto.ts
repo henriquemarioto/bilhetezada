@@ -72,4 +72,29 @@ export class CreateEventDto {
   @Min(10)
   @Max(10000)
   price: number;
+
+  constructor(
+    values: {
+      name: string;
+      description: string;
+      address: string;
+      start_time: string;
+      end_time: string;
+      entrance_limit_time: string;
+      limit_time_for_ticket_purchase: string;
+      time_zone: string;
+      price: number;
+    } = undefined,
+  ) {
+    this.name = values?.name;
+    this.description = values?.description;
+    this.address = values?.address;
+    this.start_time = values?.start_time;
+    this.end_time = values?.end_time;
+    this.entrance_limit_time = values?.entrance_limit_time;
+    this.limit_time_for_ticket_purchase =
+      values?.limit_time_for_ticket_purchase;
+    this.time_zone = values?.time_zone;
+    this.price = values?.price;
+  }
 }
