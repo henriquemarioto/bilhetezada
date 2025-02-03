@@ -3,11 +3,21 @@ import { CreateEventDto } from './create-event.dto';
 import { createEventDtoFactory } from '@/test/factories/dto/create-event.dto.factory';
 
 describe('CreateEventDto', () => {
-  let createEventDto: CreateEventDto;
-  const mockedCreatedEventDto: CreateEventDto = createEventDtoFactory();
+  const createEventDto: CreateEventDto = new CreateEventDto();
+  const mockedCreateEventDto = createEventDtoFactory();
 
   beforeEach(() => {
-    createEventDto = new CreateEventDto({ ...mockedCreatedEventDto });
+    createEventDto.name = mockedCreateEventDto.name;
+    createEventDto.description = mockedCreateEventDto.description;
+    createEventDto.address = mockedCreateEventDto.address;
+    createEventDto.start_time = mockedCreateEventDto.start_time;
+    createEventDto.end_time = mockedCreateEventDto.end_time;
+    createEventDto.entrance_limit_time =
+      mockedCreateEventDto.entrance_limit_time;
+    createEventDto.limit_time_for_ticket_purchase =
+      mockedCreateEventDto.limit_time_for_ticket_purchase;
+    createEventDto.time_zone = mockedCreateEventDto.time_zone;
+    createEventDto.price = mockedCreateEventDto.price;
   });
 
   it('should be defined', () => {
