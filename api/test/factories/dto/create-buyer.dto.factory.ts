@@ -4,5 +4,5 @@ import { faker } from '@faker-js/faker/.';
 export const createBuyerDtoFactory = (): CreateBuyerDto => ({
   name: faker.person.fullName(),
   email: faker.internet.email(),
-  phone: '+5512912345678',
+  phone: '+55 12 912345678',
 });

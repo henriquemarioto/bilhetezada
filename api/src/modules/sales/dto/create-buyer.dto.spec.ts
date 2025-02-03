@@ -47,6 +47,15 @@ describe('CreateBuyerDto', () => {
     createBuyerDto.phone = '41987641273';
     await expect(validate(createBuyerDto)).resolves.toHaveLength(1);
 
+    createBuyerDto.phone = '+41987641273';
+    await expect(validate(createBuyerDto)).resolves.toHaveLength(1);
+
+    createBuyerDto.phone = '+41 987641273';
+    await expect(validate(createBuyerDto)).resolves.toHaveLength(1);
+
+    createBuyerDto.phone = '+4198 7641273';
+    await expect(validate(createBuyerDto)).resolves.toHaveLength(1);
+
     createBuyerDto.phone = '';
     await expect(validate(createBuyerDto)).resolves.toHaveLength(1);
   });

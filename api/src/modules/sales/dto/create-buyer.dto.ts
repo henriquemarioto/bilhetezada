@@ -13,7 +13,7 @@ export class CreateBuyerDto {
   email: string;
 
   @ApiProperty({
-    example: '+5512912345678',
+    example: '+55 12 912345678',
   })
   @IsNotEmpty()
   @Validate(IsMobilePhoneConstraint)
