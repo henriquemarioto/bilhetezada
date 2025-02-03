@@ -1,105 +1,111 @@
 # Bilhetezada API
 
-Backend do projeto **Bilhetezada**.
+Backend of the **Bilhetezada** project.
 
-## Tecnologias Utilizadas
+## Main Technologies Used
 
-- **Backend**: [NestJS](https://nestjs.com/) (API Rest)
-- **Banco de Dados**: [MySql](https://www.mysql.com/) (Banco de dados)
-- **Cache**: [Redis](https://redis.io/)
-- **Autenticação**: JWT
-- **Validação de QR Code**: Criptografia com hash e chave secreta
+- **API Framework**: [NestJS](https://nestjs.com/) (REST API)
+- **Database**: [MySQL](https://www.mysql.com/) (Database)
+- **ORM**: [TypeORM](https://typeorm.io/) (ORM)
+- **Cache**: [Redis](https://redis.io/) (Cache)
+- **Request Data Validation**: [class-validator](https://github.com/typestack/class-validator) (Validation)
+- **Authentication**: [JWT](https://jwt.io/) (Authentication)
+- **QR Code Generation**: [QRCode](https://www.npmjs.com/package/qrcode) (QRCode)
 
 ---
 
-## Como Rodar o Projeto Localmente
+## How to Run the Project Locally
 
-1. Clone o repositório:
+1. Clone the repository:
+
    ```bash
    git clone git@github.com:henriquemarioto/bilhetezada.git
    cd bilhetezada
    ```
 
-2. Rode com docker:
+2. Run with Docker:
    ```bash
    docker compose up
    ```
 
-O projeto estará disponível em `http://localhost:3132`.
+The project will be available at `http://localhost:3132`.
 
 ---
 
 ## Migrations
 
-Aqui está o que cada comando faz e quando você deve usá-lo:
-
----
+Here’s what each command does and when you should use it:
 
 ### **1. `migration:run`**
+
 ```bash
 npm run migration:run
 ```
 
-#### **O que faz?**
-Esse comando executa as migrações pendentes no banco de dados. Ele aplica as mudanças definidas nos arquivos de migração (normalmente na pasta `src/migrations`) que ainda não foram aplicadas.
+**What does it do?**  
+This command runs all pending migrations in the database. It applies the changes defined in migration files (usually in the `src/migrations` folder) that have not yet been applied.
 
-#### **Quando usar?**
-- Após criar novas migrações e precisar aplicá-las ao banco.
-- Ao configurar o ambiente (ex.: local, staging ou produção) e precisar garantir que o esquema do banco esteja atualizado.
+**When to use?**
+
+- After creating new migrations and needing to apply them to the database.
+- When setting up an environment (e.g., local, staging, or production) and ensuring the database schema is up to date.
 
 ---
 
 ### **2. `migration:generate`**
+
 ```bash
 npm run migration:generate --name add-status-to-user
 ```
 
-#### **O que faz?**
-Esse comando gera automaticamente um arquivo de migração com base nas alterações detectadas no esquema das entidades TypeORM. Ele compara o estado atual do banco de dados com as entidades definidas no código.
+**What does it do?**  
+This command automatically generates a migration file based on detected changes in the TypeORM entity schema. It compares the current database state with the entities defined in the code.
 
-- O valor de `$npm_config_name` será substituído pelo nome da migração que você passar no momento da execução com a flag --name=nome_da_migration.
+**When to use?**
 
-#### **Quando usar?**
-- Quando você modificou as entidades (ex.: adicionou ou removeu colunas/tabelas) e precisa criar um arquivo de migração correspondente.
+- When you modify entities (e.g., add or remove columns/tables) and need to create a corresponding migration file.
 
 ---
 
 ### **3. `migration:create`**
+
 ```bash
 npm run migration:create --name rename-user-table
 ```
 
-#### **O que faz?**
-Esse comando cria um arquivo de migração vazio. Diferente do `migration:generate`, ele não analisa as entidades automaticamente. É útil quando você precisa escrever manualmente a lógica de migração.
+**What does it do?**  
+This command creates an empty migration file. Unlike `migration:generate`, it does not automatically analyze entities. It is useful when you need to manually write migration logic.
 
-- O valor de `$npm_config_name` será substituído pelo nome da migração que você passar.
+**When to use?**
 
-#### **Quando usar?**
-- Quando você quer criar uma migração personalizada que não pode ser gerada automaticamente.
-- Para casos complexos, como execuções específicas de SQL ou manipulação de dados.
+- When creating a custom migration that cannot be generated automatically.
+- For complex cases such as specific SQL executions or data manipulation.
 
 ---
 
 ### **4. `migration:revert`**
+
 ```bash
 npm run migration:revert
 ```
 
-#### **O que faz?**
-Esse comando reverte a última migração aplicada ao banco de dados. Ele usa a lógica definida no método `down` de cada migração para desfazer as alterações.
+**What does it do?**  
+This command reverts the last migration applied to the database. It uses the logic defined in the `down` method of each migration to undo changes.
 
-#### **Quando usar?**
-- Quando você aplicou uma migração incorretamente e precisa reverter.
-- Para testes, quando precisa desfazer mudanças no banco após validar uma migração.
+**When to use?**
+
+- When you applied a migration incorrectly and need to roll it back.
+- For testing purposes, when you need to undo database changes after validating a migration.
 
 ---
 
-### **Resumo dos comandos e seu uso**
-| Comando             | O que faz?                                              | Quando usar?                                         |
-|---------------------|---------------------------------------------------------|----------------------------------------------------|
-| `migration:run`     | Executa todas as migrações pendentes.                   | Após criar novas migrações ou configurar o ambiente. |
-| `migration:generate`| Gera uma migração automaticamente a partir das entidades. | Quando modifica as entidades e quer refletir isso no banco. |
-| `migration:create`  | Cria uma migração vazia para escrita manual.            | Para migrações personalizadas ou complexas.         |
-| `migration:revert`  | Reverte a última migração aplicada.                     | Para desfazer mudanças ou corrigir erros.           |
+### **Summary of Commands and Their Usage**
+
+| Command              | What does it do?                                   | When to use?                                                    |
+| -------------------- | -------------------------------------------------- | --------------------------------------------------------------- |
+| `migration:run`      | Runs all pending migrations.                       | After creating new migrations or setting up the environment.    |
+| `migration:generate` | Automatically generates a migration from entities. | When modifying entities and reflecting changes in the database. |
+| `migration:create`   | Creates an empty migration for manual writing.     | For custom or complex migrations.                               |
+| `migration:revert`   | Reverts the last applied migration.                | To undo changes or fix errors.                                  |
 
 ---

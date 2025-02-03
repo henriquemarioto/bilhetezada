@@ -1,21 +1,28 @@
-# Bilhetezada
+# Bilhetezada  
 
-**Bilhetezada** é uma aplicação para facilitar a criação, gestão e venda de ingressos para eventos. Nosso objetivo é oferecer uma plataforma completa para organizadores e participantes, simplificando a experiência desde a criação do evento até o gerenciamento de acessos.
+**Bilhetezada** is an application designed to simplify the creation, management, and sale of event tickets. Our goal is to provide a complete platform for organizers and attendees, streamlining the experience from event creation to access control.  
 
----
+---  
 
-## Funcionalidades
+## Project Structure  
 
-- **Criação e Administração de Eventos**: Crie eventos personalizados com informações detalhadas, categorias e preços de ingressos.
-- **Customização de Ingressos**: Personalize ingressos com diferentes tipos e opções.
-- **Controle de Acessos**: Validação de ingressos por QR Code.
-- **Relatórios em Tempo Real**: Acompanhe vendas, acessos e métricas de desempenho do seu evento.
-- **Integração com Sistemas de Pagamento**: Simplifique o pagamento de ingressos diretamente na plataforma.
+- **Backend**: Located in the `./api` folder.  
+- **Frontend**: Located in the `./web` folder.  
 
-## Contato
+---  
 
-Se tiver dúvidas ou sugestões, entre em contato pelo e-mail: **henrique.marioto@outlook.com**.
+## Features  
 
----
+- **Event Creation and Management**: Create customized events with detailed information, categories, and ticket pricing.  
+- **Ticket Customization**: Personalize tickets with different types and options.  
+- **Access Control**: Ticket validation via QR Code.  
+- **Real-Time Reports**: Track sales, access, and performance metrics for your event.  
+- **Integration with Payment Systems**: Simplify ticket payments directly on the platform.  
 
-**Vamos juntos transformar a experiência de eventos com o Bilhetezada!**
+## Contact  
+
+If you have any questions or suggestions, contact us: **henrique.marioto@outlook.com**.  
+
+---  
+
+**Let's transform the event experience together with Bilhetezada!**  
