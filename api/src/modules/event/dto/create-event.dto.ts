@@ -1,9 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsISO8601,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
+  Max,
+  Min,
   Validate,
 } from 'class-validator';
 import {
@@ -15,14 +18,17 @@ import {
 
 export class CreateEventDto {
   @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   name: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   description: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   address: string;
 
@@ -52,14 +58,18 @@ export class CreateEventDto {
     example: '2025-01-01T00:00:00.000Z',
   })
   @IsISO8601()
-  @IsDateBeforeDate('end_time')
+  @IsDateBeforeDate('start_time')
   limit_time_for_ticket_purchase: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   time_zone: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   @IsNumber()
+  @Min(10)
+  @Max(10000)
   price: number;
 }
