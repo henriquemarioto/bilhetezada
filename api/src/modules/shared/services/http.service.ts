@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpRequestDto } from '../dto/http-request.dto';
 import { AxiosHeaders } from 'axios';
 import { HttpService as AxiosHttpService } from '@nestjs/axios';
@@ -7,6 +7,8 @@ import { HttpResponse } from '../dto/http-response.dto';
 
 @Injectable()
 export class HttpService {
+  private readonly logger: Logger = new Logger(HttpService.name);
+
   constructor(private nestJsAxiosHttpService: AxiosHttpService) {}
 
   async get(
@@ -25,7 +27,7 @@ export class HttpService {
         data: response.data,
       };
     } catch (error) {
-      console.error('Error in get request', error);
+      this.logger.error('Error in get request', error);
       return false;
     }
   }
@@ -46,7 +48,7 @@ export class HttpService {
         data: response.data,
       };
     } catch (error) {
-      console.error('Error in post request', error);
+      this.logger.error('Error in post request', error);
       return false;
     }
   }
