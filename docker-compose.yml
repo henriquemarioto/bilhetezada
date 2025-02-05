@@ -7,7 +7,7 @@ services:
       - redisdb
     build: ./api
     restart: unless-stopped
-    command: sh -c "npm run migration:run && npm run start:dev"
+    command: sh -c "npm i && npm run migration:run && npm run start:dev"
     environment:
       REDIS_URL: redis://redisdb:6379
       DATABASE_HOST: mysqldb
