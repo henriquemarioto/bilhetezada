@@ -1,7 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Initial1733856926284 implements MigrationInterface {
-  name = 'Initial1733856926284';
+export class AlterEventAndCustomerFields1733856926284
+  implements MigrationInterface
+{
+  name = 'AlterEventAndCustomerFields1733856926284';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`ALTER TABLE \`customer\` DROP COLUMN \`picture\``);
