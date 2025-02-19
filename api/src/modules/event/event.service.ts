@@ -14,7 +14,6 @@ import { SlugService } from '../shared/services/slug.service';
 import TimezoneService from '../shared/services/timezone.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
-import { validate } from 'class-validator';
 
 @Injectable()
 export class EventService {

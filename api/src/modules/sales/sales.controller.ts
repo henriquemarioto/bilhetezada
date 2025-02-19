@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiExcludeEndpoint,
   ApiResponse,
 } from '@nestjs/swagger';
@@ -31,7 +32,7 @@ export class SalesController {
 
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
-    description: 'Pix informations',
+    description: 'Pix payment informations',
     type: CreateOrderResponseDto,
   })
   @Post('create-order')
@@ -56,10 +57,13 @@ export class SalesController {
     };
   }
 
-  @ApiExcludeEndpoint()
+  @ApiBody({
+    type: OpenPixPixWebhookBodyDto,
+    isArray: false,
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('webhook/openpix/pix')
-  async webhookOpenPixPixPayment(@Body() body: OpenPixPixWebhookBodyDto) {
+  async webhookOpenPixPixPayment(@Body() body: any) {
     await this.openPixService.webhookPix(body);
     return true;
   }
