@@ -22,7 +22,20 @@ services:
       - type: bind
         source: ./api
         target: /api
-      - /app/node_modules # POG to prevent container's node_modules be overridden from host;
+      - /api/node_modules
+
+  web:
+    build: ./web
+    command: sh -c "npm i && npm run dev"
+    ports:
+      - 3000:3000
+    networks:
+      - network
+    volumes:
+      - type: bind
+        source: ./web
+        target: /web
+      - /web/node_modules
 
   mysqldb:
     image: mysql:8.0.21
