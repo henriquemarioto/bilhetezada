@@ -2,14 +2,16 @@ import { Buyer } from '@/entities/buyer.entity';
 import { Order } from '@/entities/order.entity';
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventService } from '../event/event.service';
-import { OpenPixService } from '../shared/services/openpix.service';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { PaymentService } from '../payment/services/payment.service';
+import { PaymentMethods } from '../shared/enums/payment-methods.enum';
+import { CreateTicketOrderDto } from './dto/create-ticket-order.dto';
 
 @Injectable()
 export class SalesService {
@@ -19,38 +21,45 @@ export class SalesService {
     @InjectRepository(Buyer)
     private buyersRepository: Repository<Buyer>,
     private eventService: EventService,
-    private openPixService: OpenPixService,
+    @Inject('PaymentService') private paymentService: PaymentService,
   ) {}
 
-  async createOrder(createOrderDto: CreateOrderDto) {
-    const event = await this.eventService.getById(createOrderDto.eventId);
+  async createTicketOrder(createTicketOrderDto: CreateTicketOrderDto): Promise<{
+    transactionId: string;
+    qrcodeImageUrl: string;
+    pixCopyPaste: string;
+    value: number;
+    expiresDate: string;
+  }> {
+    const event = await this.eventService.getById(createTicketOrderDto.eventId);
 
     if (event.limit_time_for_ticket_purchase < new Date()) {
       throw new ForbiddenException('Ticket purchase time expired');
     }
 
-    const buyer = await this.buyersRepository.save(createOrderDto.buyer);
+    const buyer = await this.buyersRepository.save(createTicketOrderDto.buyer);
 
-    const pixCharge = await this.openPixService.generatePixCharge(
-      event.price * 100,
+    const pixCharge = await this.paymentService.generateCharge(
+      event.price,
+      PaymentMethods.PIX,
     );
 
-    const { eventId: _, ...createOrderData } = createOrderDto;
+    const { eventId: _, ...createOrderData } = createTicketOrderDto;
 
     await this.ordersRepository.save({
       ...createOrderData,
       value: event.price,
-      transaction_reference: pixCharge.data.charge.correlationID,
+      transaction_reference: pixCharge.transactionId,
       event,
       buyer,
     });
 
     return {
-      transactionReference: pixCharge.data.charge.correlationID,
-      qrcodeImageUrl: pixCharge.data.charge.qrCodeImage,
-      pixCopyPaste: pixCharge.data.charge.brCode,
-      value: pixCharge.data.charge.value,
-      expiresDate: pixCharge.data.charge.expiresDate,
+      transactionId: pixCharge.transactionId,
+      qrcodeImageUrl: pixCharge.qrcodeImageUrl,
+      pixCopyPaste: pixCharge.pixCopyPaste,
+      value: pixCharge.value,
+      expiresDate: pixCharge.expiresDate,
     };
   }
 

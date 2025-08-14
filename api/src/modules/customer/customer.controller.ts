@@ -18,7 +18,7 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('update-customer')
@@ -29,7 +29,7 @@ export class CustomerController {
     await this.customerService.update(user.userId, updateCustomerDto);
   }
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('delete-customer')

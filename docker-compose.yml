@@ -24,19 +24,6 @@ services:
         target: /api
       - /api/node_modules
 
-  web:
-    build: ./web
-    command: sh -c "npm i && npm run dev"
-    ports:
-      - 3000:3000
-    networks:
-      - network
-    volumes:
-      - type: bind
-        source: ./web
-        target: /web
-      - /web/node_modules
-
   mysqldb:
     image: mysql:8.0.21
     environment:

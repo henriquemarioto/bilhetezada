@@ -1,4 +1,4 @@
-import { OpenPixPixWebhookBodyDto } from '@/modules/sales/dto/openpix-pix-webhook-body.dto';
+import { OpenPixPixWebhookBodyDto } from '@/modules/payment/dto/openpix-pix-webhook-body.dto';
 import OpenPixChargeStatus from '@/modules/shared/enums/openpix-charge-status.enum';
 import { faker } from '@faker-js/faker/.';
 

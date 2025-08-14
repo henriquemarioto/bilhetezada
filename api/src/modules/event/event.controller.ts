@@ -24,7 +24,7 @@ import { UpdateEventDTO } from './dto/update-event.dto';
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('create-event')
@@ -35,7 +35,7 @@ export class EventController {
     await this.eventService.create(user.userId, createEventDto);
   }
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access_token')
   @ApiResponse({
     description: 'Event',
     type: EventResponseDto,
@@ -51,7 +51,7 @@ export class EventController {
     return plainToInstance(EventResponseDto, event);
   }
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access_token')
   @ApiResponse({
     description: 'Array with customer events',
     type: EventResponseDto,
@@ -65,7 +65,7 @@ export class EventController {
     return events.map((event) => plainToInstance(EventResponseDto, event));
   }
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('update-event')
@@ -77,7 +77,7 @@ export class EventController {
     await this.eventService.update(user.userId, eventId, updateEventDto);
   }
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('delete-event')

@@ -12,6 +12,8 @@ import { CustomerModule } from './modules/customer/customer.module';
 import { EventModule } from './modules/event/event.module';
 import { SalesModule } from './modules/sales/sales.module';
 import configuration from './modules/shared/config/configuration';
+import { PaymentModule } from './modules/payment/payment.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -23,7 +25,11 @@ import configuration from './modules/shared/config/configuration';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        return configService.get('typeorm');
+        const typeOrmConfig = configService.get('typeorm');
+        if (!typeOrmConfig) {
+          throw new Error('TypeORM configuration is not defined');
+        }
+        return typeOrmConfig;
       },
     }),
     CacheModule.register({
@@ -38,6 +44,8 @@ import configuration from './modules/shared/config/configuration';
     CustomerModule,
     EventModule,
     SalesModule,
+    PaymentModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [LoggerService],

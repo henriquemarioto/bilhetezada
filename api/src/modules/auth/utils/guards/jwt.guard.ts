@@ -30,7 +30,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (!authorization)
       throw new UnauthorizedException('Authorization not granted');
 
-    const [_, jwt] = authorization.split('Bearer ');
+    const [, jwt] = authorization.split('Bearer ');
 
     const isLoggedOut = await this.authService.hasLogout(jwt);
 

@@ -1,9 +1,9 @@
-import { CreateOrderDto } from '@/modules/sales/dto/create-order.dto';
+import { CreateTicketOrderDto } from '@/modules/sales/dto/create-ticket-order.dto';
 import { faker } from '@faker-js/faker/.';
 
-export const createOrderDtoFactory = (
+export const createTicketOrderDtoFactory = (
   eventId: string = faker.string.uuid(),
-): CreateOrderDto => ({
+): CreateTicketOrderDto => ({
   buyer: {
     email: faker.internet.email(),
     name: faker.person.fullName(),

@@ -35,7 +35,7 @@ export class Event {
   @Column({ nullable: false })
   end_time: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   entrance_limit_time?: Date | null;
 
   @Column({ nullable: false })

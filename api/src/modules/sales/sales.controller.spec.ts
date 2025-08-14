@@ -1,19 +1,19 @@
 import { Order } from '@/entities/order.entity';
 import { createOrderResponseDtoFactory } from '@/test/factories/dto/create-order-response.dto.factory';
-import { createOrderDtoFactory } from '@/test/factories/dto/create-order.dto.factory';
+import { createOrderDtoFactory } from '@/test/factories/dto/create-ticket-order.dto.factory';
+import { openPixPixWebhookBodyDtoFactory } from '@/test/factories/dto/openpix-pix-webhook-body.dto.factory';
 import { customerFactory } from '@/test/factories/entity/customer.factory';
 import { eventFactory } from '@/test/factories/entity/event.factory';
 import { orderFactory } from '@/test/factories/entity/order.factory';
 import { requestUserFactory } from '@/test/factories/request-user.factory';
 import { Test, TestingModule } from '@nestjs/testing';
+import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
+import { OpenPixPixWebhookBodyDto } from '../payment/dto/openpix-pix-webhook-body.dto';
+import { OpenPixService } from '../payment/services/openpix.service';
 import { RequestUser } from '../shared/dto/request-user.dto';
-import { OpenPixService } from '../shared/services/openpix.service';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto } from './dto/create-ticket-order.dto';
 import { SalesController } from './sales.controller';
 import { SalesService } from './sales.service';
-import { OpenPixPixWebhookBodyDto } from './dto/openpix-pix-webhook-body.dto';
-import { openPixPixWebhookBodyDtoFactory } from '@/test/factories/dto/openpix-pix-webhook-body.dto.factory';
-import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
 
 const mockedOrder: Order = orderFactory({
   event: eventFactory({ customer: customerFactory() }),

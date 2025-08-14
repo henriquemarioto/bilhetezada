@@ -11,10 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from '@/entities/customer.entity';
 import AuthProviders from '../shared/enums/auth-providers.enum';
 import { Repository } from 'typeorm';
-import {
-  CreateCustomerDto,
-  CreateCustomerPartialDTO,
-} from './dto/create-customer.dto';
+import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import CryptoService from '../shared/services/crypto.service';
 
@@ -33,9 +30,10 @@ export class CustomerService {
 
   async create(
     provider: AuthProviders,
-    createCustomerDto: CreateCustomerDto | CreateCustomerPartialDTO,
+    createCustomerDto: CreateCustomerDto,
   ): Promise<CustomerWithoutPassword> {
     const customerDtoToProcess = { ...createCustomerDto };
+
     customerDtoToProcess.email = this.cryptoService.encrypt(
       customerDtoToProcess.email,
     );

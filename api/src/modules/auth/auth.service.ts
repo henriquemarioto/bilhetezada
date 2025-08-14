@@ -10,10 +10,7 @@ import {
   CustomerService,
   CustomerWithoutPassword,
 } from '../customer/customer.service';
-import {
-  CreateCustomerDto,
-  CreateCustomerPartialDTO,
-} from '../customer/dto/create-customer.dto';
+import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
 import { Customer } from '@/entities/customer.entity';
 
 export type GoogleUser = {
@@ -39,7 +36,7 @@ export class AuthService {
 
   async signUp(
     provider: AuthProviders,
-    createCustomerDto: CreateCustomerDto | CreateCustomerPartialDTO,
+    createCustomerDto: CreateCustomerDto,
   ): Promise<CustomerWithoutPassword> {
     return await this.customerService.create(provider, createCustomerDto);
   }
@@ -71,6 +68,13 @@ export class AuthService {
     const { password: userPassword, ...restUser } = user;
 
     if (provider == AuthProviders.LOCAL) {
+      if (!password) throw new UnauthorizedException('Password not provided.');
+
+      if (!userPassword)
+        throw new UnauthorizedException(
+          'User with local provider must have a password.',
+        );
+
       const passwordMatch = this.cryptoService.compareHashWithSalt(
         password,
         userPassword,

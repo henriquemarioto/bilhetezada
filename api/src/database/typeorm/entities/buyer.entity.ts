@@ -19,7 +19,7 @@ export class Buyer {
   @Column({ nullable: false })
   email: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   phone: string | null;
 
   @CreateDateColumn()

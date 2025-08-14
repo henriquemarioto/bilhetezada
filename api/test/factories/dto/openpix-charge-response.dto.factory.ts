@@ -1,4 +1,4 @@
-import { OpenPixChargeResponseDto } from '@/modules/sales/dto/openpix-charge-response.dto';
+import { OpenPixChargeResponseDto } from '@/modules/payment/dto/openpix-charge-response.dto';
 import OpenPixChargeStatus from '@/modules/shared/enums/openpix-charge-status.enum';
 import { faker } from '@faker-js/faker/.';
 

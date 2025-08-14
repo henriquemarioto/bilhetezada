@@ -6,8 +6,8 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export default class CryptoService {
   private readonly algorithm: string = 'aes-256-ctr';
-  private readonly secretKey: Buffer = undefined;
-  private readonly iv: Buffer = undefined;
+  private readonly secretKey: Buffer = Buffer.alloc(0);
+  private readonly iv: Buffer = Buffer.alloc(0);
 
   constructor(configService: ConfigService) {
     this.secretKey = Buffer.from(

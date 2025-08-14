@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
   IsISO8601,
@@ -17,24 +17,27 @@ export class CreateCustomerDto {
   name: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   @Matches(/^\d{11}$|^\d{14}$/, {
     message: 'The document must contain exactly 11 (CPF) or 14 (CNPJ) numbers.',
   })
   @Validate(IsValidDocumentConstraint)
-  document: string;
+  document?: string;
 
   @ApiProperty({
     example: '2000-10-10T00:00:00.000Z',
   })
+  @IsOptional()
   @IsISO8601({ strict: true, strictSeparator: true })
-  birth_date: string;
+  birth_date?: string;
 
   @ApiProperty()
   @IsEmail()
   email: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @IsStrongPassword({
     minLength: 12,
@@ -43,13 +46,12 @@ export class CreateCustomerDto {
     minSymbols: 1,
     minNumbers: 1,
   })
-  password: string;
+  password?: string;
 
   @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @IsUrl()
   @IsOptional()
   picture_url?: string;
 }
-
-export class CreateCustomerPartialDTO extends PartialType(CreateCustomerDto) {}

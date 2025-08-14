@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateOrderResponseDto {
+export class CreateTicketOrderResponseDto {
   @ApiProperty()
-  transactionReference: string;
+  transactionId: string;
 
   @ApiProperty()
   qrcodeImageUrl: string;

@@ -3,7 +3,7 @@ import { CreateBuyerDto } from './create-buyer.dto';
 import { IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateOrderDto {
+export class CreateTicketOrderDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsUUID()

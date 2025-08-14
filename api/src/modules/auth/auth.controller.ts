@@ -78,7 +78,7 @@ export class AuthController {
     return this.authService.login(user);
   }
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @Get('logout')
   @HttpCode(HttpStatus.NO_CONTENT)

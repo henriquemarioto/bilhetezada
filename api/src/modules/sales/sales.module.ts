@@ -8,6 +8,7 @@ import { EventModule } from '../event/event.module';
 import SharedModule from '../shared/shared.module';
 import { SalesController } from './sales.controller';
 import { SalesService } from './sales.service';
+import { PaymentModule } from '../payment/payment.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SalesService } from './sales.service';
     CustomerModule,
     AuthModule,
     SharedModule,
+    PaymentModule,
   ],
   providers: [SalesService],
   controllers: [SalesController],

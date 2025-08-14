@@ -1,24 +1,24 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { OpenPixService } from './openpix.service';
-import { ConfigService } from '@nestjs/config';
-import { HttpService } from './http.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { Order } from '@/entities/order.entity';
-import { orderFactory } from '@/test/factories/entity/order.factory';
-import { eventFactory } from '@/test/factories/entity/event.factory';
-import { customerFactory } from '@/test/factories/entity/customer.factory';
 import { Payment } from '@/entities/payment.entity';
 import { Ticket } from '@/entities/ticket.entity';
+import { OpenPixPixWebhookBodyDto } from '@/modules/payment/dto/openpix-pix-webhook-body.dto';
+import { openPixPixWebhookBodyDtoFactory } from '@/test/factories/dto/openpix-pix-webhook-body.dto.factory';
+import { customerFactory } from '@/test/factories/entity/customer.factory';
+import { eventFactory } from '@/test/factories/entity/event.factory';
+import { orderFactory } from '@/test/factories/entity/order.factory';
 import { paymentFactory } from '@/test/factories/entity/payment.factory';
 import { ticketFactory } from '@/test/factories/entity/ticket.factory';
-import { Repository } from 'typeorm';
 import { InternalServerErrorException } from '@nestjs/common';
-import { openPixPixWebhookBodyDtoFactory } from '@/test/factories/dto/openpix-pix-webhook-body.dto.factory';
-import { PaymentMethods } from '../enums/payment-methods.enum';
-import { OpenPixPixWebhookBodyDto } from '@/modules/sales/dto/openpix-pix-webhook-body.dto';
-import { PaymentStatus } from '../enums/payment-status.enum';
-import { OrderStatus } from '../enums/order-status.enum';
+import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import OpenPixChargeStatus from '../enums/openpix-charge-status.enum';
+import { OrderStatus } from '../enums/order-status.enum';
+import { PaymentMethods } from '../enums/payment-methods.enum';
+import { PaymentStatus } from '../enums/payment-status.enum';
+import { HttpService } from './http.service';
+import { OpenPixService } from './openpix.service';
 
 const openPixApiUrl = 'https://test.com.br';
 
@@ -134,7 +134,7 @@ describe('OpenPixService', () => {
         transaction_reference: webhookBody.charge.correlationID,
         status: PaymentStatus.PAID,
         order: mockedOrder,
-        value: webhookBody.pix.value / 100,
+        value: webhookBody.pix.value,
       });
       expect(orderRepository.update).toHaveBeenCalledWith(mockedOrder.id, {
         status: OrderStatus.CONFIRMED,

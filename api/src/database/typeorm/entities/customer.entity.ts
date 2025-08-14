@@ -17,10 +17,10 @@ export class Customer {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ nullable: true, unique: true })
+  @Column({ type: 'varchar', nullable: true, unique: true })
   document: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ type: 'datetime', nullable: true, default: null })
   birth_date: Date | null;
 
   @Column({ nullable: false, unique: true })
@@ -29,10 +29,10 @@ export class Customer {
   @Column({ default: true })
   active: boolean;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   password: string | null;
 
-  @Column({ default: null })
+  @Column({ type: 'varchar', default: null })
   picture_url: string | null;
 
   @Column({ nullable: false, type: 'enum', enum: AuthProviders })

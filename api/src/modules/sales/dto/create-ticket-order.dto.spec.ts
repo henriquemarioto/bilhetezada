@@ -1,11 +1,9 @@
+import { createOrderDtoFactory } from '@/test/factories/dto/create-ticket-order.dto.factory';
 import { validate } from 'class-validator';
-import { CreateBuyerDto } from './create-buyer.dto';
-import { createBuyerDtoFactory } from '@/test/factories/dto/create-buyer.dto.factory';
-import { CreateOrderDto } from './create-order.dto';
-import { createOrderDtoFactory } from '@/test/factories/dto/create-order.dto.factory';
+import { CreateTicketOrderDto } from './create-ticket-order.dto';
 
-describe('CreateOrderDto', () => {
-  const createOrderDto: CreateOrderDto = new CreateOrderDto();
+describe('CreateTicketOrderDto', () => {
+  const createOrderDto: CreateTicketOrderDto = new CreateTicketOrderDto();
   const mockedCreateOrderDto = createOrderDtoFactory();
 
   beforeEach(() => {

@@ -37,7 +37,15 @@ async function bootstrap() {
     .setDescription('API for Bilhetezada application')
     .setVersion('1.0')
     .addTag('Bilhetezada')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+      },
+      'access-token',
+    )
     .addServer('http://localhost:3132')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);

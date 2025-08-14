@@ -18,7 +18,7 @@ export function IsDateAfterDate(
   relatedFieldName: string,
   validationOptions?: ValidationOptions,
 ) {
-  return function (object: unknown, propertyName: string) {
+  return function (object: Record<string, any>, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
@@ -33,7 +33,7 @@ export function IsDateBeforeDate(
   relatedFieldName: string,
   validationOptions?: ValidationOptions,
 ) {
-  return function (object: unknown, propertyName: string) {
+  return function (object: Record<string, any>, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
@@ -49,7 +49,7 @@ export function IsDateBetweenDates(
   relatedFieldEndName: string,
   validationOptions?: ValidationOptions,
 ) {
-  return function (object: unknown, propertyName: string) {
+  return function (object: Record<string, any>, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,

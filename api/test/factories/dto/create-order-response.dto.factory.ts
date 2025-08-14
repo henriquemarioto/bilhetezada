@@ -1,4 +1,4 @@
-import { CreateOrderResponseDto } from '@/modules/sales/dto/create-order-response.dto';
+import { CreateOrderResponseDto } from '@/modules/sales/dto/create-ticket-order-response.dto';
 import { faker } from '@faker-js/faker/.';
 import { randomUUID } from 'crypto';
 

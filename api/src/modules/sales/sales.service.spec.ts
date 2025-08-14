@@ -2,7 +2,7 @@ import { Buyer } from '@/entities/buyer.entity';
 import { Event } from '@/entities/event.entity';
 import { Order } from '@/entities/order.entity';
 import { EventService } from '@/modules/event/event.service';
-import { createOrderDtoFactory } from '@/test/factories/dto/create-order.dto.factory';
+import { createTicketOrderDtoFactory } from '@/test/factories/dto/create-ticket-order.dto.factory';
 import { openPixChargeResponseDtoFactory } from '@/test/factories/dto/openpix-charge-response.dto.factory';
 import { buyerFactory } from '@/test/factories/entity/buyer.factory';
 import { customerFactory } from '@/test/factories/entity/customer.factory';
@@ -12,9 +12,9 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { OpenPixService } from '../shared/services/openpix.service';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { OpenPixChargeResponseDto } from './dto/openpix-charge-response.dto';
+import { OpenPixChargeResponseDto } from '../payment/dto/openpix-charge-response.dto';
+import { OpenPixService } from '../payment/services/openpix.service';
+import { CreateTicketOrderDto } from './dto/create-ticket-order.dto';
 import { SalesService } from './sales.service';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
@@ -25,9 +25,8 @@ const mockedOrder: Order = orderFactory({ event: mockedEvent });
 
 const mockedBuyer: Buyer = buyerFactory({ order: mockedOrder });
 
-const mockedCreateOrderDto: CreateOrderDto = createOrderDtoFactory(
-  mockedEvent.id,
-);
+const mockedCreateTicketOrderDto: CreateTicketOrderDto =
+  createTicketOrderDtoFactory(mockedEvent.id);
 
 const mockedOpenPixChargeResponse: OpenPixChargeResponseDto =
   openPixChargeResponseDtoFactory();
@@ -95,7 +94,7 @@ describe('SalesService', () => {
 
   describe('createOrder', () => {
     it('should create order and return payment data', async () => {
-      const result = await salesService.createOrder(mockedCreateOrderDto);
+      const result = await salesService.createOrder(mockedCreateTicketOrderDto);
 
       expect(result).toStrictEqual({
         transactionReference:
@@ -106,16 +105,17 @@ describe('SalesService', () => {
         expiresDate: mockedOpenPixChargeResponse.data.charge.expiresDate,
       });
       expect(mockedEventSerivce.getById).toHaveBeenCalledWith(
-        mockedCreateOrderDto.eventId,
+        mockedCreateTicketOrderDto.eventId,
       );
       expect(buyersRepository.save).toHaveBeenCalledWith(
-        mockedCreateOrderDto.buyer,
+        mockedCreateTicketOrderDto.buyer,
       );
       expect(mockedOpenPixService.generatePixCharge).toHaveBeenCalledWith(
         mockedEvent.price * 100,
       );
 
-      const { eventId: _, ...mockedCreateOrderData } = mockedCreateOrderDto;
+      const { eventId: _, ...mockedCreateOrderData } =
+        mockedCreateTicketOrderDto;
 
       expect(ordersRepository.save).toHaveBeenCalledWith({
         ...mockedCreateOrderData,
@@ -142,7 +142,7 @@ describe('SalesService', () => {
       );
 
       await expect(
-        salesService.createOrder(mockedCreateOrderDto),
+        salesService.createOrder(mockedCreateTicketOrderDto),
       ).rejects.toThrow(ForbiddenException);
     });
   });

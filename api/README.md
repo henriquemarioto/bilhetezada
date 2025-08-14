@@ -1,6 +1,6 @@
 # Bilhetezada API
 
-Backend of the **Bilhetezada** project.
+Bilhetezada is a platform for organizing small events in Brazil, focusing on simplicity, accessibility and digital efficiency.
 
 ## Main Technologies Used
 
@@ -11,6 +11,73 @@ Backend of the **Bilhetezada** project.
 - **Request Data Validation**: [class-validator](https://github.com/typestack/class-validator) (Validation)
 - **Authentication**: [JWT](https://jwt.io/) (Authentication)
 - **QR Code Generation**: [QRCode](https://www.npmjs.com/package/qrcode) (QRCode)
+
+---
+
+## 📂 Estrutura de Pastas
+
+```
+📦 src
+ ┣ 📂 modules
+ ┃ ┣ 📂 events
+ ┃ ┃ ┣ 📂 application
+ ┃ ┃ ┃ ┣ 📜 create-event.use-case.ts
+ ┃ ┃ ┃ ┗ 📜 update-event.use-case.ts
+ ┃ ┃ ┣ 📂 domain
+ ┃ ┃ ┃ ┣ 📜 event.entity.ts
+ ┃ ┃ ┃ ┗ 📜 event.repository.interface.ts
+ ┃ ┃ ┣ 📂 infrastructure
+ ┃ ┃ ┃ ┣ 📜 event.repository.ts
+ ┃ ┃ ┃ ┗ 📜 event.module.ts
+ ┃ ┃ ┣ 📂 presentation
+ ┃ ┃ ┃ ┣ 📜 event.controller.ts
+ ┃ ┃ ┃ ┗ 📂 dtos
+ ┃ ┃ ┗ 📜 shared.module.ts
+ ┃ ┃ 
+ ┃ ┣ 📂 shared
+ ┃ ┃ ┣ 📂 dtos
+ ┃ ┃ ┃ ┗ 📜 context.dto.ts
+ ┃ ┃ ┣ 📂 enums
+ ┃ ┃ ┃ ┗ 📜 context.enum.ts
+ ┃ ┃ ┣ 📂 services
+ ┃ ┃ ┃ ┗ 📜 context.service.ts
+ ┃ ┃ ┣ 📂 utils
+ ┃ ┃ ┃ ┗ 📜 helpers.ts
+ ┃ ┃ ┗ 📜 shared.module.ts
+ ┃ ┃
+ ┃ ┣ 📂 customer
+ ┃ ┣ 📂 tickets
+ ┃ ┗ 📂 auth
+ ┃
+ ┣ 📂 core
+ ┃ ┣ 📂 exceptions
+ ┃ ┃ ┗ 📜 context.exception.ts
+ ┃ ┣ 📂 guards
+ ┃ ┃ ┗ 📜 context.guard.ts
+ ┃ ┣ 📂 interfaces
+ ┃ ┃ ┗ 📜 context.interface.ts
+ ┃ ┣ 📂 validators
+ ┃ ┃ ┗ 📜 context.validator.ts
+ ┃ ┣ 📂 pipes
+ ┃ ┃ ┗ 📜 context.pipe.ts
+ ┃ ┗ 📂 decorators
+ ┃   ┗ 📜 context.decorator.ts
+ ┃
+ ┣ 📂 config
+ ┃ ┣ 📜 env.config.ts
+ ┃ ┗ 📜 database.config.ts
+ ┃
+ ┣ 📂 infrastructure
+ ┃ ┣ 📂 database
+ ┃ ┃ ┣ 📂 typeorm
+ ┃ ┃ ┃ ┣ 📂 migrations
+ ┃ ┃ ┗ ┗ 📜 typeorm.config.ts
+ ┃ ┣ 📂 cache
+ ┃   ┗ 📜 redis.service.ts
+ ┃
+ ┣ 📜 main.ts
+ ┗ 📜 app.module.ts
+```
 
 ---
 

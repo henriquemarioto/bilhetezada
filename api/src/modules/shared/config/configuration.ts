@@ -16,6 +16,7 @@ export type Env = {
   jwtSecret: string;
   openPixApiUrl: string;
   openPixAppId: string;
+  resendApiKey: string;
 };
 
 export default (): Env => ({
@@ -31,9 +32,10 @@ export default (): Env => ({
     reSave: Boolean(process.env.SESSION_RESAVE),
     saveUninitialized: Boolean(process.env.SESSION_SAVE_UNINITIALIZED),
   },
-  cryptSecretKey: process.env.CRYPT_SECRET_KEY,
-  cryptIv: process.env.CRYPT_IV,
-  jwtSecret: process.env.JWT_SECRET,
-  openPixApiUrl: process.env.OPENPIX_API_URL,
-  openPixAppId: process.env.OPENPIX_APPID,
+  cryptSecretKey: process.env.CRYPT_SECRET_KEY || '',
+  cryptIv: process.env.CRYPT_IV || '',
+  jwtSecret: process.env.JWT_SECRET || '',
+  openPixApiUrl: process.env.OPENPIX_API_URL || '',
+  openPixAppId: process.env.OPENPIX_APPID || '',
+  resendApiKey: process.env.OPENPIX_APPID || '',
 });
