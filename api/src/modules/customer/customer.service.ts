@@ -4,7 +4,6 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,8 +18,6 @@ export interface CustomerWithoutPassword extends Omit<Customer, 'password'> {}
 
 @Injectable()
 export class CustomerService {
-  private readonly logger = new Logger(CustomerService.name);
-
   constructor(
     @InjectRepository(Customer)
     private customersRepository: Repository<Customer>,

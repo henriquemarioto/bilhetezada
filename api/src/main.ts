@@ -5,7 +5,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createClient } from 'redis';
 import { AppModule } from './app.module';
 import { Env } from './config/env.config';
-import { LoggerService } from './logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -29,8 +28,6 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-
-  app.useLogger(app.get(LoggerService));
 
   const config = new DocumentBuilder()
     .setTitle('Bilhetezada API')

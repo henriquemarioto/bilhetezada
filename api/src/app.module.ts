@@ -4,10 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
-import { LoggerModule } from 'nestjs-pino';
 import configuration from './config/env.config';
 import typeormConfig from './database/typeorm/typeorm.config';
-import { LoggerService } from './logger';
 import { AuthModule } from './modules/auth/auth.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { EventModule } from './modules/event/event.module';
@@ -39,7 +37,6 @@ import { SalesModule } from './modules/sales/sales.module';
       ttl: 86400,
     }),
     PassportModule.register({ session: true }),
-    LoggerModule.forRoot(),
     AuthModule,
     CustomerModule,
     EventModule,
@@ -48,6 +45,6 @@ import { SalesModule } from './modules/sales/sales.module';
     NotificationModule,
   ],
   controllers: [],
-  providers: [LoggerService],
+  providers: [],
 })
 export class AppModule {}
