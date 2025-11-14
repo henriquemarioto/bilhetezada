@@ -11,18 +11,25 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
+import { RequestUser } from '../../shared/dtos/request-user.dto';
 import { CurrentUser } from '../auth/utils/current-user-decorator';
 import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
-import { RequestUser } from '../shared/dto/request-user.dto';
-import { CreateEventDto } from './dto/create-event.dto';
+import { CreateEventDto } from './dtos/create-event.dto';
+import { EventResponseDto } from './dtos/event-response.dto';
+import { UpdateEventDTO } from './dtos/update-event.dto';
 import { EventService } from './event.service';
-import { EventResponseDto } from './dto/event-response.dto';
-import { plainToInstance } from 'class-transformer';
-import { UpdateEventDTO } from './dto/update-event.dto';
+import { CreateEventUseCase } from './use-cases/create-event.use-case';
+import { PaginationDto } from 'src/shared/dtos/pagination.dto';
+import { PaginatedResponseDto } from 'src/shared/dtos/paginated-response.dto';
+import { Event } from './entities/event.entity';
 
 @Controller()
 export class EventController {
-  constructor(private readonly eventService: EventService) {}
+  constructor(
+    private readonly eventService: EventService,
+    private readonly createEventUseCase: CreateEventUseCase,
+  ) {}
 
   @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
@@ -32,12 +39,12 @@ export class EventController {
     @Body() createEventDto: CreateEventDto,
     @CurrentUser() user: RequestUser,
   ) {
-    await this.eventService.create(user.userId, createEventDto);
+    await this.createEventUseCase.execute(user.userId, createEventDto);
   }
 
   @ApiBearerAuth('access_token')
   @ApiResponse({
-    description: 'Event',
+    description: 'Event data',
     type: EventResponseDto,
   })
   @UseGuards(JwtAuthGuard)
@@ -53,16 +60,26 @@ export class EventController {
 
   @ApiBearerAuth('access_token')
   @ApiResponse({
-    description: 'Array with customer events',
-    type: EventResponseDto,
-    isArray: true,
+    description: 'Paginated list of customer events',
+    type: PaginatedResponseDto<Event>,
   })
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get('get-customer-events')
-  async getCustomerEvents(@CurrentUser() user: RequestUser) {
-    const events = await this.eventService.findMany(user.userId);
-    return events.map((event) => plainToInstance(EventResponseDto, event));
+  async getCustomerEvents(
+    @CurrentUser() user: RequestUser,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    const events = await this.eventService.findManyPaginated(user.userId, {
+      page: paginationDto.page,
+      limit: paginationDto.limit,
+    });
+    return {
+      data: events.data.map((event) =>
+        plainToInstance(EventResponseDto, event),
+      ),
+      meta: events.meta,
+    };
   }
 
   @ApiBearerAuth('access_token')
