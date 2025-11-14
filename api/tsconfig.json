@@ -21,9 +21,13 @@
     "noFallthroughCasesInSwitch": false,
     
     "paths": {
+      "@/*": ["src/*"],
       "@/test/*": ["test/*"],
-      "@/entities/*": ["src/database/typeorm/entities/*"],
+      "@/entities/*": ["src/infrastructure/database/typeorm/entities/*"],
       "@/modules/*": ["src/modules/*"],
+      "@/core/*": ["src/core/*"],
+      "@/shared/*": ["src/shared/*"],
+      "@/infrastructure/*": ["src/infrastructure/*"]
     }
   }
 }

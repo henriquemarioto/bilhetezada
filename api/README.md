@@ -14,69 +14,69 @@ Bilhetezada is a platform for organizing small events in Brazil, focusing on sim
 
 ---
 
-## 📂 Estrutura de Pastas
+## 📂 Estrutura de Pastas (MVP)
 
 ```
 📦 src
- ┣ 📂 modules
- ┃ ┣ 📂 events
- ┃ ┃ ┣ 📂 application
- ┃ ┃ ┃ ┣ 📜 create-event.use-case.ts
- ┃ ┃ ┃ ┗ 📜 update-event.use-case.ts
- ┃ ┃ ┣ 📂 domain
- ┃ ┃ ┃ ┣ 📜 event.entity.ts
- ┃ ┃ ┃ ┗ 📜 event.repository.interface.ts
- ┃ ┃ ┣ 📂 infrastructure
- ┃ ┃ ┃ ┣ 📜 event.repository.ts
- ┃ ┃ ┃ ┗ 📜 event.module.ts
- ┃ ┃ ┣ 📂 presentation
- ┃ ┃ ┃ ┣ 📜 event.controller.ts
- ┃ ┃ ┃ ┗ 📂 dtos
- ┃ ┃ ┗ 📜 shared.module.ts
- ┃ ┃ 
- ┃ ┣ 📂 shared
- ┃ ┃ ┣ 📂 dtos
- ┃ ┃ ┃ ┗ 📜 context.dto.ts
- ┃ ┃ ┣ 📂 enums
- ┃ ┃ ┃ ┗ 📜 context.enum.ts
- ┃ ┃ ┣ 📂 services
- ┃ ┃ ┃ ┗ 📜 context.service.ts
- ┃ ┃ ┣ 📂 utils
- ┃ ┃ ┃ ┗ 📜 helpers.ts
- ┃ ┃ ┗ 📜 shared.module.ts
- ┃ ┃
- ┃ ┣ 📂 customer
- ┃ ┣ 📂 tickets
- ┃ ┗ 📂 auth
- ┃
- ┣ 📂 core
- ┃ ┣ 📂 exceptions
- ┃ ┃ ┗ 📜 context.exception.ts
- ┃ ┣ 📂 guards
- ┃ ┃ ┗ 📜 context.guard.ts
- ┃ ┣ 📂 interfaces
- ┃ ┃ ┗ 📜 context.interface.ts
- ┃ ┣ 📂 validators
- ┃ ┃ ┗ 📜 context.validator.ts
- ┃ ┣ 📂 pipes
- ┃ ┃ ┗ 📜 context.pipe.ts
- ┃ ┗ 📂 decorators
- ┃   ┗ 📜 context.decorator.ts
- ┃
- ┣ 📂 config
- ┃ ┣ 📜 env.config.ts
- ┃ ┗ 📜 database.config.ts
- ┃
- ┣ 📂 infrastructure
- ┃ ┣ 📂 database
- ┃ ┃ ┣ 📂 typeorm
- ┃ ┃ ┃ ┣ 📂 migrations
- ┃ ┃ ┗ ┗ 📜 typeorm.config.ts
- ┃ ┣ 📂 cache
- ┃   ┗ 📜 redis.service.ts
- ┃
- ┣ 📜 main.ts
- ┗ 📜 app.module.ts
+┣ 📂 modules
+┃ ┣ 📂 event
+┃ ┃ ┣ 📜 event.module.ts
+┃ ┃ ┣ 📜 event.controller.ts
+┃ ┃ ┣ 📜 event.controller.spec.ts
+┃ ┃ ┣ 📂 dtos
+┃ ┃ ┃ ┣ 📜 create-event.dto.ts
+┃ ┃ ┃ ┗ 📜 update-event.dto.ts
+┃ ┃ ┣ 📂 entities
+┃ ┃ ┃ ┗ 📜 event.entity.ts
+┃ ┃ ┣ 📂 repositories
+┃ ┃ ┃ ┗ 📜 event.repository.ts
+┃ ┃ ┣ 📂 use-cases
+┃ ┃ ┃ ┣ 📜 create-event.use-case.ts
+┃ ┃ ┃ ┣ 📜 create-event.use-case.spec.ts
+┃ ┃ ┃ ┣ 📜 update-event.use-case.ts
+┃ ┃ ┃ ┗ 📜 update-event.use-case.spec.ts
+┃ ┣ 📂 ticket
+┃ ┣ 📂 customer 
+┃ ┣ 📂 payment 
+┃ ┣ 📂 sales 
+┃ ┗ 📂 auth
+┃
+┣ 📂 core
+┃ ┣ 📂 common
+┃ ┃ ┣ 📜 base.use-case.ts
+┃ ┃ ┣ 📜 base.repository.ts
+┃ ┃ ┗ 📜 base.entity.ts
+┃ ┣ 📂 decorators
+┃ ┣ 📂 exceptions
+┃ ┣ 📂 guards
+┃ ┣ 📂 interfaces
+┃ ┣ 📂 pipes
+┃ ┗ 📂 validators
+┃
+┣ 📂 shared
+┃ ┣ 📂 dtos
+┃ ┣ 📂 enums
+┃ ┣ 📂 services
+┃ ┗ 📂 utils
+┃
+┣ 📂 config
+┃ ┣ 📜 env.config.ts
+┃ ┗ 📜 database.config.ts
+┃
+┣ 📂 infrastructure
+┃ ┣ 📂 database
+┃ ┃ ┣ 📂 typeorm
+┃ ┃ ┃ ┣ 📂 migrations
+┃ ┃ ┃ ┗ 📜 typeorm.config.ts
+┃ ┣ 📂 cache
+┃ ┃ ┗ 📜 redis.service.ts
+┃ ┗ 📂 integrations                     # APIs externas, gateways de pagamento, etc.
+┃
+┣ 📂 test
+┃ ┗ 📂 e2e                             # testes ponta a ponta
+┃
+┣ 📜 main.ts
+┗ 📜 app.module.ts
 ```
 
 ---

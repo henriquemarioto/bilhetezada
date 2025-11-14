@@ -5,7 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
 import configuration from './config/env.config';
-import typeormConfig from './database/typeorm/typeorm.config';
+import typeormConfig from './infrastructure/database/typeorm/typeorm.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { EventModule } from './modules/event/event.module';
