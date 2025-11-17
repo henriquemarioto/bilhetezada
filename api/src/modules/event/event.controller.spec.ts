@@ -4,13 +4,13 @@ import { createEventDtoFactory } from '@/test/factories/dto/create-event.dto.fac
 import { customerFactory } from '@/test/factories/entity/customer.factory';
 import { eventFactory } from '@/test/factories/entity/event.factory';
 import { Test, TestingModule } from '@nestjs/testing';
-import { RequestUser } from '../shared/dto/request-user.dto';
-import { CreateEventDto } from './dto/create-event.dto';
-import { EventResponseDto } from './dto/event-response.dto';
-import { UpdateEventDTO } from './dto/update-event.dto';
+import { RequestUser } from '../../shared/dtos/request-user.dto';
+import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
+import { CreateEventDto } from './dtos/create-event.dto';
+import { EventResponseDto } from './dtos/paginated-event-response.dto';
+import { UpdateEventDTO } from './dtos/update-event.dto';
 import { EventController } from './event.controller';
 import { EventService } from './event.service';
-import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
 
 const mockedCustomer: Customer = customerFactory();
 

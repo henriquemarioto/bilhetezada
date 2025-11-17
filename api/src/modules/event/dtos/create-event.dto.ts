@@ -1,21 +1,26 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsDateAfterDate,
+  IsDateBeforeDate,
+  IsDateBetweenDates,
+  IsDateGreaterThanTodayConstraint,
+} from '@/core/validators/validate-date.validator';
+import { BrazilStates } from '@/shared/enums/brazil-states.enum';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import {
+  IsEnum,
+  IsInt,
   IsISO8601,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Max,
+  MaxLength,
   Min,
+  MinLength,
   Validate,
 } from 'class-validator';
-import {
-  IsDateAfterDate,
-  IsDateBeforeDate,
-  IsDateBetweenDates,
-  IsDateGreaterThanTodayConstraint,
-} from '../../../core/validators/validate-date.validator';
-import { Transform } from 'class-transformer';
 
 export class CreateEventDto {
   @ApiProperty()
@@ -33,14 +38,50 @@ export class CreateEventDto {
   @IsString()
   address: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  city: string;
+
+  @ApiProperty({
+    description: 'State where the event will take place, only 2 words allowed',
+    example: 'SP',
+    maxLength: 2,
+    minLength: 2,
+    enum: BrazilStates,
+  })
+  @IsNotEmpty()
+  @IsString()
+  @IsEnum(BrazilStates)
+  @MinLength(2)
+  @MaxLength(2)
+  state: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  latitude: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  longitude: number;
+
+  @ApiPropertyOptional({
+    description: 'Name of the place where the event will be held',
+    example: 'Cool Event Hall',
+  })
+  @IsOptional()
+  @IsString()
+  place_name: string;
+
   @ApiProperty({
     description: 'Event start time in ISO format, must be greater than today',
     example: '2025-01-01T00:00:00.000Z',
   })
   @IsISO8601()
   @Validate(IsDateGreaterThanTodayConstraint)
-  @Transform(({ value }) => (value ? new Date(value) : undefined))
-  start_time: Date;
+  start_time: string;
 
   @ApiProperty({
     description: 'Event end time in ISO format, must be after start_time',
@@ -48,8 +89,7 @@ export class CreateEventDto {
   })
   @IsISO8601()
   @IsDateAfterDate('start_time')
-  @Transform(({ value }) => (value ? new Date(value) : undefined))
-  end_time: Date;
+  end_time: string;
 
   @ApiPropertyOptional({
     description:
@@ -59,8 +99,7 @@ export class CreateEventDto {
   @IsOptional()
   @IsISO8601()
   @IsDateBetweenDates('start_time', 'end_time')
-  @Transform(({ value }) => (value ? new Date(value) : undefined))
-  entrance_limit_time: Date | null;
+  entrance_limit_time?: string;
 
   @ApiPropertyOptional({
     description:
@@ -69,18 +108,31 @@ export class CreateEventDto {
   })
   @IsISO8601()
   @IsDateBeforeDate('start_time')
-  @Transform(({ value }) => (value ? new Date(value) : undefined))
-  limit_time_for_ticket_purchase: Date;
+  limit_time_for_ticket_purchase: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Time zone of the event',
+    example: 'America/Sao_Paulo',
+  })
   @IsNotEmpty()
   @IsString()
   time_zone: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 39.9,
+  })
   @IsNotEmpty()
   @IsNumber()
   @Min(10)
   @Max(10000)
   price: number;
+
+  @ApiProperty({
+    example: 150,
+  })
+  @IsNotEmpty()
+  @IsInt()
+  @Min(1)
+  @Max(100000)
+  capacity: number;
 }

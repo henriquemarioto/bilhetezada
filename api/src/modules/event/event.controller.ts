@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Patch,
   Post,
   Query,
@@ -16,15 +17,17 @@ import { RequestUser } from '../../shared/dtos/request-user.dto';
 import { CurrentUser } from '../auth/utils/current-user-decorator';
 import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
 import { CreateEventDto } from './dtos/create-event.dto';
-import { EventResponseDto } from './dtos/event-response.dto';
 import { UpdateEventDTO } from './dtos/update-event.dto';
 import { EventService } from './event.service';
 import { CreateEventUseCase } from './use-cases/create-event.use-case';
 import { PaginationDto } from 'src/shared/dtos/pagination.dto';
 import { PaginatedResponseDto } from 'src/shared/dtos/paginated-response.dto';
-import { Event } from './entities/event.entity';
+import {
+  EventResponseDto,
+  PaginatedEventResponseDto,
+} from './dtos/paginated-event-response.dto';
 
-@Controller()
+@Controller('events')
 export class EventController {
   constructor(
     private readonly eventService: EventService,
@@ -34,11 +37,11 @@ export class EventController {
   @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  @Post('create-event')
+  @Post()
   async createEvent(
     @Body() createEventDto: CreateEventDto,
     @CurrentUser() user: RequestUser,
-  ) {
+  ): Promise<void> {
     await this.createEventUseCase.execute(user.userId, createEventDto);
   }
 
@@ -49,11 +52,11 @@ export class EventController {
   })
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  @Get('get-event')
+  @Get(':id')
   async getEvent(
-    @Query('id') eventId: string,
+    @Param('id') eventId: string,
     @CurrentUser() user: RequestUser,
-  ) {
+  ): Promise<EventResponseDto> {
     const event = await this.eventService.getById(eventId, user.userId);
     return plainToInstance(EventResponseDto, event);
   }
@@ -61,15 +64,15 @@ export class EventController {
   @ApiBearerAuth('access_token')
   @ApiResponse({
     description: 'Paginated list of customer events',
-    type: PaginatedResponseDto<Event>,
+    type: PaginatedEventResponseDto,
   })
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  @Get('get-customer-events')
+  @Get()
   async getCustomerEvents(
     @CurrentUser() user: RequestUser,
     @Query() paginationDto: PaginationDto,
-  ) {
+  ): Promise<PaginatedResponseDto<EventResponseDto>> {
     const events = await this.eventService.findManyPaginated(user.userId, {
       page: paginationDto.page,
       limit: paginationDto.limit,
@@ -85,23 +88,23 @@ export class EventController {
   @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Patch('update-event')
+  @Patch()
   async updateEvent(
     @Query('id') eventId: string,
     @Body() updateEventDto: UpdateEventDTO,
     @CurrentUser() user: RequestUser,
-  ) {
+  ): Promise<void> {
     await this.eventService.update(user.userId, eventId, updateEventDto);
   }
 
   @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete('delete-event')
+  @Delete()
   async deleteEvent(
     @Query('id') eventId: string,
     @CurrentUser() user: RequestUser,
-  ) {
+  ): Promise<void> {
     await this.eventService.disable(user.userId, eventId);
   }
 }

@@ -13,12 +13,12 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PaymentLinkOwner } from '../../shared/enums/payment-link-owner.enum';
 import { CustomerService } from '../customer/customer.service';
-import { PaymentLinkOwner } from '../shared/enums/payment-link-owner.enum';
 import { SlugService } from '../shared/services/slug.service';
 import TimezoneService from '../shared/services/timezone.service';
-import { CreateEventDto } from './dto/create-event.dto';
-import { UpdateEventDTO } from './dto/update-event.dto';
+import { CreateEventDto } from './dtos/create-event.dto';
+import { UpdateEventDTO } from './dtos/update-event.dto';
 import { EventService } from './event.service';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;

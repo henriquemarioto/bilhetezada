@@ -25,26 +25,44 @@ export class Event {
   @Column({ nullable: false })
   address: string;
 
+  @Column({ nullable: false })
+  city: string;
+
+  @Column({ nullable: false, length: 2 })
+  state: string;
+
+  @Column('float', { nullable: false })
+  latitude: number;
+
+  @Column('float', { nullable: false })
+  longitude: number;
+
+  @Column({ nullable: true })
+  place_name: string;
+
   @Column({ nullable: false, unique: true })
   slug: string;
 
-  @Column({ nullable: false })
-  start_time: Date;
+  @Column({ nullable: false, type: 'datetime' })
+  start_time: string;
 
-  @Column({ nullable: false })
-  end_time: Date;
+  @Column({ nullable: false, type: 'datetime' })
+  end_time: string;
 
   @Column({ type: 'datetime', nullable: true })
-  entrance_limit_time?: Date | null;
+  entrance_limit_time?: string | null;
 
-  @Column({ nullable: false })
-  limit_time_for_ticket_purchase: Date;
+  @Column({ nullable: false, type: 'datetime' })
+  limit_time_for_ticket_purchase: string;
 
   @Column({ nullable: false, default: 'America/Sao_Paulo' })
   time_zone: string;
 
   @Column({ nullable: false, type: 'decimal', precision: 10, scale: 2 })
   price: number;
+
+  @Column({ nullable: false })
+  capacity: number;
 
   @Column({ default: true })
   active: boolean;

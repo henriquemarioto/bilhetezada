@@ -1,14 +1,14 @@
+import { CustomerService } from '@/modules/customer/customer.service';
+import { SlugService } from '@/modules/shared/services/slug.service';
+import TimezoneService from '@/modules/shared/services/timezone.service';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateEventDto } from '../dtos/create-event.dto';
-import { EventRepository } from '../repositories/event.respository';
-import { CustomerService } from '@/modules/customer/customer.service';
-import { SlugService } from '@/modules/shared/services/slug.service';
-import TimezoneService from '@/modules/shared/services/timezone.service';
 import { Event } from '../entities/event.entity';
+import { EventRepository } from '../repositories/event.respository';
 
 @Injectable()
 export class CreateEventUseCase {
@@ -49,6 +49,13 @@ export class CreateEventUseCase {
 
     const event = await this.eventRepository.createEvent({
       ...createEventDto,
+      // Converter strings para Date objects
+      start_time: new Date(createEventDto.start_time),
+      end_time: new Date(createEventDto.end_time),
+      entrance_limit_time: createEventDto.entrance_limit_time 
+        ? new Date(createEventDto.entrance_limit_time) 
+        : undefined,
+      limit_time_for_ticket_purchase: new Date(createEventDto.limit_time_for_ticket_purchase),
       slug,
       customer,
     });
