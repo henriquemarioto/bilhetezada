@@ -49,13 +49,13 @@ export class CreateEventUseCase {
 
     const event = await this.eventRepository.createEvent({
       ...createEventDto,
-      // Converter strings para Date objects
-      start_time: new Date(createEventDto.start_time),
-      end_time: new Date(createEventDto.end_time),
-      entrance_limit_time: createEventDto.entrance_limit_time 
-        ? new Date(createEventDto.entrance_limit_time) 
+      start_time: createEventDto.start_time,
+      end_time: createEventDto.end_time,
+      entrance_limit_time: createEventDto.entrance_limit_time
+        ? createEventDto.entrance_limit_time
         : undefined,
-      limit_time_for_ticket_purchase: new Date(createEventDto.limit_time_for_ticket_purchase),
+      limit_time_for_ticket_purchase:
+        createEventDto.limit_time_for_ticket_purchase,
       slug,
       customer,
     });
