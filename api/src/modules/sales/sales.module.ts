@@ -27,6 +27,7 @@ import { CreateTicketOrderUseCase } from './use-cases/create-ticket-order.use-ca
     SharedModule,
     forwardRef(() => PaymentModule),
     EventModule,
+    TicketModule,
   ],
   providers: [
     SalesService,

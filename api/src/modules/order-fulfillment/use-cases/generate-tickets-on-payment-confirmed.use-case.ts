@@ -71,7 +71,7 @@ export class GenerateTicketsOnPaymentConfirmedUseCase {
 
         const tickets = await this.ticketService.createManyTickets(
           item.id,
-          item.batch_id,
+          item.ticket_batch_id,
           item.ticket_quantity,
         );
 

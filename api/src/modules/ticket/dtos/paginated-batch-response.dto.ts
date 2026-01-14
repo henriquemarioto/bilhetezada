@@ -2,7 +2,7 @@ import { PaginatedResponseDto } from '@/shared/dtos/paginated-response.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 
-export class BatchResponseDto {
+export class TicketBatchResponseDto {
   @ApiProperty({
     description: 'Event ID',
     example: 'uuid-string',
@@ -90,4 +90,4 @@ export class BatchResponseDto {
   orders: any;
 }
 
-export class PaginatedBatchResponseDto extends PaginatedResponseDto<BatchResponseDto> {}
+export class PaginatedTicketBatchResponseDto extends PaginatedResponseDto<TicketBatchResponseDto> {}

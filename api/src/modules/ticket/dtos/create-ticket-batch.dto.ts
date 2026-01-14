@@ -11,7 +11,7 @@ import {
   Validate,
 } from 'class-validator';
 
-export class CreateBatchRequestBodyDto {
+export class CreateTicketBatchRequestBodyDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -44,7 +44,7 @@ export class CreateBatchRequestBodyDto {
   end_time: string;
 }
 
-export class CreateBatchDto {
+export class CreateTicketBatchDto {
   name: string;
   amount: number;
   ticketQuantity: number;

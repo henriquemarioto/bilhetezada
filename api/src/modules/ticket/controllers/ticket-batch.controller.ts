@@ -13,19 +13,19 @@ import {
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from '../../auth/utils/guards/jwt.guard';
-import { CreateBatchRequestBodyDto } from '../dtos/create-batch.dto';
+import { CreateTicketBatchRequestBodyDto } from '../dtos/create-ticket-batch.dto';
 import {
-  BatchResponseDto,
-  PaginatedBatchResponseDto,
+  TicketBatchResponseDto,
+  PaginatedTicketBatchResponseDto,
 } from '../dtos/paginated-batch-response.dto';
-import { BatchService } from '../services/batch.service';
-import { CreateBatchUseCase } from '../use-cases/create-batch.use-case';
+import { TicketBatchService } from '../services/ticket-batch.service';
+import { CreateTicketBatchUseCase } from '../use-cases/create-ticket-batch.use-case';
 
 @Controller('events')
-export class BatchController {
+export class TicketBatchController {
   constructor(
-    private readonly batchService: BatchService,
-    private readonly createBatchUseCase: CreateBatchUseCase,
+    private readonly batchService: TicketBatchService,
+    private readonly createBatchUseCase: CreateTicketBatchUseCase,
   ) {}
 
    @ApiBearerAuth('access_token')
@@ -34,7 +34,7 @@ export class BatchController {
   @Post(':eventId/batches')
   async createBatch(
     @Param('eventId') eventId: string,
-    @Body() createBatchDto: CreateBatchRequestBodyDto,
+    @Body() createBatchDto: CreateTicketBatchRequestBodyDto,
   ): Promise<void> {
     await this.createBatchUseCase.execute(eventId, {
       name: createBatchDto.name,
@@ -52,14 +52,14 @@ export class BatchController {
   async getEventBatch(
     @Param('eventId') eventId: string,
     @Query() paginationDto: PaginationDto,
-  ): Promise<PaginatedBatchResponseDto> {
+  ): Promise<PaginatedTicketBatchResponseDto> {
     const batches = await this.batchService.findManyPaginated(
       eventId,
       paginationDto,
     );
     return {
       data: batches.data.map((batch) =>
-        plainToInstance(BatchResponseDto, batch),
+        plainToInstance(TicketBatchResponseDto, batch),
       ),
       meta: batches.meta,
     };

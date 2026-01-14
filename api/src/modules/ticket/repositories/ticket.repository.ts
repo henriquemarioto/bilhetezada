@@ -6,7 +6,7 @@ import { Ticket } from '../entities/ticket.entity';
 
 export type CreateTicketData = {
   orderItemId: string;
-  batchId: string;
+  ticketBatchId: string;
 };
 
 @Injectable()
@@ -21,7 +21,7 @@ export class TicketRepository extends TypeOrmBaseRepository<Ticket> {
   async createTicket(createTicketData: CreateTicketData): Promise<Ticket> {
     return this.createImplementation({
       order_item_id: createTicketData.orderItemId,
-      batch_id: createTicketData.batchId,
+      ticket_batch_id: createTicketData.ticketBatchId,
     });
   }
 
@@ -31,7 +31,7 @@ export class TicketRepository extends TypeOrmBaseRepository<Ticket> {
     return this.createManyImplementation(
       createTicketsData.map((data) => ({
         order_item_id: data.orderItemId,
-        batch_id: data.batchId,
+        ticket_batch_id: data.ticketBatchId,
       })),
     );
   }
@@ -46,13 +46,13 @@ export class TicketRepository extends TypeOrmBaseRepository<Ticket> {
     });
   }
 
-  async findTicketsByBatchIds(batchIds: string[]): Promise<Ticket[]> {
-    if (!batchIds.length) {
+  async findTicketsByTicketBatchIds(ticketBatchIds: string[]): Promise<Ticket[]> {
+    if (!ticketBatchIds.length) {
       return [];
     }
 
     return this.findAllImplementation({
-      where: { batch_id: { $in: batchIds } },
+      where: { ticket_batch_id: { $in: ticketBatchIds } },
     });
   }
 }

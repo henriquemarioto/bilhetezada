@@ -1,3 +1,5 @@
+import { OrderItem } from '@/modules/sales/entities/order-item.entity';
+import { Ticket } from '@/modules/ticket/entities/ticket.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,12 +10,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Event } from './event.entity';
-import { Ticket } from '@/modules/ticket/entities/ticket.entity';
-import { OrderItem } from '@/modules/sales/entities/order-item.entity';
+import { Event } from '@/modules/event/entities/event.entity';
 
-@Entity()
-export class Batch {
+@Entity('ticket_batch')
+export class TicketBatch {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -26,17 +26,20 @@ export class Batch {
   @Column({ nullable: false, type: 'int', unsigned: true })
   ticket_quantity: number;
 
-  @Column({ nullable: false, type: 'datetime' })
-  start_time: string;
+  @Column({ nullable: false, type: 'int', unsigned: true, default: 0 })
+  tickets_sold: number;
 
   @Column({ nullable: false, type: 'datetime' })
-  end_time: string;
+  start_at: string;
+
+  @Column({ nullable: false, type: 'datetime' })
+  end_at: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at: string;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at: string;
 
   @ManyToOne(() => Event, (event) => event.batches)
   @JoinColumn({ name: 'event_id' })
@@ -45,10 +48,10 @@ export class Batch {
   @Column({ name: 'event_id' })
   event_id: string;
 
-  @OneToMany(() => Ticket, (ticket) => ticket.batch)
+  @OneToMany(() => Ticket, (ticket) => ticket.ticket_batch)
   tickets: Ticket[];
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.batch, {
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.ticket_batch, {
     nullable: true,
   })
   order_items: OrderItem[] | [];

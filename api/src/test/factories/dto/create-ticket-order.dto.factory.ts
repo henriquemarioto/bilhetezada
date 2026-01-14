@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker/.';
 
 export const createTicketOrderDtoFactory = (
   eventId: string = faker.string.uuid(),
-  batchId: string,
+  ticketBatchId: string,
 ): CreateTicketOrderDto => ({
   buyer: {
     email: faker.internet.email(),
@@ -11,6 +11,6 @@ export const createTicketOrderDtoFactory = (
     phone: String(faker.number.int({ min: 11111111111, max: 99999999999 })),
   },
   ticketQuantity: faker.number.int({ min: 1, max: 10 }),
-  batchId: batchId,
+  ticketBatchId: ticketBatchId,
   eventId: eventId,
 });

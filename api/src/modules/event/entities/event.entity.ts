@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Batch } from './batch.entity';
+import { TicketBatch } from '@/modules/ticket/entities/ticket-batch.entity';
 
 @Entity()
 export class Event {
@@ -75,8 +75,8 @@ export class Event {
   @Column({ name: 'organizer_user_id' })
   organizer_user_id: string;
 
-  @OneToMany(() => Batch, (batch) => batch.event)
-  batches: Batch[];
+  @OneToMany(() => TicketBatch, (ticketBatch) => ticketBatch.event)
+  batches: TicketBatch[];
 
   @OneToMany(() => Order, (order) => order.event)
   orders: Order[];

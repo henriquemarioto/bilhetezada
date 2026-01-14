@@ -3,16 +3,16 @@ import {
   PaginationOptions,
 } from '@/core/common/base.repository';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateBatchDto } from '../dtos/update-batch.dto';
-import { BatchRepository } from '../repositories/batch.respository';
-import { Batch } from '../entities/batch.entity';
+import { UpdateTicketBatchDto } from '../dtos/update-batch.dto';
+import { TicketBatch } from '../entities/ticket-batch.entity';
+import { TicketBatchRepository } from '../repositories/ticket-batch.respository';
 
 @Injectable()
-export class BatchService {
-  constructor(private batchesRepository: BatchRepository) {}
+export class TicketBatchService {
+  constructor(private batchesRepository: TicketBatchRepository) {}
 
-  async getById(batchId: string): Promise<Batch> {
-    const batch = await this.batchesRepository.findOneById(batchId);
+  async getById(ticketBatchId: string): Promise<TicketBatch> {
+    const batch = await this.batchesRepository.findOneById(ticketBatchId);
 
     if (!batch) throw new NotFoundException('Batch not found');
 
@@ -22,7 +22,7 @@ export class BatchService {
   async findManyPaginated(
     eventId: string,
     pagination: PaginationOptions,
-  ): Promise<PaginatedResult<Batch>> {
+  ): Promise<PaginatedResult<TicketBatch>> {
     const batchs = await this.batchesRepository.findManyByEventIdPaginated(
       eventId,
       pagination,
@@ -32,12 +32,12 @@ export class BatchService {
   }
 
   async update(
-    batchId: string,
-    updateBatchDto: UpdateBatchDto,
+    ticketBatchId: string,
+    updateBatchDto: UpdateTicketBatchDto,
   ): Promise<boolean> {
     const batch = await this.batchesRepository.findOne({
       where: {
-        id: batchId,
+        id: ticketBatchId,
       },
     });
 
@@ -47,7 +47,7 @@ export class BatchService {
       );
     }
 
-    await this.batchesRepository.updateBatch(batchId, updateBatchDto);
+    await this.batchesRepository.updateBatch(ticketBatchId, updateBatchDto);
 
     return true;
   }

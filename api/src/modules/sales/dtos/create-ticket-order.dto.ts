@@ -12,7 +12,7 @@ export class CreateTicketOrderDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsUUID()
-  batchId: string;
+  ticketBatchId: string;
 
   @ApiProperty()
   @IsNotEmpty()

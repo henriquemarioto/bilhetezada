@@ -6,7 +6,7 @@ import { OrderItem } from '../entities/order-item.entity';
 
 export type CreateOrderItemData = {
   orderId: string;
-  batchId: string;
+  ticketBatchId: string;
   ticketQuantity: number;
   totalAmount: number;
 };
@@ -23,7 +23,7 @@ export class OrderItemRepository extends TypeOrmBaseRepository<OrderItem> {
   async createOrderItem(data: CreateOrderItemData): Promise<OrderItem> {
     return this.createImplementation({
       order_id: data.orderId,
-      batch_id: data.batchId,
+      ticket_batch_id: data.ticketBatchId,
       ticket_quantity: data.ticketQuantity,
       total_amount: data.totalAmount,
     });
