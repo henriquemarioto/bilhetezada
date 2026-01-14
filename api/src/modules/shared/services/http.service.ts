@@ -1,19 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { HttpRequestDto } from '../dto/http-request.dto';
-import { AxiosHeaders } from 'axios';
 import { HttpService as AxiosHttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
+import { AxiosError, AxiosHeaders } from 'axios';
 import { firstValueFrom } from 'rxjs';
-import { HttpResponse } from '../dto/http-response.dto';
+import { HttpRequestDto } from '@/shared/dtos/http-request.dto';
+import { HttpResponse } from '@/shared/dtos/http-response.dto';
 
 @Injectable()
 export class HttpService {
   constructor(private nestJsAxiosHttpService: AxiosHttpService) {}
 
-  async get(
+  async get<T = unknown>(
     url: string,
     requestDto: HttpRequestDto = {},
-  ): Promise<HttpResponse | false> {
+  ): Promise<HttpResponse<T> | false> {
     try {
+      console.log('Making GET request', JSON.stringify({ url, requestDto }));
       const response = await firstValueFrom(
         this.nestJsAxiosHttpService.get(url, {
           params: requestDto.queryParams,
@@ -24,17 +25,30 @@ export class HttpService {
         status: response.status,
         data: response.data,
       };
-    } catch (error) {
-      console.error('Error in get request', error);
+    } catch (e) {
+      const error = e as AxiosError | Error;
+      console.error(
+        'Error in GET request',
+        JSON.stringify({
+          url,
+          requestDto,
+          error: {
+            message: error?.message,
+            stack: error?.stack,
+            response: (error as AxiosError)?.response?.data,
+          },
+        }),
+      );
       return false;
     }
   }
 
-  async post(
+  async post<T = unknown>(
     url: string,
     requestDto: HttpRequestDto = {},
-  ): Promise<false | HttpResponse> {
+  ): Promise<HttpResponse<T> | false> {
     try {
+      console.log('Making POST request', JSON.stringify({ url, requestDto }));
       const response = await firstValueFrom(
         this.nestJsAxiosHttpService.post(url, requestDto.body, {
           params: requestDto.queryParams,
@@ -45,8 +59,20 @@ export class HttpService {
         status: response.status,
         data: response.data,
       };
-    } catch (error) {
-      console.error('Error in post request', error);
+    } catch (e) {
+      const error = e as AxiosError | Error;
+      console.error(
+        'Error in POST request',
+        JSON.stringify({
+          url,
+          requestDto,
+          error: {
+            message: error?.message,
+            stack: error?.stack,
+            response: (error as AxiosError)?.response?.data,
+          },
+        }),
+      );
       return false;
     }
   }

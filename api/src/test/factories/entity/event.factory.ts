@@ -1,20 +1,17 @@
-import { randomUUID } from 'crypto';
-import { Event } from '@/entities/event.entity';
+import { Event } from '@/modules/event/entities/event.entity';
+import { Order } from '@/modules/sales/entities/order.entity';
+import { User } from '@/modules/user/entities/user.entity';
 import { faker } from '@faker-js/faker/.';
-import { PaymentLink } from '@/entities/payment-link.entity';
-import { Customer } from '@/entities/customer.entity';
-import { Order } from '@/entities/order.entity';
-import { Timezones } from '@/modules/shared/enums/timezones.enum';
+import { randomUUID } from 'crypto';
+import { Timezones } from '@/shared/enums/timezones.enum';
 
 type EventFactoryProps = {
-  customer: Customer;
-  paymentLinks?: PaymentLink[];
+  user: User;
   orders?: Order[];
 };
 
 export const eventFactory = ({
-  customer,
-  paymentLinks = [],
+  user,
   orders = [],
 }: EventFactoryProps): Event => {
   const startTime = new Date();
@@ -25,24 +22,29 @@ export const eventFactory = ({
   endTime.setDate(new Date().getDate() + 4);
   limitTimeForTicketPurchase.setDate(new Date().getDate() + 3);
 
-  const event = {
+  const event: Event = {
     id: randomUUID(),
     active: true,
     address: faker.location.streetAddress(),
+    city: faker.location.city(),
+    state: faker.location.state(),
+    latitude: faker.location.latitude(),
+    longitude: faker.location.longitude(),
+    place_name: faker.location.secondaryAddress(),
     description: faker.lorem.words(20),
     name: faker.lorem.words(5),
-    price: faker.number.int({ min: 10, max: 300 }),
     slug: faker.lorem.slug(5),
-    limit_time_for_ticket_purchase: limitTimeForTicketPurchase,
-    start_time: startTime,
-    end_time: endTime,
+    start_time: startTime.toISOString(),
+    end_time: endTime.toISOString(),
     time_zone: Timezones.AMERICA_SAO_PAULO,
     created_at: new Date(),
     updated_at: new Date(),
-    customer: customer,
+    user: user,
+    organizer_user_id: user.id,
     orders: orders,
+    batches: [],
     entrance_limit_time: null,
-    paymentLinks: paymentLinks,
+    capacity: faker.number.int({ min: 50, max: 1000 }),
   };
 
   return event;

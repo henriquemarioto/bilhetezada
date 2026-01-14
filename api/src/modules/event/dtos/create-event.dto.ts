@@ -101,15 +101,6 @@ export class CreateEventDto {
   @IsDateBetweenDates('start_time', 'end_time')
   entrance_limit_time?: string;
 
-  @ApiPropertyOptional({
-    description:
-      'Limit time for ticket purchase in ISO format, must be before start_time',
-    example: '2025-01-01T00:00:00.000Z',
-  })
-  @IsISO8601()
-  @IsDateBeforeDate('start_time')
-  limit_time_for_ticket_purchase: string;
-
   @ApiProperty({
     description: 'Time zone of the event',
     example: 'America/Sao_Paulo',
@@ -117,15 +108,6 @@ export class CreateEventDto {
   @IsNotEmpty()
   @IsString()
   time_zone: string;
-
-  @ApiProperty({
-    example: 39.9,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(10)
-  @Max(10000)
-  price: number;
 
   @ApiProperty({
     example: 150,

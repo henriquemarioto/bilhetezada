@@ -1,35 +1,42 @@
-import { Order } from '@/entities/order.entity';
+import { Buyer } from '@/modules/sales/entities/buyer.entity';
+import { Payment } from '@/modules/payment/entities/payment.entity';
+import { Ticket } from '@/modules/ticket/entities/ticket.entity';
+import { Event } from '@/modules/event/entities/event.entity';
+import { Order } from '@/modules/sales/entities/order.entity';
 import { faker } from '@faker-js/faker/.';
-import { OrderStatus } from '@/modules/shared/enums/order-status.enum';
-import { Ticket } from '@/entities/ticket.entity';
-import { Buyer } from '@/entities/buyer.entity';
-import { Payment } from '@/entities/payment.entity';
-import { Event } from '@/entities/event.entity';
+import { OrderStatus } from '@/shared/enums/order-status.enum';
+import { Batch } from '@/modules/event/entities/batch.entity';
 
 type OrderFactoryProps = {
   event: Event;
-  ticket?: Ticket | null;
+  batch: Batch;
   buyer?: Buyer | null;
   payment?: Payment | null;
+  ticket_quantity: number;
+  event_organizer_amount_net: number;
 };
 
 export const orderFactory = ({
   event,
-  ticket = null,
+  batch,
   buyer = null,
   payment = null,
+  ticket_quantity,
+  event_organizer_amount_net,
 }: OrderFactoryProps): Order => ({
   id: faker.string.uuid(),
   buyer: buyer,
   event: event,
   payment: payment,
   status: OrderStatus.PENDING,
-  ticket: ticket,
-  value: faker.number.int({
-    min: 1000,
-    max: 20000,
-  }),
+  event_id: event.id,
+  ticket_quantity,
+  total_amount: batch.amount * ticket_quantity,
+  platform_fee_amount: faker.number.int({ min: 100, max: 500 }),
+  gateway_fee_amount: faker.number.int({ min: 50, max: 300 }),
+  event_organizer_amount_net,
   transaction_reference: faker.string.uuid(),
+  order_items: [],
   created_at: new Date(),
   updated_at: new Date(),
 });

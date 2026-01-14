@@ -1,29 +1,33 @@
-import { Order } from '@/entities/order.entity';
-import { Payment } from '@/entities/payment.entity';
-import { Ticket } from '@/entities/ticket.entity';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import SharedModule from '../shared/shared.module';
+import { WooviAdapter } from './adapters/woovi.adapter';
+import { Payment } from './entities/payment.entity';
 import { PaymentController } from './payment.controller';
-import { OpenPixService } from './services/openpix.service';
-import { OpenPixWebhookService } from './webhooks/openpix.webhook.service';
-import { WebhookFactory } from './webhooks/webhook.factory';
-import { NotificationModule } from '../notification/notification.module';
+import { PaymentService } from './services/payment.service';
+import { SalesModule } from '../sales/sales.module';
+import { CreatePaymentUseCase } from './use-cases/create-payment.use-case';
+import { PaymentRepository } from './repositories/payment.repository';
+import { WebhookProcessorService } from './webhooks/webhook-processor.service';
+import { WooviWebhookAdapter } from './webhooks/adapters/woovi.webhook.adapter';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([Order, Ticket, Payment]),
+    TypeOrmModule.forFeature([Payment]),
     SharedModule,
-    NotificationModule,
+    forwardRef(() => SalesModule),
   ],
   controllers: [PaymentController],
   providers: [
-    { provide: 'PaymentService', useClass: OpenPixService },
-    WebhookFactory,
-    OpenPixWebhookService,
+    { provide: 'PaymentProcessor', useClass: WooviAdapter },
+    PaymentService,
+    WooviWebhookAdapter,
+    WebhookProcessorService,
+    CreatePaymentUseCase,
+    PaymentRepository,
   ],
-  exports: ['PaymentService'],
+  exports: ['PaymentProcessor', PaymentService],
 })
 export class PaymentModule {}

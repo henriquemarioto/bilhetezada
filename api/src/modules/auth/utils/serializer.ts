@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { PassportSerializer } from '@nestjs/passport';
-import { Customer } from '@/entities/customer.entity';
-import { CustomerService } from '../../customer/customer.service';
+import { User } from '@/modules/user/entities/user.entity';
 import { Injectable } from '@nestjs/common';
+import { PassportSerializer } from '@nestjs/passport';
+import { UserService } from '../../user/services/user.service';
 
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
-  constructor(private readonly customerService: CustomerService) {
+  constructor(private readonly userService: UserService) {
     super();
   }
 
-  serializeUser(user: Customer, done: (err, user: Customer) => void) {
+  serializeUser(user: User, done: (err, user: User) => void) {
     console.log('Serializer', user);
     done(null, user);
   }
-  async deserializeUser(user: any, done: (err, user: Customer | null) => void) {
+  async deserializeUser(user: any, done: (err, user: User | null) => void) {
     console.log('Deserializer', user);
-    const userFound = await this.customerService.findById(user['_id']);
+    const userFound = await this.userService.getById(user['_id']);
     return userFound ? done(null, user) : done(null, null);
   }
 }

@@ -1,18 +1,27 @@
 import { Body, Controller, Headers, Post } from '@nestjs/common';
-import { WebhookFactory } from './webhooks/webhook.factory';
 import { ApiExcludeEndpoint } from '@nestjs/swagger';
+import { WooviWebhookBodyDto } from './dtos/woovi-pix-webhook-body.dto';
+import { WebhookProcessorService } from './webhooks/webhook-processor.service';
+import { WooviWebhookAdapter } from './webhooks/adapters/woovi.webhook.adapter';
 
-@Controller()
+@Controller('payments')
 export class PaymentController {
-  constructor(private readonly webhookFactory: WebhookFactory) {}
+  constructor(
+    private readonly webhookProcessorService: WebhookProcessorService,
+    private readonly wooviWebhookAdapter: WooviWebhookAdapter,
+  ) {}
 
   @ApiExcludeEndpoint()
-  @Post('webhook')
-  async handleWebhook(
+  @Post('webhook/woovi')
+  async handleWebhookWoovi(
     @Headers() headers: Record<string, any>,
-    @Body() body: any,
-  ): Promise<boolean> {
-    const service = this.webhookFactory.getService(body, headers);
-    return service.handleWebhook(body);
+    @Body() body: WooviWebhookBodyDto,
+  ): Promise<{ received: true }> {
+    await this.webhookProcessorService.process(
+      this.wooviWebhookAdapter,
+      headers,
+      body,
+    );
+    return { received: true };
   }
 }

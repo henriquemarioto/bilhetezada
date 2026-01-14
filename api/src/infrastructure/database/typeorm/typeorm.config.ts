@@ -20,6 +20,9 @@ const config = {
   autoLoadEntities: true,
   synchronize: false,
   logging: process.env.NODE_ENV === 'development',
+  cli: {
+    migrationsDir: join(__dirname, './migrations'),
+  },
 };
 
 export default registerAs('typeorm', () => config);

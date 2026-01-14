@@ -1,17 +1,20 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
 import configuration from './config/env.config';
 import typeormConfig from './infrastructure/database/typeorm/typeorm.config';
 import { AuthModule } from './modules/auth/auth.module';
-import { CustomerModule } from './modules/customer/customer.module';
 import { EventModule } from './modules/event/event.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { OrderFulfillmentModule } from './modules/order-fulfillment/order-fulfillment.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { SalesModule } from './modules/sales/sales.module';
+import { TicketModule } from './modules/ticket/ticket.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -37,12 +40,15 @@ import { SalesModule } from './modules/sales/sales.module';
       ttl: 86400,
     }),
     PassportModule.register({ session: true }),
+    EventEmitterModule.forRoot(),
     AuthModule,
-    CustomerModule,
+    UserModule,
     EventModule,
     SalesModule,
     PaymentModule,
+    TicketModule,
     NotificationModule,
+    OrderFulfillmentModule,
   ],
   controllers: [],
   providers: [],

@@ -3,7 +3,7 @@ import { CreateEventDto } from './create-event.dto';
 import { Exclude } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
 
-export class UpdateEventDTO extends PartialType(CreateEventDto) {
+export class UpdateEventDto extends PartialType(CreateEventDto) {
   @Exclude()
   active?: boolean;
 

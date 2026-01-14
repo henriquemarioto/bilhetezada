@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 
 @Injectable()
 export class SlugService {
-  slug(text: string) {
+  create(text: string) {
     return text
       .normalize('NFKD')
       .replace(/[\u0300-\u036f]/g, '')
@@ -14,7 +14,7 @@ export class SlugService {
       .replace(/-+/g, '-');
   }
 
-  slugWithUUID(text: string) {
-    return this.slug(text) + '-' + randomUUID().slice(0, 4);
+  createWithUUID(text: string) {
+    return this.create(text) + '-' + randomUUID().slice(0, 4);
   }
 }

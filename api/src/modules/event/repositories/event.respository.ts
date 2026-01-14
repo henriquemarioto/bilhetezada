@@ -1,19 +1,19 @@
+import { User } from '@/modules/user/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { TypeOrmBaseRepository } from '../../../core/common/typeorm.base.repository';
-import { Event } from '../entities/event.entity';
-import { CreateEventDto } from '../dtos/create-event.dto';
-import { Customer } from 'src/infrastructure/database/typeorm/entities/customer.entity';
 import {
   PaginatedResult,
   PaginationOptions,
-} from 'src/core/common/base.repository';
-import { UpdateEventDTO } from '../dtos/update-event.dto';
+} from '@/core/common/base.repository';
+import { Repository } from 'typeorm';
+import { TypeOrmBaseRepository } from '@/core/common/typeorm.base.repository';
+import { CreateEventDto } from '../dtos/create-event.dto';
+import { UpdateEventDto } from '../dtos/update-event.dto';
+import { Event } from '../entities/event.entity';
 
 type CreateEventData = CreateEventDto & {
   slug: string;
-  customer: Customer;
+  user: User;
 };
 
 @Injectable()
@@ -32,17 +32,17 @@ export class EventRepository extends TypeOrmBaseRepository<Event> {
   async findOneById(eventId: string): Promise<Event | null> {
     return this.findOneImplementation({
       where: { id: eventId },
-      relations: ['customer', 'orders'],
+      relations: ['user', 'orders'],
     });
   }
 
-  async findManyByCustomerIdPaginated(
-    customerId: string,
+  async findManyByUserIdPaginated(
+    userId: string,
     pagination?: PaginationOptions,
   ): Promise<PaginatedResult<Event>> {
     return this.findAllPaginated(
       {
-        where: { customer_id: customerId },
+        where: { organizer_user_id: userId },
         order: { created_at: 'DESC' },
       },
       pagination,
@@ -51,7 +51,7 @@ export class EventRepository extends TypeOrmBaseRepository<Event> {
 
   async updateEvent(
     eventId: string,
-    updateEventDto: UpdateEventDTO,
+    updateEventDto: UpdateEventDto,
   ): Promise<Event> {
     const result = await this.updateImplementation(eventId, updateEventDto);
     return result.raw;

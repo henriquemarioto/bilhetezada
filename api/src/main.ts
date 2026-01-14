@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createClient } from 'redis';
 import { AppModule } from './app.module';
 import { Env } from './config/env.config';
+import { AllExceptionsFilter } from './core/filters/all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -14,10 +15,13 @@ async function bootstrap() {
   const redisClient = createClient({
     url: configService.get('redisUrl'),
   });
+
   redisClient.connect();
+
   redisClient.on('connect', () =>
     console.log('Connected to redis successfully.'),
   );
+
   redisClient.on('error', (err) =>
     console.log('Unable to connect to redis. ' + err),
   );
@@ -26,8 +30,11 @@ async function bootstrap() {
     new ValidationPipe({
       forbidNonWhitelisted: true,
       whitelist: true,
+      transform: true,
     }),
   );
+
+  // app.useGlobalFilters(new AllExceptionsFilter());
 
   const config = new DocumentBuilder()
     .setTitle('Bilhetezada API')
@@ -41,11 +48,13 @@ async function bootstrap() {
         bearerFormat: 'JWT',
         in: 'header',
       },
-      'access-token',
+      'access_token',
     )
     .addServer('http://localhost:3132')
     .build();
+
   const documentFactory = () => SwaggerModule.createDocument(app, config);
+
   SwaggerModule.setup('docs', app, documentFactory, {
     jsonDocumentUrl: 'docs/json',
     customSiteTitle: 'Bilhetezada docs',

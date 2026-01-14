@@ -1,22 +1,22 @@
-import { Order } from '@/entities/order.entity';
+import { Order } from '@/modules/sales/entities/order.entity';
 import { createOrderResponseDtoFactory } from '@/test/factories/dto/create-order-response.dto.factory';
 import { createOrderDtoFactory } from '@/test/factories/dto/create-ticket-order.dto.factory';
-import { openPixPixWebhookBodyDtoFactory } from '@/test/factories/dto/openpix-pix-webhook-body.dto.factory';
-import { customerFactory } from '@/test/factories/entity/customer.factory';
+import { wooviWebhookBodyDtoFactory } from '@/test/factories/dto/woovi-pix-webhook-body.dto.factory';
 import { eventFactory } from '@/test/factories/entity/event.factory';
 import { orderFactory } from '@/test/factories/entity/order.factory';
+import { userFactory } from '@/test/factories/entity/user.factory';
 import { requestUserFactory } from '@/test/factories/request-user.factory';
 import { Test, TestingModule } from '@nestjs/testing';
+import { RequestUser } from '../../shared/dtos/request-user.dto';
 import { JwtAuthGuard } from '../auth/utils/guards/jwt.guard';
-import { OpenPixPixWebhookBodyDto } from '../payment/dto/openpix-pix-webhook-body.dto';
-import { OpenPixService } from '../payment/services/openpix.service';
-import { RequestUser } from '../shared/dto/request-user.dto';
-import { CreateOrderDto } from './dto/create-ticket-order.dto';
+import { WooviAdapter } from '../payment/adapters/woovi.adapter';
+import { WooviWebhookBodyDto } from '../payment/dtos/woovi-pix-webhook-body.dto';
+import { CreateOrderDto } from './dtos/create-ticket-order.dto';
 import { SalesController } from './sales.controller';
 import { SalesService } from './sales.service';
 
 const mockedOrder: Order = orderFactory({
-  event: eventFactory({ customer: customerFactory() }),
+  event: eventFactory({ user: userFactory() }),
 });
 
 const mockedCreateOrderDto: CreateOrderDto = createOrderDtoFactory();
@@ -27,13 +27,13 @@ const mockedRequestUser: RequestUser = requestUserFactory();
 
 const mockedGetEventOrdersResponse = [mockedOrder, mockedOrder];
 
-const mockedOpenPixPixWebhookBody: OpenPixPixWebhookBodyDto =
-  openPixPixWebhookBodyDtoFactory();
+const mockedWooviPixWebhookBody: WooviWebhookBodyDto =
+  wooviWebhookBodyDtoFactory();
 
 describe('SalesController', () => {
   let salesController: SalesController;
   let mockedSalesService: jest.Mocked<SalesService>;
-  let mockedOpenPixService: jest.Mocked<OpenPixService>;
+  let mockedWooviAdapter: jest.Mocked<WooviAdapter>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -51,7 +51,7 @@ describe('SalesController', () => {
           },
         },
         {
-          provide: OpenPixService,
+          provide: WooviAdapter,
           useValue: {
             webhookPix: jest.fn().mockResolvedValue(true),
           },
@@ -66,14 +66,14 @@ describe('SalesController', () => {
 
     salesController = module.get<SalesController>(SalesController);
     mockedSalesService = module.get<jest.Mocked<SalesService>>(SalesService);
-    mockedOpenPixService =
-      module.get<jest.Mocked<OpenPixService>>(OpenPixService);
+    mockedWooviAdapter =
+      module.get<jest.Mocked<WooviAdapter>>(WooviAdapter);
   });
 
   it('should be defined', () => {
     expect(salesController).toBeDefined();
     expect(mockedSalesService).toBeDefined();
-    expect(mockedOpenPixService).toBeDefined();
+    expect(mockedWooviAdapter).toBeDefined();
   });
 
   describe('createOrder', () => {
@@ -108,15 +108,15 @@ describe('SalesController', () => {
     });
   });
 
-  describe('webhookOpenPixPixPayment', () => {
+  describe('webhookWooviPixPayment', () => {
     it('should be call with correct parameters and return true', async () => {
-      const result = await salesController.webhookOpenPixPixPayment(
-        mockedOpenPixPixWebhookBody,
+      const result = await salesController.webhookWooviPixPayment(
+        mockedWooviPixWebhookBody,
       );
 
       expect(result).toStrictEqual(true);
-      expect(mockedOpenPixService.webhookPix).toHaveBeenCalledWith(
-        mockedOpenPixPixWebhookBody,
+      expect(mockedWooviAdapter.webhookPix).toHaveBeenCalledWith(
+        mockedWooviPixWebhookBody,
       );
     });
   });

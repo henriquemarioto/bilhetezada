@@ -1,6 +1,6 @@
-import { Order } from '@/entities/order.entity';
-import { Payment } from '@/entities/payment.entity';
-import { Ticket } from '@/entities/ticket.entity';
+import { Payment } from '@/modules/payment/entities/payment.entity';
+import { Ticket } from '@/modules/ticket/entities/ticket.entity';
+import { Order } from '@/modules/sales/entities/order.entity';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -8,7 +8,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import CacheService from './services/cache.service';
 import CryptoService from './services/crypto.service';
 import { HttpService } from './services/http.service';
-import { MessagingService } from './services/messaging.service';
 import { QRCodeService } from './services/qrcode.service';
 import { SlugService } from './services/slug.service';
 import TimezoneService from './services/timezone.service';
@@ -28,7 +27,6 @@ import TimezoneService from './services/timezone.service';
     QRCodeService,
     TimezoneService,
     HttpService,
-    MessagingService,
   ],
   exports: [
     SlugService,
@@ -37,7 +35,6 @@ import TimezoneService from './services/timezone.service';
     QRCodeService,
     TimezoneService,
     HttpService,
-    MessagingService,
   ],
 })
 export default class SharedModule {}

@@ -1,5 +1,24 @@
+// Query operators for flexible querying
+export type QueryOperators<T> = {
+  $in?: T[];
+  $notIn?: T[];
+  $gt?: T;
+  $gte?: T;
+  $lt?: T;
+  $lte?: T;
+  $like?: string;
+  $ilike?: string;
+  $not?: T;
+  $isNull?: boolean;
+};
+
+// Enhanced where clause that supports both direct values and operators
+export type WhereCondition<T> = {
+  [P in keyof T]?: T[P] | QueryOperators<T[P]>;
+};
+
 export interface FindOptions<T> {
-  where?: Partial<T>;
+  where?: WhereCondition<T>;
   select?: (keyof T)[];
   relations?: string[];
   order?: { [P in keyof T]?: 'ASC' | 'DESC' };
@@ -8,7 +27,7 @@ export interface FindOptions<T> {
 }
 
 export interface FindOneOptions<T> {
-  where?: Partial<T>;
+  where?: WhereCondition<T>;
   select?: (keyof T)[];
   relations?: string[];
 }
@@ -42,15 +61,15 @@ export interface PaginatedResult<T> {
 
 export interface IBaseRepository<T> {
   findAll(options?: FindOptions<T>): Promise<T[]>;
-  findById(id: string | number): Promise<T | null>;
+  getById(id: string | number): Promise<T | null>;
   findOne(options: FindOneOptions<T>): Promise<T | null>;
   create(data: Partial<T>): Promise<T>;
   update(id: string | number, data: Partial<T>): Promise<T | null>;
   delete(id: string | number): Promise<boolean>;
-  exists(where: Partial<T>): Promise<boolean>;
-  count(where?: Partial<T>): Promise<number>;
+  exists(where: WhereCondition<T>): Promise<boolean>;
+  count(where?: WhereCondition<T>): Promise<number>;
   createMany(data: Partial<T>[]): Promise<T[]>;
-  deleteMany(where: Partial<T>): Promise<number>;
+  deleteMany(where: WhereCondition<T>): Promise<number>;
 }
 
 export abstract class BaseRepository<T> implements IBaseRepository<T> {
@@ -68,17 +87,19 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
   protected abstract deleteImplementation(
     id: string | number,
   ): Promise<DeleteResult>;
-  protected abstract countImplementation(where?: Partial<T>): Promise<number>;
+  protected abstract countImplementation(
+    where?: WhereCondition<T>,
+  ): Promise<number>;
   protected abstract createManyImplementation(data: Partial<T>[]): Promise<T[]>;
   protected abstract deleteManyImplementation(
-    where: Partial<T>,
+    where: WhereCondition<T>,
   ): Promise<DeleteResult>;
 
   async findAll(options?: FindOptions<T>): Promise<T[]> {
     return this.findAllImplementation(options);
   }
 
-  async findById(id: string | number): Promise<T | null> {
+  async getById(id: string | number): Promise<T | null> {
     return this.findOneImplementation({
       where: { id } as unknown as Partial<T>,
     });
@@ -95,7 +116,7 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
   async update(id: string | number, data: Partial<T>): Promise<T | null> {
     const result = await this.updateImplementation(id, data);
     if (result.affected && result.affected > 0) {
-      return this.findById(id);
+      return this.getById(id);
     }
     return null;
   }
@@ -105,12 +126,12 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     return result.affected ? result.affected > 0 : false;
   }
 
-  async exists(where: Partial<T>): Promise<boolean> {
+  async exists(where: WhereCondition<T>): Promise<boolean> {
     const count = await this.countImplementation(where);
     return count > 0;
   }
 
-  async count(where?: Partial<T>): Promise<number> {
+  async count(where?: WhereCondition<T>): Promise<number> {
     return this.countImplementation(where);
   }
 
@@ -118,7 +139,7 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     return this.createManyImplementation(data);
   }
 
-  async deleteMany(where: Partial<T>): Promise<number> {
+  async deleteMany(where: WhereCondition<T>): Promise<number> {
     const result = await this.deleteManyImplementation(where);
     return result.affected || 0;
   }

@@ -1,17 +1,17 @@
+import { UserService } from '@/modules/user/services/user.service';
 import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from '../../auth.service';
-import { CustomerService } from '@/modules/customer/customer.service';
+import { AuthService } from '../../services/auth.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private readonly authService: AuthService,
-    private readonly customerService: CustomerService,
+    private readonly userService: UserService,
   ) {
     super();
   }
@@ -38,7 +38,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       throw new UnauthorizedException('Invalid or expired token.');
     }
 
-    const user = await this.customerService.findById(request.user.userId);
+    const user = await this.userService.getById(request.user.userId);
 
     if (!user?.active) {
       throw new UnauthorizedException('Non-active user.');

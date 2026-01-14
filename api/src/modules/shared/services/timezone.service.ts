@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Timezones } from '../enums/timezones.enum';
+import { Timezones } from '@/shared/enums/timezones.enum';
 
 @Injectable()
 export default class TimezoneService {

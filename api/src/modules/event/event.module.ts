@@ -1,23 +1,35 @@
-import { Event } from './entities/event.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
-import { CustomerModule } from '../customer/customer.module';
 import SharedModule from '../shared/shared.module';
-import { EventController } from './event.controller';
-import { EventService } from './event.service';
-import { CreateEventUseCase } from './use-cases/create-event.use-case';
+import { UserModule } from '../user/user.module';
+import { EventController } from './controllers/event.controller';
+import { Batch } from './entities/batch.entity';
+import { Event } from './entities/event.entity';
+import { BatchRepository } from './repositories/batch.respository';
 import { EventRepository } from './repositories/event.respository';
+import { BatchService } from './services/batch.service';
+import { EventService } from './services/event.service';
+import { CreateBatchUseCase } from './use-cases/create-batch.use-case';
+import { CreateEventUseCase } from './use-cases/create-event.use-case';
+import { BatchController } from './controllers/batch.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Event]),
+    TypeOrmModule.forFeature([Event, Batch]),
     SharedModule,
-    CustomerModule,
+    UserModule,
     AuthModule,
   ],
-  providers: [EventService, CreateEventUseCase, EventRepository],
-  controllers: [EventController],
-  exports: [EventService],
+  providers: [
+    EventService,
+    BatchService,
+    CreateEventUseCase,
+    CreateBatchUseCase,
+    EventRepository,
+    BatchRepository,
+  ],
+  controllers: [EventController, BatchController],
+  exports: [EventService, BatchService],
 })
 export class EventModule {}

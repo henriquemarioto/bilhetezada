@@ -1,18 +1,29 @@
 import {
-  Repository,
-  FindOptionsWhere,
-  FindManyOptions,
   DeepPartial,
+  FindManyOptions,
+  FindOptionsWhere,
+  ILike,
+  In,
+  IsNull,
+  LessThan,
+  LessThanOrEqual,
+  Like,
+  MoreThan,
+  MoreThanOrEqual,
+  Not,
   ObjectLiteral,
+  Repository,
 } from 'typeorm';
 import {
   BaseRepository,
-  FindOptions,
-  FindOneOptions,
-  UpdateResult,
   DeleteResult,
-  PaginationOptions,
+  FindOneOptions,
+  FindOptions,
   PaginatedResult,
+  PaginationOptions,
+  QueryOperators,
+  UpdateResult,
+  WhereCondition,
 } from '../../core/common/base.repository';
 
 export abstract class TypeOrmBaseRepository<
@@ -39,7 +50,7 @@ export abstract class TypeOrmBaseRepository<
     return this.repository.findOne(typeOrmOptions);
   }
 
-  protected async createImplementation(data: unknown): Promise<T> {
+  protected async createImplementation(data: Partial<T>): Promise<T> {
     const entity = this.repository.create(data as DeepPartial<T>);
     return this.repository.save(entity);
   }
@@ -65,9 +76,12 @@ export abstract class TypeOrmBaseRepository<
     };
   }
 
-  protected async countImplementation(where?: Partial<T>): Promise<number> {
+  protected async countImplementation(
+    where?: WhereCondition<T>,
+  ): Promise<number> {
+    const typeOrmWhere = this.mapWhereCondition(where);
     return this.repository.count({
-      where: where as FindOptionsWhere<T>,
+      where: typeOrmWhere as FindOptionsWhere<T>,
     });
   }
 
@@ -77,9 +91,12 @@ export abstract class TypeOrmBaseRepository<
   }
 
   protected async deleteManyImplementation(
-    where: Partial<T>,
+    where: WhereCondition<T>,
   ): Promise<DeleteResult> {
-    const result = await this.repository.delete(where as FindOptionsWhere<T>);
+    const typeOrmWhere = this.mapWhereCondition(where);
+    const result = await this.repository.delete(
+      typeOrmWhere as FindOptionsWhere<T>,
+    );
     return {
       affected: result.affected ?? undefined,
       raw: result.raw,
@@ -92,7 +109,7 @@ export abstract class TypeOrmBaseRepository<
     if (!options) return undefined;
 
     return {
-      where: options.where as FindOptionsWhere<T>,
+      where: this.mapWhereCondition(options.where) as FindOptionsWhere<T>,
       select: options.select as any,
       relations: options.relations,
       order: options.order as any,
@@ -107,10 +124,80 @@ export abstract class TypeOrmBaseRepository<
     relations?: string[];
   } {
     return {
-      where: options.where as FindOptionsWhere<T>,
+      where: this.mapWhereCondition(options.where) as FindOptionsWhere<T>,
       select: options.select as any,
       relations: options.relations,
     };
+  }
+
+  private mapWhereCondition(where?: WhereCondition<T>): any {
+    if (!where) return undefined;
+
+    const mapped: any = {};
+
+    for (const [key, value] of Object.entries(where)) {
+      if (value === null || value === undefined) {
+        mapped[key] = value;
+        continue;
+      }
+
+      // Check if value is an object with operators
+      if (typeof value === 'object' && !Array.isArray(value)) {
+        const operators = value as QueryOperators<any>;
+        mapped[key] = this.mapOperators(operators);
+      } else {
+        // Direct value
+        mapped[key] = value;
+      }
+    }
+
+    return mapped;
+  }
+
+  private mapOperators(operators: QueryOperators<any>): any {
+    const mapped: any = {};
+
+    if (operators.$in !== undefined) {
+      return In(operators.$in);
+    }
+
+    if (operators.$notIn !== undefined) {
+      return Not(In(operators.$notIn));
+    }
+
+    if (operators.$gt !== undefined) {
+      return MoreThan(operators.$gt);
+    }
+
+    if (operators.$gte !== undefined) {
+      return MoreThanOrEqual(operators.$gte);
+    }
+
+    if (operators.$lt !== undefined) {
+      return LessThan(operators.$lt);
+    }
+
+    if (operators.$lte !== undefined) {
+      return LessThanOrEqual(operators.$lte);
+    }
+
+    if (operators.$like !== undefined) {
+      return Like(operators.$like);
+    }
+
+    if (operators.$ilike !== undefined) {
+      return ILike(operators.$ilike);
+    }
+
+    if (operators.$not !== undefined) {
+      return Not(operators.$not);
+    }
+
+    if (operators.$isNull !== undefined) {
+      return operators.$isNull ? IsNull() : Not(IsNull());
+    }
+
+    return mapped;
   }
 
   protected async findAllPaginatedImplementation(

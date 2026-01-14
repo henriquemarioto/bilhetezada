@@ -1,23 +1,25 @@
-import { Event } from '@/entities/event.entity';
-import { Order } from '@/entities/order.entity';
-import { Ticket } from '@/entities/ticket.entity';
+import { Ticket } from '@/modules/ticket/entities/ticket.entity';
 import { faker } from '@faker-js/faker/.';
+import { Batch } from '@/modules/event/entities/batch.entity';
+import { OrderItem } from '@/modules/sales/entities/order-item.entity';
 
 type TicketFactoryProps = {
-  event: Event;
-  order: Order;
+  batch: Batch;
+  orderItem: OrderItem;
   used?: boolean;
 };
 
 export const ticketFactory = ({
-  event,
-  order,
+  batch,
+  orderItem,
   used = false,
 }: TicketFactoryProps): Ticket => ({
   id: faker.string.uuid(),
-  event: event,
-  order: order,
+  order_item: orderItem,
+  batch: batch,
   used: used,
+  batch_id: batch.id,
+  order_item_id: orderItem.id,
   created_at: new Date(),
   updated_at: new Date(),
 });

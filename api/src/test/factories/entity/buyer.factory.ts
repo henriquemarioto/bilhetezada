@@ -1,5 +1,5 @@
-import { Buyer } from '@/entities/buyer.entity';
-import { Order } from '@/entities/order.entity';
+import { Buyer } from '@/modules/sales/entities/buyer.entity';
+import { Order } from '@/modules/sales/entities/order.entity';
 import { faker } from '@faker-js/faker/.';
 
 type BuyerFactoryProps = {
@@ -11,6 +11,7 @@ export const buyerFactory = ({ order }: BuyerFactoryProps): Buyer => ({
   email: faker.internet.email(),
   name: faker.person.fullName(),
   order: order,
+  order_id: order.id,
   phone: String(
     faker.number.int({
       min: 11111111111,

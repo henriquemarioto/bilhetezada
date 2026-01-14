@@ -1,17 +1,17 @@
+import { User } from '@/modules/user/entities/user.entity';
+import { createUserDtoFactory } from '@/test/factories/dto/create-user.dto.factory';
+import { userFactory } from '@/test/factories/entity/user.factory';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import AuthProviders from '../../shared/enums/auth-providers.enum';
+import { CreateUserDto } from '../user/dtos/create-user.dto';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
-import AuthProviders from '../shared/enums/auth-providers.enum';
-import { Customer } from '@/entities/customer.entity';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { createCustomerDtoFactory } from '@/test/factories/dto/create-customer.dto.factory';
-import { customerFactory } from '@/test/factories/entity/customer.factory';
 import { JwtAuthGuard } from './utils/guards/jwt.guard';
 
-const createCustomerDto: CreateCustomerDto = createCustomerDtoFactory();
+const createUserDto: CreateUserDto = createUserDtoFactory();
 
-const customerDto: Customer = customerFactory();
+const userDto: User = userFactory();
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -24,7 +24,7 @@ describe('AuthController', () => {
         {
           provide: AuthService,
           useValue: {
-            signUp: jest.fn().mockResolvedValue(customerDto),
+            signUp: jest.fn().mockResolvedValue(userDto),
             login: jest.fn().mockResolvedValue({
               access_token: 'token',
             }),
@@ -50,24 +50,24 @@ describe('AuthController', () => {
 
   describe('signUp', () => {
     it('should call AuthService.signUp with correct parameters', async () => {
-      await authController.signUp(createCustomerDto);
+      await authController.signUp(createUserDto);
 
       expect(mockedAuthService.signUp).toHaveBeenCalledWith(
         AuthProviders.LOCAL,
-        createCustomerDto,
+        createUserDto,
       );
     });
   });
 
   describe('login', () => {
     it('should call AuthService.login with correct parameters', async () => {
-      await authController.login(customerDto);
+      await authController.login(userDto);
 
-      expect(mockedAuthService.login).toHaveBeenCalledWith(customerDto);
+      expect(mockedAuthService.login).toHaveBeenCalledWith(userDto);
     });
 
     it('should return access token', async () => {
-      const result = await authController.login(customerDto);
+      const result = await authController.login(userDto);
 
       expect(result).toStrictEqual({
         access_token: 'token',
@@ -83,13 +83,13 @@ describe('AuthController', () => {
 
   describe('loginGoogleCallback', () => {
     it('should call AuthService.login with correct parameters', async () => {
-      await authController.loginGoogleCallback(customerDto);
+      await authController.loginGoogleCallback(userDto);
 
-      expect(mockedAuthService.login).toHaveBeenCalledWith(customerDto);
+      expect(mockedAuthService.login).toHaveBeenCalledWith(userDto);
     });
 
     it('should return access token', async () => {
-      const result = await authController.loginGoogleCallback(customerDto);
+      const result = await authController.loginGoogleCallback(userDto);
 
       expect(result).toStrictEqual({
         access_token: 'token',

@@ -1,18 +1,18 @@
+import { Logout } from '@/modules/auth/entities/logout.entity';
 import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Logout } from '@/entities/logout.entity';
 import SharedModule from '../shared/shared.module';
-import { CustomerModule } from '../customer/customer.module';
-import { AuthService } from './auth.service';
+import { UserModule } from '../user/user.module';
+import { AuthController } from './auth.controller';
+import { AuthService } from './services/auth.service';
 import { JwtAuthGuard } from './utils/guards/jwt.guard';
 import { SessionSerializer } from './utils/serializer';
 import { GoogleStrategy } from './utils/strategies/google.strategy';
 import { JwtStrategy } from './utils/strategies/jwt.strategy';
 import { LocalStrategy } from './utils/strategies/local.strategy';
-import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { AuthController } from './auth.controller';
       }),
     }),
     TypeOrmModule.forFeature([Logout]),
-    forwardRef(() => CustomerModule),
+    forwardRef(() => UserModule),
     SharedModule,
   ],
   controllers: [AuthController],

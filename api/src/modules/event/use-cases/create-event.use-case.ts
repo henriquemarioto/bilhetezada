@@ -1,6 +1,6 @@
-import { CustomerService } from '@/modules/customer/customer.service';
 import { SlugService } from '@/modules/shared/services/slug.service';
 import TimezoneService from '@/modules/shared/services/timezone.service';
+import { UserService } from '@/modules/user/services/user.service';
 import {
   BadRequestException,
   Injectable,
@@ -14,18 +14,18 @@ import { EventRepository } from '../repositories/event.respository';
 export class CreateEventUseCase {
   constructor(
     private readonly eventRepository: EventRepository,
-    private customerService: CustomerService,
+    private userService: UserService,
     private slugService: SlugService,
     private timezoneService: TimezoneService,
   ) {}
 
   async execute(
-    customerId: string,
+    userId: string,
     createEventDto: CreateEventDto,
   ): Promise<Event> {
-    const customer = await this.customerService.findById(customerId);
+    const user = await this.userService.getById(userId);
 
-    if (!customer) throw new NotFoundException('Customer not found.');
+    if (!user) throw new NotFoundException('User not found.');
 
     const isValidTimezone = this.timezoneService.isValidTimezone(
       createEventDto.time_zone,
@@ -48,16 +48,23 @@ export class CreateEventUseCase {
     }
 
     const event = await this.eventRepository.createEvent({
-      ...createEventDto,
+      name: createEventDto.name,
+      description: createEventDto.description,
+      capacity: createEventDto.capacity,
+      place_name: createEventDto.place_name,
+      address: createEventDto.address,
+      city: createEventDto.city,
+      state: createEventDto.state,
+      latitude: createEventDto.latitude,
+      longitude: createEventDto.longitude,
       start_time: createEventDto.start_time,
       end_time: createEventDto.end_time,
+      time_zone: createEventDto.time_zone,
       entrance_limit_time: createEventDto.entrance_limit_time
         ? createEventDto.entrance_limit_time
         : undefined,
-      limit_time_for_ticket_purchase:
-        createEventDto.limit_time_for_ticket_purchase,
       slug,
-      customer,
+      user,
     });
 
     return event;

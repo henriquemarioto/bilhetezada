@@ -1,6 +1,6 @@
+import { CreateEventDto } from '@/modules/event/dtos/create-event.dto';
 import { faker } from '@faker-js/faker/.';
-import { CreateEventDto } from '@/modules/event/dto/create-event.dto';
-import { Timezones } from '@/modules/shared/enums/timezones.enum';
+import { Timezones } from '@/shared/enums/timezones.enum';
 
 const startTime = new Date();
 startTime.setDate(startTime.getDate() + 2);
@@ -20,10 +20,16 @@ export const createEventDtoFactory = (
   name: faker.lorem.words(5),
   description: faker.lorem.words(20),
   address: faker.location.streetAddress(),
-  price: faker.number.int({ min: 10, max: 10000 }),
   start_time: startTime.toISOString(),
   end_time: endTime.toISOString(),
-  limit_time_for_ticket_purchase: limitTimeForTicketPurchase.toISOString(),
-  entrance_limit_time: entranceLimit ? entranceLimitTime.toISOString() : null,
+  entrance_limit_time: entranceLimit
+    ? entranceLimitTime.toISOString()
+    : undefined,
   time_zone: Timezones.AMERICA_SAO_PAULO,
+  capacity: faker.number.int({ min: 1, max: 100000 }),
+  city: faker.location.city(),
+  state: faker.location.state(),
+  latitude: faker.location.latitude(),
+  longitude: faker.location.longitude(),
+  place_name: faker.location.secondaryAddress(),
 });

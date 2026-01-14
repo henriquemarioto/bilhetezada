@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Timezones } from '../../../shared/enums/timezones.enum';
 import TimezoneService from './timezone.service';
-import { Timezones } from '../enums/timezones.enum';
 
 describe('TimezoneService', () => {
   let timezoneService: TimezoneService;

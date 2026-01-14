@@ -1,5 +1,5 @@
-import { Customer } from '@/infrastructure/database/typeorm/entities/customer.entity';
-import { Order } from '@/infrastructure/database/typeorm/entities/order.entity';
+import { Order } from '@/modules/sales/entities/order.entity';
+import { User } from '@/modules/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Batch } from './batch.entity';
 
 @Entity()
 export class Event {
@@ -52,16 +53,10 @@ export class Event {
   @Column({ type: 'datetime', nullable: true })
   entrance_limit_time?: string | null;
 
-  @Column({ nullable: false, type: 'datetime' })
-  limit_time_for_ticket_purchase: string;
-
   @Column({ nullable: false, default: 'America/Sao_Paulo' })
   time_zone: string;
 
-  @Column({ nullable: false, type: 'decimal', precision: 10, scale: 2 })
-  price: number;
-
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: 'mediumint', unsigned: true })
   capacity: number;
 
   @Column({ default: true })
@@ -73,12 +68,15 @@ export class Event {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Customer, (customer) => customer.events)
-  @JoinColumn({ name: 'customer_id' })
-  customer: Customer;
+  @ManyToOne(() => User, (user) => user.events)
+  @JoinColumn({ name: 'organizer_user_id' })
+  user: User;
 
-  @Column({ name: 'customer_id' })
-  customer_id: string;
+  @Column({ name: 'organizer_user_id' })
+  organizer_user_id: string;
+
+  @OneToMany(() => Batch, (batch) => batch.event)
+  batches: Batch[];
 
   @OneToMany(() => Order, (order) => order.event)
   orders: Order[];

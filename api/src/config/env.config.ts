@@ -14,9 +14,14 @@ export type Env = {
   cryptSecretKey: string;
   cryptIv: string;
   jwtSecret: string;
-  openPixApiUrl: string;
-  openPixAppId: string;
+  defaultChargeExpirationSeconds: number;
+  wooviApiUrl: string;
+  wooviAppId: string;
+  resendApiBaseUrl: string;
   resendApiKey: string;
+  whatsappCloudApiVersion: string;
+  whatsappCloudApiPhoneNumberId: string;
+  whatsappCloudApiAccessToken: string;
 };
 
 export default (): Env => ({
@@ -35,7 +40,15 @@ export default (): Env => ({
   cryptSecretKey: process.env.CRYPT_SECRET_KEY || '',
   cryptIv: process.env.CRYPT_IV || '',
   jwtSecret: process.env.JWT_SECRET || '',
-  openPixApiUrl: process.env.OPENPIX_API_URL || '',
-  openPixAppId: process.env.OPENPIX_APPID || '',
-  resendApiKey: process.env.OPENPIX_APPID || '',
+  defaultChargeExpirationSeconds:
+    Number(process.env.CHARGE_EXPIRATION_SECONDS_DEFAULT) || 600,
+  wooviApiUrl: process.env.WOOVI_API_URL || '',
+  wooviAppId: process.env.WOOVI_APPID || '',
+  resendApiBaseUrl: process.env.RESEND_API_BASE_URL || '',
+  resendApiKey: process.env.RESEND_API_KEY || '',
+  whatsappCloudApiVersion: process.env.WHATSAPP_CLOUD_API_VERSION || '',
+  whatsappCloudApiPhoneNumberId:
+    process.env.WHATSAPP_CLOUD_API_PHONE_NUMBER_ID || '',
+  whatsappCloudApiAccessToken:
+    process.env.WHATSAPP_CLOUD_API_ACCESS_TOKEN || '',
 });

@@ -1,6 +1,6 @@
+import { PaginatedResponseDto, PaginationMetaDto } from '@/shared/dtos/paginated-response.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { PaginationMetaDto } from '@/shared/dtos/paginated-response.dto';
 
 export class EventResponseDto {
   @ApiProperty({
@@ -81,26 +81,13 @@ export class EventResponseDto {
   updated_at: Date;
 
   @Exclude()
-  customer: any;
+  user: any;
 
   @Exclude()
-  customer_id: string;
+  user_id: string;
 
   @Exclude()
   orders: any;
 }
 
-export class PaginatedEventResponseDto {
-  @ApiProperty({
-    description: 'Array of events',
-    type: EventResponseDto,
-    isArray: true,
-  })
-  data: EventResponseDto[];
-
-  @ApiProperty({
-    description: 'Pagination metadata',
-    type: PaginationMetaDto,
-  })
-  meta: PaginationMetaDto;
-}
+export class PaginatedEventResponseDto extends PaginatedResponseDto<EventResponseDto> {}

@@ -1,6 +1,6 @@
 # Bilhetezada  
 
-**Bilhetezada** is an application designed to simplify the creation, management, and sale of event tickets. Our goal is to provide a complete platform for organizers and attendees, streamlining the experience from event creation to access control.  
+**Bilhetezada** is an application designed to simplify the creation, management, and sale of event tickets. Our goal is to provide a complete platform for users and attendees, streamlining the experience from event creation to access control.  
 
 ---  
 

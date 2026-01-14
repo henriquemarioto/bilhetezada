@@ -36,7 +36,7 @@ Bilhetezada is a platform for organizing small events in Brazil, focusing on sim
 ┃ ┃ ┃ ┣ 📜 update-event.use-case.ts
 ┃ ┃ ┃ ┗ 📜 update-event.use-case.spec.ts
 ┃ ┣ 📂 ticket
-┃ ┣ 📂 customer 
+┃ ┣ 📂 user 
 ┃ ┣ 📂 payment 
 ┃ ┣ 📂 sales 
 ┃ ┗ 📂 auth
@@ -122,7 +122,7 @@ This command runs all pending migrations in the database. It applies the changes
 ### **2. `migration:generate`**
 
 ```bash
-npm run migration:generate --name add-status-to-user
+npm run migration:generate --name=add-status-to-user
 ```
 
 **What does it do?**  
@@ -137,7 +137,7 @@ This command automatically generates a migration file based on detected changes 
 ### **3. `migration:create`**
 
 ```bash
-npm run migration:create --name rename-user-table
+npm run migration:create --name=rename-user-table
 ```
 
 **What does it do?**  

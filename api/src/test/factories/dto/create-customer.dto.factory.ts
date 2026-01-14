@@ -1,18 +1,13 @@
-import { CreateCustomerDto } from '@/modules/customer/dto/create-customer.dto';
+import { CreateUserDto } from '@/modules/user/dtos/create-user.dto';
 import { faker } from '@faker-js/faker/.';
 
-export const createCustomerDtoFactory = (
-  pictureUrl: boolean = false,
-): CreateCustomerDto => {
-  const createCustomerDto: CreateCustomerDto = {
+export const createUserDtoFactory = (): CreateUserDto => {
+  const createUserDto: CreateUserDto = {
     name: faker.person.fullName(),
     document: String(faker.number.int({ min: 11111111111, max: 99999999999 })),
-    birth_date: new Date().toJSON(),
     email: faker.internet.email(),
     password: faker.internet.password(),
   };
 
-  if (pictureUrl) createCustomerDto.picture_url = faker.internet.url();
-
-  return createCustomerDto;
+  return createUserDto;
 };
