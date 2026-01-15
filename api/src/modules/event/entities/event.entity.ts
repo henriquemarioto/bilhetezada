@@ -11,6 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { TicketBatch } from '@/modules/ticket/entities/ticket-batch.entity';
+import { EventStatus } from '@/shared/enums/event-status.enum';
 
 @Entity()
 export class Event {
@@ -59,8 +60,8 @@ export class Event {
   @Column({ nullable: false, type: 'mediumint', unsigned: true })
   capacity: number;
 
-  @Column({ default: true })
-  active: boolean;
+  @Column({ type: 'enum', enum: EventStatus, default: EventStatus.DRAFT })
+  status: EventStatus;
 
   @CreateDateColumn()
   created_at: Date;

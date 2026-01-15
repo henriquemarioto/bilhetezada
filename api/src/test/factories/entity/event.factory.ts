@@ -24,7 +24,6 @@ export const eventFactory = ({
 
   const event: Event = {
     id: randomUUID(),
-    active: true,
     address: faker.location.streetAddress(),
     city: faker.location.city(),
     state: faker.location.state(),
@@ -36,6 +35,12 @@ export const eventFactory = ({
     slug: faker.lorem.slug(5),
     start_at: startTime.toISOString(),
     end_at: endTime.toISOString(),
+    status: faker.helpers.arrayElement([
+      'DRAFT',
+      'PUBLISHED',
+      'CANCELED',
+      'FINISHED',
+    ]) as Event['status'],
     time_zone: Timezones.AMERICA_SAO_PAULO,
     created_at: new Date(),
     updated_at: new Date(),
