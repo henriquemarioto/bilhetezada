@@ -45,13 +45,13 @@ export class Event {
   slug: string;
 
   @Column({ nullable: false, type: 'datetime' })
-  start_time: string;
+  start_at: string;
 
   @Column({ nullable: false, type: 'datetime' })
-  end_time: string;
+  end_at: string;
 
   @Column({ type: 'datetime', nullable: true })
-  entrance_limit_time?: string | null;
+  entrance_limit_at?: string | null;
 
   @Column({ nullable: false, default: 'America/Sao_Paulo' })
   time_zone: string;

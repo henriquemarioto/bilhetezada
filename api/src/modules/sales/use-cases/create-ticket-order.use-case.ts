@@ -97,7 +97,7 @@ export class CreateTicketOrderUseCase {
         },
         {
           key: 'Data do evento',
-          value: new Date(event.start_time).toLocaleDateString('pt-BR', {
+          value: new Date(event.start_at).toLocaleDateString('pt-BR', {
             timeZone: event.time_zone,
             hour: '2-digit',
             minute: '2-digit',

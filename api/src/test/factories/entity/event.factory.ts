@@ -34,8 +34,8 @@ export const eventFactory = ({
     description: faker.lorem.words(20),
     name: faker.lorem.words(5),
     slug: faker.lorem.slug(5),
-    start_time: startTime.toISOString(),
-    end_time: endTime.toISOString(),
+    start_at: startTime.toISOString(),
+    end_at: endTime.toISOString(),
     time_zone: Timezones.AMERICA_SAO_PAULO,
     created_at: new Date(),
     updated_at: new Date(),
@@ -43,7 +43,7 @@ export const eventFactory = ({
     organizer_user_id: user.id,
     orders: orders,
     batches: [],
-    entrance_limit_time: null,
+    entrance_limit_at: limitTimeForTicketPurchase.toISOString(),
     capacity: faker.number.int({ min: 50, max: 1000 }),
   };
 
