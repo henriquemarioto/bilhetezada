@@ -23,19 +23,19 @@ export class CreateTicketBatchUseCase {
       throw new Error('Event not found');
     }
 
-    const eventBatches = await this.ticketBatchRepository.getBatchesByEventId(eventId);
+    const eventTicketBatches = await this.ticketBatchRepository.getTicketBatchesByEventId(eventId);
 
     let batchesCapacity = 0;
 
-    for (const batch of eventBatches) {
-      batchesCapacity += batch.ticket_quantity;
+    for (const ticketBatch of eventTicketBatches) {
+      batchesCapacity += ticketBatch.quantity;
     }
 
     if (batchesCapacity + createTicketBatchDto.ticketQuantity > event.capacity) {
       throw new Error('Total ticket quantity exceeds event capacity');
     }
 
-    const batch = await this.ticketBatchRepository.createBatch(createTicketBatchDto);
+    const batch = await this.ticketBatchRepository.createTicketBatch(createTicketBatchDto);
 
     return batch;
   }

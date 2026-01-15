@@ -20,11 +20,11 @@ export class TicketBatchRepository extends TypeOrmBaseRepository<TicketBatch> {
     super(ticketBatchRepository);
   }
 
-  async createBatch(data: CreateTicketBatchDto): Promise<TicketBatch> {
+  async createTicketBatch(data: CreateTicketBatchDto): Promise<TicketBatch> {
     return this.createImplementation(data);
   }
 
-  async getBatchesByEventId(eventId: string): Promise<TicketBatch[]> {
+  async getTicketBatchesByEventId(eventId: string): Promise<TicketBatch[]> {
     return this.findAllImplementation({
       where: { event_id: eventId },
       order: { created_at: 'DESC' },
@@ -50,11 +50,11 @@ export class TicketBatchRepository extends TypeOrmBaseRepository<TicketBatch> {
     );
   }
 
-  async updateBatch(
+  async updateTicketBatch(
     ticketBatchId: string,
-    updateBatchDto: UpdateTicketBatchDto,
+    updateTicketBatchDto: UpdateTicketBatchDto,
   ): Promise<Event> {
-    const result = await this.updateImplementation(ticketBatchId, updateBatchDto);
+    const result = await this.updateImplementation(ticketBatchId, updateTicketBatchDto);
     return result.raw;
   }
 }

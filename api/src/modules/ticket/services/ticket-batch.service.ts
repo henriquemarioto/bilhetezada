@@ -9,10 +9,10 @@ import { TicketBatchRepository } from '../repositories/ticket-batch.respository'
 
 @Injectable()
 export class TicketBatchService {
-  constructor(private batchesRepository: TicketBatchRepository) {}
+  constructor(private ticketBatchesRepository: TicketBatchRepository) {}
 
   async getById(ticketBatchId: string): Promise<TicketBatch> {
-    const batch = await this.batchesRepository.findOneById(ticketBatchId);
+    const batch = await this.ticketBatchesRepository.findOneById(ticketBatchId);
 
     if (!batch) throw new NotFoundException('Batch not found');
 
@@ -23,19 +23,19 @@ export class TicketBatchService {
     eventId: string,
     pagination: PaginationOptions,
   ): Promise<PaginatedResult<TicketBatch>> {
-    const batchs = await this.batchesRepository.findManyByEventIdPaginated(
+    const ticketBatches = await this.ticketBatchesRepository.findManyByEventIdPaginated(
       eventId,
       pagination,
     );
 
-    return batchs;
+    return ticketBatches;
   }
 
   async update(
     ticketBatchId: string,
-    updateBatchDto: UpdateTicketBatchDto,
+    updateTicketBatchDto: UpdateTicketBatchDto,
   ): Promise<boolean> {
-    const batch = await this.batchesRepository.findOne({
+    const batch = await this.ticketBatchesRepository.findOne({
       where: {
         id: ticketBatchId,
       },
@@ -47,7 +47,7 @@ export class TicketBatchService {
       );
     }
 
-    await this.batchesRepository.updateBatch(ticketBatchId, updateBatchDto);
+    await this.ticketBatchesRepository.updateTicketBatch(ticketBatchId, updateTicketBatchDto);
 
     return true;
   }

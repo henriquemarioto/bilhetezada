@@ -11,6 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Event } from '@/modules/event/entities/event.entity';
+import { TicketBatchStatus } from '@/shared/enums/ticket-batch-status.enum';
 
 @Entity('ticket_batch')
 export class TicketBatch {
@@ -24,16 +25,19 @@ export class TicketBatch {
   amount: number;
 
   @Column({ nullable: false, type: 'int', unsigned: true })
-  ticket_quantity: number;
+  quantity: number;
 
   @Column({ nullable: false, type: 'int', unsigned: true, default: 0 })
-  tickets_sold: number;
+  sold: number;
 
   @Column({ nullable: false, type: 'datetime' })
   start_at: string;
 
   @Column({ nullable: false, type: 'datetime' })
   end_at: string;
+
+  @Column({ type: 'enum', enum: TicketBatchStatus, default: TicketBatchStatus.SCHEDULED })
+  status: TicketBatchStatus;
 
   @CreateDateColumn()
   created_at: string;
