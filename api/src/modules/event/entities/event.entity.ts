@@ -1,5 +1,8 @@
 import { Order } from '@/modules/sales/entities/order.entity';
+import { Batch } from '@/modules/ticket/entities/batch.entity';
+import { TicketType } from '@/modules/ticket/entities/ticket-type.entity';
 import { User } from '@/modules/user/entities/user.entity';
+import { EventStatus } from '@/shared/enums/event-status.enum';
 import {
   Column,
   CreateDateColumn,
@@ -10,8 +13,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { TicketBatch } from '@/modules/ticket/entities/ticket-batch.entity';
-import { EventStatus } from '@/shared/enums/event-status.enum';
 
 @Entity()
 export class Event {
@@ -76,8 +77,11 @@ export class Event {
   @Column({ name: 'organizer_user_id' })
   organizer_user_id: string;
 
-  @OneToMany(() => TicketBatch, (ticketBatch) => ticketBatch.event)
-  batches: TicketBatch[];
+  @OneToMany(() => Batch, (batch) => batch.event)
+  batches: Batch[];
+
+  @OneToMany(() => TicketType, (ticketType) => ticketType.event)
+  ticket_types: TicketType[];
 
   @OneToMany(() => Order, (order) => order.event)
   orders: Order[];

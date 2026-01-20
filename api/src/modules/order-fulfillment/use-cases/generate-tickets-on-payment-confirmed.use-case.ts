@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { TicketService } from '@/modules/ticket/ticket.service';
+import { EventService } from '@/modules/event/services/event.service';
 import { SalesService } from '@/modules/sales/services/sales.service';
+import { TicketService } from '@/modules/ticket/ticket.service';
+import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TicketsCreatedEvent } from '../domain-events/tickets-created.event';
-import { EventService } from '@/modules/event/services/event.service';
 
 @Injectable()
 export class GenerateTicketsOnPaymentConfirmedUseCase {
@@ -71,7 +71,7 @@ export class GenerateTicketsOnPaymentConfirmedUseCase {
 
         const tickets = await this.ticketService.createManyTickets(
           item.id,
-          item.ticket_batch_id,
+          item.batch_id,
           item.ticket_quantity,
         );
 

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateBuyerDto } from './create-buyer.dto';
-import { IsInt, IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsInt, IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
+import { CreateBuyerDto } from './create-buyer.dto';
 
 export class CreateTicketOrderDto {
   @ApiProperty()
@@ -12,7 +12,7 @@ export class CreateTicketOrderDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsUUID()
-  ticketBatchId: string;
+  batchId: string;
 
   @ApiProperty()
   @IsNotEmpty()

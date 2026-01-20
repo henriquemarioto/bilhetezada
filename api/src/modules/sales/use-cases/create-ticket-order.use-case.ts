@@ -1,7 +1,7 @@
 import { EventService } from '@/modules/event/services/event.service';
 import { PaymentProcessor } from '@/modules/payment/interfaces/payment-processor.interface';
 import { PaymentService } from '@/modules/payment/services/payment.service';
-import { TicketBatchService } from '@/modules/ticket/services/ticket-batch.service';
+import { BatchService } from '@/modules/ticket/services/batch.service';
 import { UserService } from '@/modules/user/services/user.service';
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { CreateTicketOrderDto } from '../dtos/create-ticket-order.dto';
@@ -15,7 +15,7 @@ export class CreateTicketOrderUseCase {
     private createBuyerUseCase: CreateBuyerUseCase,
     private eventService: EventService,
     private userService: UserService,
-    private ticketBatchService: TicketBatchService,
+    private batchService: BatchService,
     @Inject('PaymentProcessor')
     private paymentProcessor: PaymentProcessor,
     private paymentService: PaymentService,
@@ -35,13 +35,13 @@ export class CreateTicketOrderUseCase {
       throw new ForbiddenException('Event not found');
     }
 
-    const ticketBatch = await this.ticketBatchService.getById(createTicketOrderDto.ticketBatchId);
+    const batch = await this.batchService.getById(createTicketOrderDto.batchId);
 
-    if (!ticketBatch || ticketBatch.event_id !== event.id) {
+    if (!batch || batch.event_id !== event.id) {
       throw new ForbiddenException('Ticket Batch not found for this event');
     }
 
-    if (new Date(ticketBatch.end_at) < new Date()) {
+    if (new Date(batch.end_at) < new Date()) {
       throw new ForbiddenException(
         'Ticket purchase for this ticket batch time expired',
       );
@@ -65,7 +65,7 @@ export class CreateTicketOrderUseCase {
       createTicketOrderDto.buyer,
     );
 
-    const totalAmount = ticketBatch.amount * createTicketOrderDto.ticketQuantity;
+    const totalAmount = batch.amount * createTicketOrderDto.ticketQuantity;
 
     const amountDetails = this.paymentService.calculateTotalFee(totalAmount);
 
@@ -76,7 +76,7 @@ export class CreateTicketOrderUseCase {
 
     const charge = await this.paymentProcessor.generateCharge({
       amount: totalAmount,
-      description: `Compra de ${createTicketOrderDto.ticketQuantity} ingresso(s) para o evento ${event.name}, lote ${ticketBatch.name}`,
+      description: `Compra de ${createTicketOrderDto.ticketQuantity} ingresso(s) para o evento ${event.name}, lote ${batch.name}`,
       buyerInfo: {
         name: buyer.name,
         email: buyer.email,

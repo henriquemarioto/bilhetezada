@@ -13,53 +13,54 @@ import {
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from '../../auth/utils/guards/jwt.guard';
-import { CreateTicketBatchRequestBodyDto } from '../dtos/create-ticket-batch.dto';
+import { CreateBatchRequestBodyDto } from '../dtos/create-batch.dto';
 import {
-  TicketBatchResponseDto,
-  PaginatedTicketBatchResponseDto,
+  BatchResponseDto,
+  PaginatedBatchResponseDto,
 } from '../dtos/paginated-batch-response.dto';
-import { TicketBatchService } from '../services/ticket-batch.service';
-import { CreateTicketBatchUseCase } from '../use-cases/create-ticket-batch.use-case';
+import { BatchService } from '../services/batch.service';
+import { CreateBatchUseCase } from '../use-cases/create-batch.use-case';
 
 @Controller('events')
-export class TicketBatchController {
+export class BatchController {
   constructor(
-    private readonly batchService: TicketBatchService,
-    private readonly createBatchUseCase: CreateTicketBatchUseCase,
+    private readonly batchService: BatchService,
+    private readonly createBatchUseCase: CreateBatchUseCase,
   ) {}
 
    @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  @Post(':eventId/batches')
+  @Post(':eventId/ticket-types/:ticketTypeId/batches')
   async createBatch(
     @Param('eventId') eventId: string,
-    @Body() createBatchDto: CreateTicketBatchRequestBodyDto,
+    @Param('ticketTypeId') ticketTypeId: string,
+    @Body() createBatchDto: CreateBatchRequestBodyDto,
   ): Promise<void> {
-    await this.createBatchUseCase.execute(eventId, {
+    await this.createBatchUseCase.execute(eventId, ticketTypeId, {
       name: createBatchDto.name,
       amount: createBatchDto.amount,
-      ticketQuantity: createBatchDto.ticket_quantity,
-      startTime: createBatchDto.start_time,
-      endTime: createBatchDto.end_time,
+      ticketQuantity: createBatchDto.ticketQuantity,
+      startTime: createBatchDto.startTime,
+      endTime: createBatchDto.endTime,
     });
   }
 
   @ApiBearerAuth('access_token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  @Get(':eventId/batches')
+  @Get(':eventId/ticket-types/:ticketTypeId/batches')
   async getEventBatch(
     @Param('eventId') eventId: string,
     @Query() paginationDto: PaginationDto,
-  ): Promise<PaginatedTicketBatchResponseDto> {
+  ): Promise<PaginatedBatchResponseDto> {
     const batches = await this.batchService.findManyPaginated(
       eventId,
       paginationDto,
     );
     return {
       data: batches.data.map((batch) =>
-        plainToInstance(TicketBatchResponseDto, batch),
+        plainToInstance(BatchResponseDto, batch),
       ),
       meta: batches.meta,
     };

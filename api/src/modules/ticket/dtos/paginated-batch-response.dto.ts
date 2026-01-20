@@ -1,93 +1,40 @@
 import { PaginatedResponseDto } from '@/shared/dtos/paginated-response.dto';
+import { BatchStatus } from '@/shared/enums/ticket-batch-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
-export class TicketBatchResponseDto {
-  @ApiProperty({
-    description: 'Event ID',
-    example: 'uuid-string',
-  })
+export class BatchResponseDto {
+  @ApiProperty({ type: 'string' })
   @Expose()
   id: string;
 
-  @ApiProperty({
-    description: 'Event name',
-    example: 'Show do Metallica',
-  })
+  @ApiProperty({ type: 'string' })
   @Expose()
   name: string;
 
-  @ApiProperty({
-    description: 'Event description',
-    example: 'Show incrível de rock',
-  })
+  @ApiProperty({ type: 'number' })
   @Expose()
-  description: string;
+  amount: number;
 
-  @ApiProperty({
-    description: 'Event start time',
-    example: '2024-12-25T20:00:00.000Z',
-  })
+  @ApiProperty({ type: 'number' })
   @Expose()
-  start_time: Date;
+  quantity: number;
 
-  @ApiProperty({
-    description: 'Event end time',
-    example: '2024-12-25T23:00:00.000Z',
-  })
+  @ApiProperty({ type: 'number' })
   @Expose()
-  end_time: Date;
+  sold: number;
 
-  @ApiProperty({
-    description: 'Event address',
-    example: 'São Paulo',
-  })
+  @ApiProperty({ type: 'string' })
   @Expose()
-  address: string;
+  start_at: string;
 
-  @ApiProperty({
-    description: 'Event price',
-    example: 50.0,
-  })
+  @ApiProperty({ type: 'string' })
   @Expose()
-  price: number;
+  end_at: string;
 
-  @ApiProperty({
-    description: 'Event is active',
-    example: true,
-  })
+  @ApiProperty({ type: 'string', enum: ['ACTIVE', 'INACTIVE', 'EXHAUSTED'] })
   @Expose()
-  active: boolean;
-
-  @ApiProperty({
-    description: 'Event slug',
-    example: 'show-do-metallica',
-  })
-  @Expose()
-  slug: string;
-
-  @ApiProperty({
-    description: 'Event creation date',
-    example: '2024-11-17T10:00:00.000Z',
-  })
-  @Expose()
-  created_at: Date;
-
-  @ApiProperty({
-    description: 'Event update date',
-    example: '2024-11-17T10:00:00.000Z',
-  })
-  @Expose()
-  updated_at: Date;
-
-  @Exclude()
-  user: any;
-
-  @Exclude()
-  user_id: string;
-
-  @Exclude()
-  orders: any;
+  status: BatchStatus;
 }
 
-export class PaginatedTicketBatchResponseDto extends PaginatedResponseDto<TicketBatchResponseDto> {}
+export class PaginatedBatchResponseDto extends PaginatedResponseDto<BatchResponseDto> {}

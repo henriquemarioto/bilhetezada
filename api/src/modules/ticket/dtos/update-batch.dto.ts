@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateTicketBatchDto } from './create-ticket-batch.dto';
+import { CreateBatchDto } from './create-batch.dto';
 
-export class UpdateTicketBatchDto extends PartialType(CreateTicketBatchDto) {}
+export class UpdateBatchDto extends PartialType(CreateBatchDto) {}

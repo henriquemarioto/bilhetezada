@@ -1,5 +1,5 @@
 import { OrderItem } from '@/modules/sales/entities/order-item.entity';
-import { TicketBatch } from '@/modules/ticket/entities/ticket-batch.entity';
+import { Batch } from '@/modules/ticket/entities/batch.entity';
 import {
   Column,
   CreateDateColumn,
@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { TicketType } from './ticket-type.entity';
 
 @Entity()
 export class Ticket {
@@ -31,10 +32,17 @@ export class Ticket {
   @Column({ name: 'order_item_id' })
   order_item_id: string | null;
 
-  @ManyToOne(() => TicketBatch, (ticketBatch) => ticketBatch.tickets)
-  @JoinColumn({ name: 'ticket_batch_id' })
-  ticket_batch: TicketBatch;
+  @ManyToOne(() => Batch, (batch) => batch.tickets)
+  @JoinColumn({ name: 'batch_id' })
+  batch: Batch;
 
-  @Column({ name: 'ticket_batch_id' })
-  ticket_batch_id: string;
+  @Column({ name: 'batch_id' })
+  batch_id: string;
+
+  @ManyToOne(() => TicketType, (ticketType) => ticketType.tickets)
+  @JoinColumn({ name: 'ticket_type_id' })
+  ticket_type: TicketType;
+
+  @Column({ name: 'ticket_type_id' })
+  ticket_type_id: string;
 }

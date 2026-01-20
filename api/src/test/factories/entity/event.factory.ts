@@ -1,9 +1,9 @@
 import { Event } from '@/modules/event/entities/event.entity';
 import { Order } from '@/modules/sales/entities/order.entity';
 import { User } from '@/modules/user/entities/user.entity';
+import { Timezones } from '@/shared/enums/timezones.enum';
 import { faker } from '@faker-js/faker/.';
 import { randomUUID } from 'crypto';
-import { Timezones } from '@/shared/enums/timezones.enum';
 
 type EventFactoryProps = {
   user: User;
@@ -48,6 +48,7 @@ export const eventFactory = ({
     organizer_user_id: user.id,
     orders: orders,
     batches: [],
+    ticket_types: [],
     entrance_limit_at: limitTimeForTicketPurchase.toISOString(),
     capacity: faker.number.int({ min: 50, max: 1000 }),
   };

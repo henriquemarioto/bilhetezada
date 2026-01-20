@@ -1,5 +1,7 @@
+import { Event } from '@/modules/event/entities/event.entity';
 import { OrderItem } from '@/modules/sales/entities/order-item.entity';
 import { Ticket } from '@/modules/ticket/entities/ticket.entity';
+import { BatchStatus } from '@/shared/enums/ticket-batch-status.enum';
 import {
   Column,
   CreateDateColumn,
@@ -10,11 +12,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Event } from '@/modules/event/entities/event.entity';
-import { TicketBatchStatus } from '@/shared/enums/ticket-batch-status.enum';
+import { TicketType } from './ticket-type.entity';
 
-@Entity('ticket_batch')
-export class TicketBatch {
+@Entity('batch')
+export class Batch {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -36,8 +37,8 @@ export class TicketBatch {
   @Column({ nullable: false, type: 'datetime' })
   end_at: string;
 
-  @Column({ type: 'enum', enum: TicketBatchStatus, default: TicketBatchStatus.SCHEDULED })
-  status: TicketBatchStatus;
+  @Column({ type: 'enum', enum: BatchStatus, default: BatchStatus.SCHEDULED })
+  status: BatchStatus;
 
   @CreateDateColumn()
   created_at: string;
@@ -52,10 +53,17 @@ export class TicketBatch {
   @Column({ name: 'event_id' })
   event_id: string;
 
-  @OneToMany(() => Ticket, (ticket) => ticket.ticket_batch)
+  @ManyToOne(() => TicketType, (ticketType) => ticketType.batches)
+  @JoinColumn({ name: 'ticket_type_id' })
+  ticket_type: TicketType;
+
+  @Column({ name: 'ticket_type_id' })
+  ticket_type_id: string;
+
+  @OneToMany(() => Ticket, (ticket) => ticket.batch)
   tickets: Ticket[];
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.ticket_batch, {
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.batch, {
     nullable: true,
   })
   order_items: OrderItem[] | [];

@@ -1,12 +1,12 @@
+import { TypeOrmBaseRepository } from '@/core/common/typeorm.base.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TypeOrmBaseRepository } from '@/core/common/typeorm.base.repository';
 import { OrderItem } from '../entities/order-item.entity';
 
 export type CreateOrderItemData = {
   orderId: string;
-  ticketBatchId: string;
+  batchId: string;
   ticketQuantity: number;
   totalAmount: number;
 };
@@ -23,7 +23,7 @@ export class OrderItemRepository extends TypeOrmBaseRepository<OrderItem> {
   async createOrderItem(data: CreateOrderItemData): Promise<OrderItem> {
     return this.createImplementation({
       order_id: data.orderId,
-      ticket_batch_id: data.ticketBatchId,
+      batch_id: data.batchId,
       ticket_quantity: data.ticketQuantity,
       total_amount: data.totalAmount,
     });

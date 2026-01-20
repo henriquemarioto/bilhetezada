@@ -2,13 +2,13 @@ import { Event } from '@/modules/event/entities/event.entity';
 import { Payment } from '@/modules/payment/entities/payment.entity';
 import { Buyer } from '@/modules/sales/entities/buyer.entity';
 import { Order } from '@/modules/sales/entities/order.entity';
-import { TicketBatch } from '@/modules/ticket/entities/ticket-batch.entity';
+import { Batch } from '@/modules/ticket/entities/batch.entity';
 import { OrderStatus } from '@/shared/enums/order-status.enum';
 import { faker } from '@faker-js/faker/.';
 
 type OrderFactoryProps = {
   event: Event;
-  ticketbatch: TicketBatch;
+  batch: Batch;
   buyer?: Buyer | null;
   payment?: Payment | null;
   ticket_quantity: number;
@@ -17,7 +17,7 @@ type OrderFactoryProps = {
 
 export const orderFactory = ({
   event,
-  ticketbatch,
+  batch,
   buyer = null,
   payment = null,
   ticket_quantity,
@@ -30,7 +30,7 @@ export const orderFactory = ({
   status: OrderStatus.PENDING,
   event_id: event.id,
   ticket_quantity,
-  total_amount: ticketbatch.amount * ticket_quantity,
+  total_amount: batch.amount * ticket_quantity,
   platform_fee_amount: faker.number.int({ min: 100, max: 500 }),
   gateway_fee_amount: faker.number.int({ min: 50, max: 300 }),
   event_organizer_amount_net,

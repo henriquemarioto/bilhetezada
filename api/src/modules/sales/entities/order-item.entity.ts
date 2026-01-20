@@ -1,4 +1,5 @@
-import { TicketBatch } from '@/modules/ticket/entities/ticket-batch.entity';
+import { Batch } from '@/modules/ticket/entities/batch.entity';
+import { TicketType } from '@/modules/ticket/entities/ticket-type.entity';
 import { Ticket } from '@/modules/ticket/entities/ticket.entity';
 import {
   Column,
@@ -36,12 +37,20 @@ export class OrderItem {
   @Column({ name: 'order_id' })
   order_id: string;
 
-  @ManyToOne(() => TicketBatch, (ticketBatch) => ticketBatch.order_items)
-  @JoinColumn({ name: 'ticket_batch_id' })
-  ticket_batch: TicketBatch;
+  @ManyToOne(() => Batch, (batch) => batch.order_items)
+  @JoinColumn({ name: 'batch_id' })
+  batch: Batch;
 
-  @Column({ name: 'ticket_batch_id' })
-  ticket_batch_id: string;
+  @Column({ name: 'batch_id' })
+  batch_id: string;
+
+  @ManyToOne(() => TicketType, (ticketType) => ticketType.order_items)
+  @JoinColumn({ name: 'ticket_type_id' })
+  ticket_type: TicketType;
+
+  @Column({ name: 'ticket_type_id' })
+  ticket_type_id: string;
+
   @OneToMany(() => Ticket, (Ticket) => Ticket.order_item, { nullable: true })
   tickets: Ticket[] | [];
 }
