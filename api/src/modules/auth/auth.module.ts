@@ -33,7 +33,7 @@ import { LocalStrategy } from './utils/strategies/local.strategy';
   controllers: [AuthController],
   providers: [
     AuthService,
-    GoogleStrategy,
+    // GoogleStrategy,
     JwtStrategy,
     LocalStrategy,
     SessionSerializer,
