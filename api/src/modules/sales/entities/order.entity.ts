@@ -1,17 +1,17 @@
 import { Event } from '@/modules/event/entities/event.entity';
+import { Payment } from '@/modules/payment/entities/payment.entity';
 import { OrderStatus } from '@/shared/enums/order-status.enum';
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
-import { Payment } from '@/modules/payment/entities/payment.entity';
 import { Buyer } from './buyer.entity';
 import { OrderItem } from './order-item.entity';
 
@@ -32,7 +32,7 @@ export class Order {
   @Column({ nullable: false, type: 'int' })
   event_organizer_amount_net: number;
 
-  @Column({ nullable: false, type: 'tinyint', unsigned: true })
+  @Column({ nullable: false, type: 'smallint', unsigned: true })
   ticket_quantity: number;
 
   @Column({ nullable: false, unique: true })

@@ -3,16 +3,17 @@ version: "3.9"
 services:
   api:
     depends_on:
-      - mysqldb
+      - postgresdb
       - redisdb
     build: ./api
     command: sh -c "npm i && npm run migration:run && npm run start:dev"
     environment:
       REDIS_URL: redis://redisdb:6379
-      DATABASE_HOST: mysqldb
-      DATABASE_USERNAME: root
+      DATABASE_TYPE: postgres
+      DATABASE_HOST: postgresdb
+      DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: 12345
-      DATABASE_PORT: 3306
+      DATABASE_PORT: 5432
       DATABASE_NAME: bilhetezada
     ports:
       - 3132:3132
@@ -24,16 +25,16 @@ services:
         target: /api
       - /api/node_modules
 
-  mysqldb:
-    image: mysql:8.0.21
+  postgresdb:
+    image: postgres:16-alpine
     environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_PASSWORD: 12345
-      MYSQL_DATABASE: bilhetezada
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: bilhetezada
     ports:
-      - 3306:3306
+      - 5432:5432
     volumes:
-      - db:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - network
 
@@ -50,7 +51,7 @@ services:
 
 volumes:
   redis-data:
-  db:
+  postgres-data:
 
 networks:
   network:

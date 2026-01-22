@@ -4,14 +4,14 @@ import { TicketType } from '@/modules/ticket/entities/ticket-type.entity';
 import { User } from '@/modules/user/entities/user.entity';
 import { EventStatus } from '@/shared/enums/event-status.enum';
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -46,19 +46,19 @@ export class Event {
   @Column({ nullable: false, unique: true })
   slug: string;
 
-  @Column({ nullable: false, type: 'datetime' })
+  @Column({ nullable: false, type: 'timestamptz' })
   start_at: string;
 
-  @Column({ nullable: false, type: 'datetime' })
+  @Column({ nullable: false, type: 'timestamptz' })
   end_at: string;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamptz', nullable: true })
   entrance_limit_at?: string | null;
 
   @Column({ nullable: false, default: 'America/Sao_Paulo' })
   time_zone: string;
 
-  @Column({ nullable: false, type: 'mediumint', unsigned: true })
+  @Column({ nullable: false, type: 'integer', unsigned: true })
   capacity: number;
 
   @Column({ type: 'enum', enum: EventStatus, default: EventStatus.DRAFT })

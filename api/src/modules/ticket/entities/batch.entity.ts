@@ -31,10 +31,10 @@ export class Batch {
   @Column({ nullable: false, type: 'int', unsigned: true, default: 0 })
   sold: number;
 
-  @Column({ nullable: false, type: 'datetime' })
+  @Column({ nullable: false, type: 'timestamptz' })
   start_at: string;
 
-  @Column({ nullable: false, type: 'datetime' })
+  @Column({ nullable: false, type: 'timestamptz' })
   end_at: string;
 
   @Column({ type: 'enum', enum: BatchStatus, default: BatchStatus.SCHEDULED })

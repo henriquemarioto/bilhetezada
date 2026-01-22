@@ -21,7 +21,7 @@ export class OrderItem {
   @Column({ nullable: false, type: 'int' })
   total_amount: number;
 
-  @Column({ nullable: false, type: 'tinyint', unsigned: true })
+  @Column({ nullable: false, type: 'smallint', unsigned: true })
   ticket_quantity: number;
 
   @CreateDateColumn()
