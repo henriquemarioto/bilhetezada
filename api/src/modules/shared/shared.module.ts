@@ -1,6 +1,6 @@
 import { Payment } from '@/modules/payment/entities/payment.entity';
-import { Ticket } from '@/modules/ticket/entities/ticket.entity';
 import { Order } from '@/modules/sales/entities/order.entity';
+import { Ticket } from '@/modules/ticket/entities/ticket.entity';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';

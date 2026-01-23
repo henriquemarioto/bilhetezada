@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import CryptoService from './crypto.service';
 import { ConfigService } from '@nestjs/config';
-import * as crypto from 'crypto';
+import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
+import CryptoService from './crypto.service';
 
 const mockedSercretKey =
   '15291f67d99ea7bc578c3544dadfbb991e66fa69cb36ff70fe30e798e111ff5f';
@@ -90,9 +90,9 @@ describe('CryptoService', () => {
     });
   });
 
-  describe('encryptSalt', () => {
+  describe('hashSalt', () => {
     it('should return encrypt data with salt', () => {
-      const result = cryptoService.encryptSalt('value');
+      const result = cryptoService.hashSalt('value');
 
       expect(result).toBe('encryptedWithSalt');
       expect(bcryptHashSync).toHaveBeenCalledWith('value', 12);

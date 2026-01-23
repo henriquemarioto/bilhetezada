@@ -54,7 +54,7 @@ export class AuthService {
     password?: string,
   ) {
     const user = await this.userService.findByEmailOrDocument(
-      this.cryptoService.encrypt(email),
+      email,
     );
 
     if (!user) {

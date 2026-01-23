@@ -1,10 +1,10 @@
 import { User } from '@/modules/user/entities/user.entity';
 import { createUserDtoFactory } from '@/test/factories/dto/create-user.dto.factory';
 import {
-  BadRequestException,
-  ConflictException,
-  InternalServerErrorException,
-  NotFoundException,
+    BadRequestException,
+    ConflictException,
+    InternalServerErrorException,
+    NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -32,7 +32,7 @@ describe('UserService', () => {
           provide: CryptoService,
           useValue: {
             encrypt: jest.fn(),
-            encryptSalt: jest.fn(),
+            hashSalt: jest.fn(),
           },
         },
         {
@@ -64,7 +64,7 @@ describe('UserService', () => {
 
     findByEmailOrDocumentSpy = jest.spyOn(userService, 'findByEmailOrDocument');
 
-    cryptoService.encryptSalt.mockReturnValue('encryptedPassword');
+    cryptoService.hashSalt.mockReturnValue('encryptedPassword');
 
     slugService.slug.mockReturnValue('pictureUrlWithUserNameSlug');
   });
@@ -112,7 +112,7 @@ describe('UserService', () => {
         2,
         createUserDto.document,
       );
-      expect(cryptoService.encryptSalt).toHaveBeenCalledWith(
+      expect(cryptoService.hashSalt).toHaveBeenCalledWith(
         createUserDto.password,
       );
       expect(findByEmailOrDocumentSpy).toHaveBeenCalledWith(
@@ -176,7 +176,7 @@ describe('UserService', () => {
         'encryptedEmail',
         undefined,
       );
-      expect(cryptoService.encryptSalt).not.toHaveBeenCalled();
+      expect(cryptoService.hashSalt).not.toHaveBeenCalled();
       expect(repository.save).toHaveBeenCalledWith({
         ...googleUserDto,
         email: 'encryptedEmail',

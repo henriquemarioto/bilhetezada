@@ -1,3 +1,114 @@
+import { plainToClass } from 'class-transformer';
+import {
+  IsBoolean,
+  IsHexadecimal,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPort,
+  IsString,
+  IsUrl,
+  Length,
+  Min,
+  validateSync,
+} from 'class-validator';
+
+class EnvironmentVariables {
+  @IsPort()
+  PORT: string = '3132';
+
+  @IsString()
+  @IsNotEmpty()
+  REDIS_URL: string;
+
+  @IsString()
+  @IsOptional()
+  GOOGLE_CLIENT_ID: string;
+
+  @IsString()
+  @IsOptional()
+  GOOGLE_SECRET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  SESSION_SECRET: string;
+
+  @IsNumber()
+  @Min(1000)
+  SESSION_MAX_AGE: number = 86400000;
+
+  @IsBoolean()
+  SESSION_RESAVE: boolean = false;
+
+  @IsBoolean()
+  SESSION_SAVE_UNINITIALIZED: boolean = false;
+
+  @IsHexadecimal()
+  @Length(64, 64, {
+    message: 'CRYPT_SECRET_KEY deve ter 64 caracteres hexadecimais (32 bytes)',
+  })
+  CRYPT_SECRET_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_SECRET: string;
+
+  @IsNumber()
+  @Min(1)
+  CHARGE_EXPIRATION_SECONDS_DEFAULT: number = 600;
+
+  @IsUrl({ require_tld: false })
+  WOOVI_API_URL: string;
+
+  @IsString()
+  WOOVI_APPID: string;
+
+  @IsUrl({ require_tld: false })
+  RESEND_API_BASE_URL: string;
+
+  @IsString()
+  RESEND_API_KEY: string;
+
+  @IsString()
+  @IsOptional()
+  WHATSAPP_CLOUD_API_VERSION: string;
+
+  @IsString()
+  @IsOptional()
+  WHATSAPP_CLOUD_API_PHONE_NUMBER_ID: string;
+
+  @IsString()
+  @IsOptional()
+  WHATSAPP_CLOUD_API_ACCESS_TOKEN: string;
+}
+
+export function validate(config: Record<string, unknown>) {
+  const validatedConfig = plainToClass(EnvironmentVariables, config, {
+    enableImplicitConversion: true,
+  });
+
+  const errors = validateSync(validatedConfig, {
+    skipMissingProperties: false,
+  });
+
+  if (errors.length > 0) {
+    const messages = errors
+      .map((error) => {
+        const constraints = error.constraints
+          ? Object.values(error.constraints).join(', ')
+          : 'Erro desconhecido';
+        return `${error.property}: ${constraints}`;
+      })
+      .join('\n');
+
+    throw new Error(
+      `\n\nErro na validação das variáveis de ambiente:\n\n${messages}\n\nA aplicação não pode iniciar com configurações inválidas.\n`,
+    );
+  }
+
+  return validatedConfig;
+}
+
 export type Env = {
   port: number;
   redisUrl: string;
@@ -12,7 +123,6 @@ export type Env = {
     saveUninitialized: boolean;
   };
   cryptSecretKey: string;
-  cryptIv: string;
   jwtSecret: string;
   defaultChargeExpirationSeconds: number;
   wooviApiUrl: string;
@@ -38,7 +148,6 @@ export default (): Env => ({
     saveUninitialized: Boolean(process.env.SESSION_SAVE_UNINITIALIZED),
   },
   cryptSecretKey: process.env.CRYPT_SECRET_KEY || '',
-  cryptIv: process.env.CRYPT_IV || '',
   jwtSecret: process.env.JWT_SECRET || '',
   defaultChargeExpirationSeconds:
     Number(process.env.CHARGE_EXPIRATION_SECONDS_DEFAULT) || 600,

@@ -19,9 +19,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const canActivate = await super.canActivate(context);
 
-    if (!canActivate) {
+    if (!canActivate)
       throw new UnauthorizedException();
-    }
 
     const request = context.switchToHttp().getRequest();
 
@@ -40,9 +39,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const user = await this.userService.getById(request.user.userId);
 
-    if (!user?.active) {
+    if (!user?.active)
       throw new UnauthorizedException('Non-active user.');
-    }
 
     return true;
   }

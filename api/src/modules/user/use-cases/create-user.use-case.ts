@@ -13,7 +13,6 @@ import { UserRepository } from '../repositories/user.respository';
 export class CreateUserUseCase {
   constructor(
     private readonly userRepository: UserRepository,
-    private slugService: SlugService,
     private cryptoService: CryptoService,
   ) {}
 
@@ -23,20 +22,8 @@ export class CreateUserUseCase {
   ): Promise<boolean> {
     const userDtoToProcess = { ...createUserDto };
 
-    userDtoToProcess.email = this.cryptoService.encrypt(userDtoToProcess.email);
-
-    if (!userDtoToProcess.document && provider === AuthProviders.LOCAL) {
-      throw new BadRequestException('Document needed for local users');
-    }
-
-    if (userDtoToProcess.document)
-      userDtoToProcess.document = this.cryptoService.encrypt(
-        userDtoToProcess.document,
-      );
-
     const userFound = await this.userRepository.findByEmailOrDocument(
       userDtoToProcess.email,
-      userDtoToProcess.document,
     );
 
     if (userFound) {
@@ -44,7 +31,7 @@ export class CreateUserUseCase {
     }
 
     if (userDtoToProcess.password)
-      userDtoToProcess.password = this.cryptoService.encryptSalt(
+      userDtoToProcess.password = this.cryptoService.hashSalt(
         userDtoToProcess.password,
       );
 

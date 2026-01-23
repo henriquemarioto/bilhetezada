@@ -5,7 +5,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
-import configuration from './config/env.config';
+import configuration, { validate } from './config/env.config';
 import typeormConfig from './infrastructure/database/typeorm/typeorm.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { EventModule } from './modules/event/event.module';
@@ -21,6 +21,7 @@ import { UserModule } from './modules/user/user.module';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration, typeormConfig],
+      validate,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

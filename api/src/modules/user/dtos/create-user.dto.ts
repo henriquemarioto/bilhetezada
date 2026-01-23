@@ -1,12 +1,11 @@
 import { IsDocumentConstraint } from '@/core/validators/validate-document.validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsEmail,
-  IsISO8601,
   IsOptional,
   IsString,
   IsStrongPassword,
-  IsUrl,
   Matches,
   Validate,
 } from 'class-validator';
@@ -17,16 +16,8 @@ export class CreateUserDto {
   name: string;
 
   @ApiProperty()
-  @IsOptional()
-  @IsString()
-  @Matches(/^\d{11}$|^\d{14}$/, {
-    message: 'The document must contain exactly 11 (CPF) or 14 (CNPJ) numbers.',
-  })
-  @Validate(IsDocumentConstraint)
-  document?: string;
-
-  @ApiProperty()
   @IsEmail()
+  @Transform(({ value }) => value?.toLowerCase().trim())
   email: string;
 
   @ApiPropertyOptional({

@@ -1,47 +1,50 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 @Injectable()
 export default class CryptoService {
-  private readonly algorithm: string = 'aes-256-ctr';
-  private readonly secretKey: Buffer = Buffer.alloc(0);
-  private readonly iv: Buffer = Buffer.alloc(0);
+  private readonly algorithm = 'aes-256-gcm';
+  private readonly secretKey: Buffer;
 
   constructor(configService: ConfigService) {
-    this.secretKey = Buffer.from(
-      configService.get('cryptSecretKey') as string,
-      'hex',
-    );
-    this.iv = Buffer.from(configService.get('cryptIv') as string, 'hex');
+    this.secretKey = Buffer.from(configService.get<string>('cryptSecretKey') || '', 'hex');
   }
 
   encrypt(text: string): string {
+    const iv = crypto.randomBytes(12);
+
     const cipher = crypto.createCipheriv(
       this.algorithm,
-      this.secretKey,
-      this.iv,
+      this.secretKey as crypto.CipherKey,
+      iv as crypto.BinaryLike,
     );
-    const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
-    return `${this.iv.toString('hex')}:${encrypted.toString('hex')}`;
+
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+
+    encrypted += cipher.final('hex');
+
+    return `${iv.toString('hex')}:${encrypted}`;
   }
 
   decrypt(hash: string): string {
-    const [iv, content] = hash.split(':');
+    const [ivHex, content] = hash.split(':');
+
     const decipher = crypto.createDecipheriv(
       this.algorithm,
-      this.secretKey,
-      this.iv,
+      this.secretKey as crypto.CipherKey,
+      Buffer.from(ivHex, 'hex') as crypto.BinaryLike,
     );
-    const decrypted = Buffer.concat([
-      decipher.update(Buffer.from(content, 'hex')),
-      decipher.final(),
-    ]);
-    return decrypted.toString();
+
+    let decrypted = decipher.update(content, 'hex', 'utf8');
+
+    decrypted += decipher.final('utf8');
+
+    return decrypted;
   }
 
-  encryptSalt(text: string): string {
+  hashSalt(text: string): string {
     return bcrypt.hashSync(text, 12);
   }
 
