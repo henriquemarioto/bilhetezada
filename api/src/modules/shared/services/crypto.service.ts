@@ -51,4 +51,8 @@ export default class CryptoService {
   compareHashWithSalt(text: string, hash: string): boolean {
     return bcrypt.compareSync(text, hash);
   }
+
+  randomBytes(size = 16, stringType: crypto.BinaryToTextEncoding = 'hex'): string {
+    return crypto.randomBytes(size).toString(stringType);
+  }
 }

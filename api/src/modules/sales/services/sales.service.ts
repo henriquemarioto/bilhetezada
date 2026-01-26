@@ -20,8 +20,8 @@ export class SalesService {
     return this.orderRepository.createOrder(orderData);
   }
 
-  async getOrderById(orderId: string): Promise<Order | null> {
-    return this.orderRepository.getOrderById(orderId);
+  async getOrderById(orderId: string, relations?: string[]): Promise<Order | null> {
+    return this.orderRepository.getOrderById(orderId, relations);
   }
 
   async getOrderByTransactionReference(

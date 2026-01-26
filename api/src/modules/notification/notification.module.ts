@@ -8,17 +8,20 @@ import { ResendProvider } from './providers/resend.provider';
 import { OnTicketsCreatedListener } from './listeners/on-tickets-created.listener';
 import { WhatsAppProvider } from './providers/whatsapp.provider';
 import { NotifyCreatedTicketsUseCase } from './use-cases/notify-created-tickets.use-case';
-import { SalesModule } from '../sales/sales.module';
+import { OnEmailVerificationTokenCreatedListener } from './listeners/on-email-verification-token-created.listener';
+import { NotifyCreatedEmailTokenVerificationUseCase } from './use-cases/notify-created-email-token-verfication.use-case';
 
 @Module({
-  imports: [ConfigModule, SharedModule, SalesModule],
+  imports: [ConfigModule, SharedModule],
   controllers: [],
   providers: [
     NotificationService,
     ResendProvider,
     WhatsAppProvider,
     NotifyCreatedTicketsUseCase,
+    NotifyCreatedEmailTokenVerificationUseCase,
     OnTicketsCreatedListener,
+    OnEmailVerificationTokenCreatedListener,
     {
       provide: 'NOTIFICATION_PROVIDER_MAP',
       useFactory: (

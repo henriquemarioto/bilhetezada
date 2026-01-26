@@ -2,29 +2,38 @@ import { EventService } from '@/modules/event/services/event.service';
 import { SalesService } from '@/modules/sales/services/sales.service';
 import { TicketService } from '@/modules/ticket/ticket.service';
 import { Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TicketsCreatedEvent } from '../domain-events/tickets-created.event';
+import { EventEmitterService } from '@/modules/shared/services/event-emitter.service';
 
 @Injectable()
-export class GenerateTicketsOnPaymentConfirmedUseCase {
+export class GenerateTicketsOnPaymentApprovedUseCase {
   constructor(
     private readonly ticketService: TicketService,
     private readonly salesService: SalesService,
     private readonly eventService: EventService,
-    private eventEmitter: EventEmitter2,
+    private readonly eventEmitterService: EventEmitterService,
   ) {}
 
   async execute(orderId: string): Promise<boolean> {
     console.log(
-      'Payment approved event recived for create tickets',
+      'Payment approved event received for create tickets',
       JSON.stringify(orderId),
     );
 
-    const order = await this.salesService.getOrderById(orderId);
+    const order = await this.salesService.getOrderById(orderId, ['buyer']);
 
     if (!order) {
       console.error('Order not found for create tickets', orderId);
       throw new Error(`Order not found to create tickets, orderId: ${orderId}`);
+    }
+
+    if (!order.buyer) {
+      console.error(
+        `Buyer not found for create tickets, orderId: ${orderId}`,
+      );
+      throw new Error(
+        `Buyer not found to create tickets, orderId: ${orderId}`,
+      );
     }
 
     const orderItems = await this.salesService.getOrderItemsByOrderId(orderId);
@@ -79,9 +88,16 @@ export class GenerateTicketsOnPaymentConfirmedUseCase {
       }),
     );
 
-    this.eventEmitter.emitAsync(
+    this.eventEmitterService.emitAsync(
       'tickets.created',
-      new TicketsCreatedEvent(event.id, event.name, orderId, ticketsIds),
+      new TicketsCreatedEvent(
+        event.id,
+        event.name,
+        orderId,
+        ticketsIds,
+        order.buyer.id,
+        order.buyer.phone,
+      ),
     );
 
     return true;

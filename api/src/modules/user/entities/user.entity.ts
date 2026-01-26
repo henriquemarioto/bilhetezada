@@ -1,13 +1,14 @@
+import { EmailVerificationToken } from '@/modules/auth/entities/email-verification-token.entity';
 import { Event } from '@/modules/event/entities/event.entity';
 import { Withdraw } from '@/modules/payment/entities/withdraw.entity';
 import AuthProviders from '@/shared/enums/auth-providers.enum';
 import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -26,6 +27,9 @@ export class User {
 
   @Column({ nullable: false, unique: true })
   email: string;
+
+  @Column({ nullable: false, default: false })
+  email_verified: boolean;
 
   @Column({ type: 'varchar', unique: true, nullable: true })
   pix_key: string;
@@ -53,4 +57,7 @@ export class User {
 
   @OneToMany(() => Withdraw, (withdraw) => withdraw.user)
   withdraws: Withdraw[];
+
+  @OneToMany(() => EmailVerificationToken, (token) => token.user)
+  emailVerificationTokens: EmailVerificationToken[];
 }

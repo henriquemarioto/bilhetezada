@@ -1,22 +1,25 @@
 import { HttpService } from '@/modules/shared/services/http.service';
+import { NotificationChannel } from '@/shared/enums/notification-channel.enum';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NotificationProviderInterface } from '../interfaces/notification-provider.interface';
 import { SendNotificationDto } from '../dtos/send-notificaiton.dto';
-import { NotificationChannel } from '@/shared/enums/notification-channel.enum';
+import { NotificationProviderInterface } from '../interfaces/notification-provider.interface';
+import { getFromEmail } from '../utils/email-config.utils';
 import { isEmailData } from '../utils/isEmailData';
 
 @Injectable()
 export class ResendProvider implements NotificationProviderInterface {
   private readonly apiBaseUrl: string;
   private readonly resendApiKey: string;
+  private readonly fromEmail: string;
 
   constructor(
-    configService: ConfigService,
+    private readonly configService: ConfigService,
     private readonly httpService: HttpService,
   ) {
-    this.apiBaseUrl = configService.get('resendApiBaseUrl') ?? '';
-    this.resendApiKey = configService.get('resendApiKey') ?? '';
+    this.apiBaseUrl = this.configService.get('resendApiBaseUrl') ?? '';
+    this.resendApiKey = this.configService.get('resendApiKey') ?? '';
+    this.fromEmail = getFromEmail(this.configService);
   }
 
   async send(data: SendNotificationDto): Promise<void> {
@@ -44,16 +47,28 @@ export class ResendProvider implements NotificationProviderInterface {
     subject: string,
     message: string,
   ): Promise<void> {
-    await this.httpService.post(this.apiBaseUrl + '/emails', {
+    const response = await this.httpService.post(this.apiBaseUrl + '/emails', {
       headers: {
         Authorization: `Bearer ${this.resendApiKey}`,
         'Content-Type': 'application/json',
       },
       body: {
-        to,
+        from: `Bilhetezada <${this.fromEmail}>`,
+        to: [to],
         subject,
-        message,
+        html: message,
       },
     });
+
+    if (response === false) {
+      console.error('Resend email API call failed', {
+        to,
+        subject,
+        message: JSON.stringify(message),
+      });
+      throw new Error('Failed to send email via Resend');
+    }
+
+    console.log('Email sent via Resend to:', to);
   }
 }

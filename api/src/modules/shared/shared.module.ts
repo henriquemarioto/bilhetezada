@@ -11,6 +11,7 @@ import { HttpService } from './services/http.service';
 import { QRCodeService } from './services/qrcode.service';
 import { SlugService } from './services/slug.service';
 import TimezoneService from './services/timezone.service';
+import { EventEmitterService } from './services/event-emitter.service';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import TimezoneService from './services/timezone.service';
     QRCodeService,
     TimezoneService,
     HttpService,
+    EventEmitterService,
   ],
   exports: [
     SlugService,
@@ -35,6 +37,7 @@ import TimezoneService from './services/timezone.service';
     QRCodeService,
     TimezoneService,
     HttpService,
+    EventEmitterService,
   ],
 })
 export default class SharedModule {}

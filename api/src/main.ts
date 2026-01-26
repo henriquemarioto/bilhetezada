@@ -9,7 +9,7 @@ import { AllExceptionsFilter } from './core/filters/all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
-
+  
   const configService = app.get<ConfigService<Env, true>>(ConfigService);
 
   const redisClient = createClient({

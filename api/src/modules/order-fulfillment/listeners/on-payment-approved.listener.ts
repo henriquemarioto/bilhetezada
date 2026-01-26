@@ -1,16 +1,16 @@
-import { PaymentConfirmedEvent } from '@/modules/payment/domain-events/payment-confirmed.event';
+import { PaymentApprovedEvent } from '@/modules/payment/domain-events/payment-approved.event';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { GenerateTicketsOnPaymentConfirmedUseCase } from '../use-cases/generate-tickets-on-payment-confirmed.use-case';
+import { GenerateTicketsOnPaymentApprovedUseCase } from '../use-cases/generate-tickets-on-payment-approved.use-case';
 
 @Injectable()
-export class OnPaymentConfirmedListener {
+export class OnPaymentApprovedListener {
   constructor(
-    private readonly generateTicketsOnPaymentConfirmedUseCase: GenerateTicketsOnPaymentConfirmedUseCase,
+    private readonly generateTicketsOnPaymentApprovedUseCase: GenerateTicketsOnPaymentApprovedUseCase,
   ) {}
 
   @OnEvent('payment.approved')
-  async handle(domainEvent: PaymentConfirmedEvent) {
-    await this.generateTicketsOnPaymentConfirmedUseCase.execute(domainEvent.orderId);
+  handle(domainEvent: PaymentApprovedEvent) {
+    this.generateTicketsOnPaymentApprovedUseCase.execute(domainEvent.orderId);
   }
 }

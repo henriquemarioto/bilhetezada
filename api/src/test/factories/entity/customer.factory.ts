@@ -10,11 +10,13 @@ export const userFactory = (pictureUrl: boolean = true): User => ({
   birth_date: new Date().toISOString(),
   document: faker.string.alphanumeric(10),
   email: faker.string.alphanumeric(10),
+  email_verified: false,
   events: [],
   password: faker.string.alphanumeric(10),
   picture_url: pictureUrl ? faker.internet.url() : null,
   pix_key: faker.string.uuid(),
   withdraws: [],
+  emailVerificationTokens: [],
   created_at: new Date(),
   updated_at: new Date(),
 });

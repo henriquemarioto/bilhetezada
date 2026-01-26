@@ -37,11 +37,12 @@ export class OrderRepository extends TypeOrmBaseRepository<Order> {
     });
   }
 
-  async getOrderById(id: string): Promise<Order | null> {
+  async getOrderById(id: string, relations?: string[]): Promise<Order | null> {
     return this.findOne({
       where: {
         id,
       },
+      relations,
     });
   }
 

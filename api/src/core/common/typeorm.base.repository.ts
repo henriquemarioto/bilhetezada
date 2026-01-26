@@ -85,6 +85,15 @@ export abstract class TypeOrmBaseRepository<
     });
   }
 
+  protected async existsImplementation(
+    where?: WhereCondition<T>,
+  ): Promise<boolean> {
+    const typeOrmWhere = this.mapWhereCondition(where);
+    return this.repository.exists({
+      where: typeOrmWhere as FindOptionsWhere<T>,
+    });
+  }
+
   protected async createManyImplementation(data: Partial<T>[]): Promise<T[]> {
     const entities = this.repository.create(data as DeepPartial<T>[]);
     return this.repository.save(entities);

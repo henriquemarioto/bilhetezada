@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Verificação de E-mail - Bilhetezada</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body style="margin:0; padding:0; background-color:#f4f4f5; font-family: Arial, Helvetica, sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center" style="padding: 40px 16px;">
+        
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 480px; background-color:#ffffff; border-radius:8px; padding:32px;">
+          
+          <tr>
+            <td align="center" style="padding-bottom: 16px;">
+              <h1 style="margin:0; color:#111827; font-size:24px;">
+                🎟️ Bilhetezada
+              </h1>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-bottom: 16px;">
+              <h2 style="margin:0; color:#111827; font-size:20px;">
+                Verifique seu e-mail
+              </h2>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-bottom: 24px; color:#374151; font-size:14px; line-height:1.6;">
+              Olá,<br /><br />
+              Para concluir seu cadastro no <strong>Bilhetezada</strong>, precisamos confirmar seu endereço de e-mail.
+              Basta clicar no botão abaixo:
+            </td>
+          </tr>
+
+          <tr>
+            <td align="center" style="padding-bottom: 24px;">
+              <a 
+                href="{{APPLICATION_BASE_URL}}/auth/confirm-email?token={{EMAIL_TOKEN}}"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="
+                  display:inline-block;
+                  background-color:#6366f1;
+                  color:#ffffff;
+                  text-decoration:none;
+                  padding:12px 24px;
+                  border-radius:6px;
+                  font-size:14px;
+                  font-weight:bold;
+                "
+              >
+                Verificar e-mail
+              </a>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="color:#6b7280; font-size:12px; line-height:1.5;">
+              Se você não criou uma conta no Bilhetezada, pode ignorar este e-mail com segurança.<br /><br />
+              Este link é válido por tempo limitado.
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-top: 32px; color:#9ca3af; font-size:11px;" align="center">
+              © 2026 Bilhetezada — Todos os direitos reservados
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+  </body>
+  </html>

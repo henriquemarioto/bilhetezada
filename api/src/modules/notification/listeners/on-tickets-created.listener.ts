@@ -10,7 +10,7 @@ export class OnTicketsCreatedListener {
   ) {}
 
   @OnEvent('tickets.created')
-  async handle(domainEvent: TicketsCreatedEvent) {
+  handle(domainEvent: TicketsCreatedEvent) {
     this.notifyCreatedTicketsUseCase.execute(domainEvent);
   }
 }

@@ -1,7 +1,10 @@
+import { Environments } from '@/shared/enums/environments.enum';
 import { plainToClass } from 'class-transformer';
 import {
   IsBoolean,
+  IsEnum,
   IsHexadecimal,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -14,6 +17,11 @@ import {
 } from 'class-validator';
 
 class EnvironmentVariables {
+  @IsEnum(Environments, {
+    message: 'invalid environment',
+  })
+  NODE_ENV: Environments;
+
   @IsPort()
   PORT: string = '3132';
 
@@ -110,6 +118,7 @@ export function validate(config: Record<string, unknown>) {
 }
 
 export type Env = {
+  nodeEnv: Environments;
   port: number;
   redisUrl: string;
   google: {
@@ -127,6 +136,7 @@ export type Env = {
   defaultChargeExpirationSeconds: number;
   wooviApiUrl: string;
   wooviAppId: string;
+  applicationEmail: string;
   resendApiBaseUrl: string;
   resendApiKey: string;
   whatsappCloudApiVersion: string;
@@ -135,6 +145,7 @@ export type Env = {
 };
 
 export default (): Env => ({
+  nodeEnv: process.env.NODE_ENV as Environments || '',
   port: parseInt(process.env.PORT || '', 10) || 3132,
   redisUrl: process.env.REDIS_URL || '',
   google: {
@@ -153,6 +164,7 @@ export default (): Env => ({
     Number(process.env.CHARGE_EXPIRATION_SECONDS_DEFAULT) || 600,
   wooviApiUrl: process.env.WOOVI_API_URL || '',
   wooviAppId: process.env.WOOVI_APPID || '',
+  applicationEmail: process.env.APPLICATION_EMAIL || '',
   resendApiBaseUrl: process.env.RESEND_API_BASE_URL || '',
   resendApiKey: process.env.RESEND_API_KEY || '',
   whatsappCloudApiVersion: process.env.WHATSAPP_CLOUD_API_VERSION || '',

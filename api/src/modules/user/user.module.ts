@@ -8,6 +8,8 @@ import { CreateUserUseCase } from './use-cases/create-user.use-case';
 import { UpdateUserUseCase } from './use-cases/update-user.user-case';
 import { UserController } from './user.controller';
 import { RegisterUserPixKeyUseCase } from './use-cases/register-use-pix-key.use-case';
+import { OnEmailVerificationTokenConfirmedListener } from './listeners/on-email-verification-token-confirmed.listener';
+import { VerifyUserEmailUseCase } from './use-cases/verify-user-email.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), SharedModule],
@@ -18,6 +20,8 @@ import { RegisterUserPixKeyUseCase } from './use-cases/register-use-pix-key.use-
     UpdateUserUseCase,
     UserRepository,
     RegisterUserPixKeyUseCase,
+    OnEmailVerificationTokenConfirmedListener,
+    VerifyUserEmailUseCase,
   ],
   exports: [UserService, CreateUserUseCase],
 })

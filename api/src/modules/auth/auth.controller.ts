@@ -1,5 +1,6 @@
 import { User } from '@/modules/user/entities/user.entity';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -7,6 +8,7 @@ import {
   HttpStatus,
   NotFoundException,
   Post,
+  Query,
   Request,
   UnauthorizedException,
   UseGuards,
@@ -25,15 +27,37 @@ import { CurrentUser } from './utils/current-user-decorator';
 import { GoogleOauthGuard } from './utils/guards/google.guard';
 import { JwtAuthGuard } from './utils/guards/jwt.guard';
 import { LocalAuthGuard } from './utils/guards/local.guard';
+import { ConfirmEmailVerificationTokenUseCase } from './use-cases/confirm-email-verification-token.use-case';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private readonly confirmEmailVerificationTokenUseCase: ConfirmEmailVerificationTokenUseCase,
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Post('sign-up')
   async signUp(@Body() createUserDto: CreateUserDto) {
     await this.authService.signUp(AuthProviders.LOCAL, createUserDto);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('confirm-email')
+  async confirmEmail(@Query('token') token: string) {
+    if (!token) {
+      throw new BadRequestException('Token is required');
+    }
+
+    const BASE64URL_32B_REGEX = /^[A-Za-z0-9_-]{43}$/;
+
+    if (!BASE64URL_32B_REGEX.test(token)) {
+      throw new BadRequestException('Invalid token format');
+    }
+
+    await this.confirmEmailVerificationTokenUseCase.execute(token);
+
+    return "Sucessfully confirmed email verification. You can now close this window and login.";
   }
 
   @ApiBody({

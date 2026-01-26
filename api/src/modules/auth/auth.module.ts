@@ -7,12 +7,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import SharedModule from '../shared/shared.module';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
+import { EmailVerificationToken } from './entities/email-verification-token.entity';
 import { AuthService } from './services/auth.service';
 import { JwtAuthGuard } from './utils/guards/jwt.guard';
 import { SessionSerializer } from './utils/serializer';
-import { GoogleStrategy } from './utils/strategies/google.strategy';
 import { JwtStrategy } from './utils/strategies/jwt.strategy';
 import { LocalStrategy } from './utils/strategies/local.strategy';
+import { OnUserCreatedListener } from './listeners/on-user-created.listener';
+import { CreateEmailVerificationTokenUseCase } from './use-cases/create-email-verification-token.use-case';
+import { EmailVerificationTokenRepository } from './repositories/email-verification-token.repository';
+import { ConfirmEmailVerificationTokenUseCase } from './use-cases/confirm-email-verification-token.use-case';
 
 @Module({
   imports: [
@@ -26,7 +30,7 @@ import { LocalStrategy } from './utils/strategies/local.strategy';
         signOptions: { expiresIn: '40m' },
       }),
     }),
-    TypeOrmModule.forFeature([Logout]),
+    TypeOrmModule.forFeature([Logout, EmailVerificationToken]),
     forwardRef(() => UserModule),
     SharedModule,
   ],
@@ -38,6 +42,10 @@ import { LocalStrategy } from './utils/strategies/local.strategy';
     LocalStrategy,
     SessionSerializer,
     JwtAuthGuard,
+    OnUserCreatedListener,
+    EmailVerificationTokenRepository,
+    CreateEmailVerificationTokenUseCase,
+    ConfirmEmailVerificationTokenUseCase,
   ],
   exports: [AuthService, JwtAuthGuard],
 })

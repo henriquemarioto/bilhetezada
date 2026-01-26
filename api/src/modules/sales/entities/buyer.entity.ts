@@ -17,11 +17,11 @@ export class Buyer {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ nullable: true })
-  email: string;
+  @Column({ type: 'varchar', nullable: true })
+  email: string | null;
 
   @Column({ type: 'varchar', nullable: false })
-  phone: string | null;
+  phone: string;
 
   @CreateDateColumn()
   created_at: Date;

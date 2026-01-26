@@ -79,8 +79,7 @@ export class CreateTicketOrderUseCase {
       description: `Compra de ${createTicketOrderDto.ticketQuantity} ingresso(s) para o evento ${event.name}, lote ${batch.name}`,
       buyerInfo: {
         name: buyer.name,
-        email: buyer.email,
-        phone: buyer.phone || '',
+        phone: buyer.phone,
       },
       additionalInfo: [
         {
