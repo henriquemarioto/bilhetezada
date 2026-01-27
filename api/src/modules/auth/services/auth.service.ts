@@ -65,6 +65,10 @@ export class AuthService {
       throw new UnauthorizedException('Non-active user.');
     }
 
+    if (!user.email_verified) {
+      throw new UnauthorizedException('Email not verified.');
+    }
+
     const { password: userPassword, ...restUser } = user;
 
     if (provider == AuthProviders.LOCAL) {
