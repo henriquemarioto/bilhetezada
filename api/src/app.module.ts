@@ -15,6 +15,7 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { SalesModule } from './modules/sales/sales.module';
 import { TicketModule } from './modules/ticket/ticket.module';
 import { UserModule } from './modules/user/user.module';
+import { EventFailureModule } from './infrastructure/observability/event-failure/event-failure.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { UserModule } from './modules/user/user.module';
     TicketModule,
     NotificationModule,
     OrderFulfillmentModule,
+    EventFailureModule,
   ],
   controllers: [],
   providers: [],

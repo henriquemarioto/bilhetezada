@@ -1,3 +1,4 @@
+import { FailedEventService } from '@/infrastructure/observability/event-failure/services/failed-event.service';
 import { UserCreatedEvent } from '@/modules/user/domain-events/user-created.event';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -7,16 +8,23 @@ import { CreateEmailVerificationTokenUseCase } from '../use-cases/create-email-v
 export class OnUserCreatedListener {
   constructor(
     private readonly createEmailVerificationTokenUseCase: CreateEmailVerificationTokenUseCase,
+    private readonly failedEventService: FailedEventService,
   ) { }
 
   @OnEvent('user.created')
-  handle(domainEvent: UserCreatedEvent) {
-    console.log(
-      `Evento de usuário criado recebido no listener de criação de token de verificação de email, para o usuário ID: ${domainEvent.userId}, email: ${domainEvent.email}`,
-    );
-    this.createEmailVerificationTokenUseCase.execute(
-      domainEvent.userId,
-      domainEvent.email,
-    );
+  async handle(domainEvent: UserCreatedEvent) {
+    try {
+      await this.createEmailVerificationTokenUseCase.execute(
+        domainEvent.userId,
+        domainEvent.email,
+      );
+    } catch (error) {
+      await this.failedEventService.registerFailure(
+        'user.created',
+        'OnUserCreatedListener',
+        { userId: domainEvent.userId, email: domainEvent.email },
+        error,
+      );
+    }
   }
 }

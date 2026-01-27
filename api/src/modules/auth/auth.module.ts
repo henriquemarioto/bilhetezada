@@ -1,3 +1,4 @@
+import { EventFailureModule } from '@/infrastructure/observability/event-failure/event-failure.module';
 import { Logout } from '@/modules/auth/entities/logout.entity';
 import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -8,15 +9,15 @@ import SharedModule from '../shared/shared.module';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { EmailVerificationToken } from './entities/email-verification-token.entity';
+import { OnUserCreatedListener } from './listeners/on-user-created.listener';
+import { EmailVerificationTokenRepository } from './repositories/email-verification-token.repository';
 import { AuthService } from './services/auth.service';
+import { ConfirmEmailVerificationTokenUseCase } from './use-cases/confirm-email-verification-token.use-case';
+import { CreateEmailVerificationTokenUseCase } from './use-cases/create-email-verification-token.use-case';
 import { JwtAuthGuard } from './utils/guards/jwt.guard';
 import { SessionSerializer } from './utils/serializer';
 import { JwtStrategy } from './utils/strategies/jwt.strategy';
 import { LocalStrategy } from './utils/strategies/local.strategy';
-import { OnUserCreatedListener } from './listeners/on-user-created.listener';
-import { CreateEmailVerificationTokenUseCase } from './use-cases/create-email-verification-token.use-case';
-import { EmailVerificationTokenRepository } from './repositories/email-verification-token.repository';
-import { ConfirmEmailVerificationTokenUseCase } from './use-cases/confirm-email-verification-token.use-case';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ConfirmEmailVerificationTokenUseCase } from './use-cases/confirm-email-
     TypeOrmModule.forFeature([Logout, EmailVerificationToken]),
     forwardRef(() => UserModule),
     SharedModule,
+    EventFailureModule,
   ],
   controllers: [AuthController],
   providers: [

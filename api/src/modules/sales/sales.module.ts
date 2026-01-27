@@ -1,3 +1,4 @@
+import { EventFailureModule } from '@/infrastructure/observability/event-failure/event-failure.module';
 import { Order } from '@/modules/sales/entities/order.entity';
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -28,6 +29,7 @@ import { CreateTicketOrderUseCase } from './use-cases/create-ticket-order.use-ca
     forwardRef(() => PaymentModule),
     EventModule,
     TicketModule,
+    EventFailureModule,
   ],
   providers: [
     SalesService,
