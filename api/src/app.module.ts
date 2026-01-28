@@ -16,6 +16,7 @@ import { SalesModule } from './modules/sales/sales.module';
 import { TicketModule } from './modules/ticket/ticket.module';
 import { UserModule } from './modules/user/user.module';
 import { EventFailureModule } from './infrastructure/observability/event-failure/event-failure.module';
+import { LoggerModule } from './infrastructure/logger/logger.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { EventFailureModule } from './infrastructure/observability/event-failure
     }),
     PassportModule.register({ session: true }),
     EventEmitterModule.forRoot(),
+    LoggerModule,
     AuthModule,
     UserModule,
     EventModule,

@@ -1,20 +1,29 @@
+import { Logger } from '@/core/logger/logger.interface';
+import { LOGGER } from '@/core/logger/logger.tokens';
 import { HttpRequestDto } from '@/shared/dtos/http-request.dto';
 import { HttpResponse } from '@/shared/dtos/http-response.dto';
 import { HttpService as AxiosHttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class HttpService {
-  constructor(private nestJsAxiosHttpService: AxiosHttpService) { }
+  private readonly logger: Logger;
+
+  constructor(
+    private nestJsAxiosHttpService: AxiosHttpService,
+    @Inject(LOGGER) baseLogger: Logger,
+  ) {
+    this.logger = baseLogger.withContext(HttpService.name);
+  }
 
   async get<T = unknown>(
     url: string,
     requestDto: HttpRequestDto = {},
   ): Promise<HttpResponse<T> | false> {
     try {
-      console.log('Making GET request', JSON.stringify({ url, requestDto }));
+      this.logger.info('Making GET request', { url, requestDto });
 
       const response = await firstValueFrom(
         this.nestJsAxiosHttpService.get(url, {
@@ -23,7 +32,11 @@ export class HttpService {
         }),
       );
 
-      console.log('GET request successful', JSON.stringify({ url, status: response.status, data: response.data }));
+      this.logger.info('GET request successful', {
+        url,
+        status: response.status,
+        data: response.data,
+      });
 
       return {
         status: response.status,
@@ -31,17 +44,17 @@ export class HttpService {
       };
     } catch (e) {
       const error = e as AxiosError | Error;
-      console.error(
+      this.logger.error(
         'Error in GET request',
-        JSON.stringify({
+        {
           url,
           requestDto,
           error: {
             message: error?.message,
-            stack: error?.stack,
             response: (error as AxiosError)?.response?.data,
           },
-        }),
+        },
+        error.stack,
       );
       return false;
     }
@@ -52,7 +65,7 @@ export class HttpService {
     requestDto: HttpRequestDto = {},
   ): Promise<HttpResponse<T> | false> {
     try {
-      console.log('Making POST request', JSON.stringify({ url, requestDto }));
+      this.logger.info('Making POST request', { url, requestDto });
 
       const response = await firstValueFrom(
         this.nestJsAxiosHttpService.post(url, requestDto.body, {
@@ -61,7 +74,14 @@ export class HttpService {
         }),
       );
 
-      console.log('POST request successful', JSON.stringify({ url, status: response.status, data: response.data }));
+      this.logger.info(
+        'POST request successful',
+        {
+          url,
+          status: response.status,
+          data: response.data,
+        },
+      );
 
       return {
         status: response.status,
@@ -69,17 +89,17 @@ export class HttpService {
       };
     } catch (e) {
       const error = e as AxiosError | Error;
-      console.error(
+      this.logger.error(
         'Error in POST request',
-        JSON.stringify({
+        {
           url,
           requestDto,
           error: {
             message: error?.message,
-            stack: error?.stack,
             response: (error as AxiosError)?.response?.data,
           },
-        }),
+        },
+        error.stack,
       );
       return false;
     }

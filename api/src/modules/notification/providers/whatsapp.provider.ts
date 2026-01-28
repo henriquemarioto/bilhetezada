@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NotificationProviderInterface } from '../interfaces/notification-provider.interface';
 import {
@@ -8,6 +8,9 @@ import {
 import { NotificationChannel } from '@/shared/enums/notification-channel.enum';
 import { HttpService } from '@/modules/shared/services/http.service';
 import { isWhatsappData } from '../utils/isWhatsappData';
+import { Logger } from '@/core/logger/logger.interface';
+import { In } from 'typeorm';
+import { LOGGER } from '@/core/logger/logger.tokens';
 
 enum WhatsAppMessageTypes {
   TEXT = 'text',
@@ -21,6 +24,7 @@ enum WhatsAppMessageTypes {
 
 @Injectable()
 export class WhatsAppProvider implements NotificationProviderInterface {
+  private readonly logger: Logger;
   private readonly apiBaseUrl: string;
   private readonly apiAccessToken: string;
   private readonly header: Record<string, string> = {
@@ -30,7 +34,10 @@ export class WhatsAppProvider implements NotificationProviderInterface {
   constructor(
     configService: ConfigService,
     private readonly httpService: HttpService,
+    @Inject(LOGGER)
+    baseLogger: Logger,
   ) {
+    this.logger = baseLogger.withContext(WhatsAppProvider.name);
     this.apiBaseUrl = `https://graph.facebook.com/${
       configService.get('whatsappCloudApiVersion') || ''
     }/${configService.get('whatsappCloudApiPhoneNumberId') || ''}/messages`;
@@ -41,7 +48,7 @@ export class WhatsAppProvider implements NotificationProviderInterface {
 
   async send(data: SendNotificationDto): Promise<void> {
     if (data.channel !== NotificationChannel.WHATSAPP) {
-      console.warn(
+      this.logger.warn(
         `WhatsAppProvider cannot send notification for channel: ${data.channel}`,
         data,
       );
@@ -49,8 +56,8 @@ export class WhatsAppProvider implements NotificationProviderInterface {
     }
 
     if (!isWhatsappData(data.data)) {
-      console.error('Data not provided for WhatsApp notifications', data);
-      return;
+      this.logger.error('Data not provided for WhatsApp notifications', data);
+      throw new Error('Data not provided for WhatsApp notifications');
     }
 
     await this.sendWhatsAppMessage(data.to, data.data);
@@ -87,10 +94,10 @@ export class WhatsAppProvider implements NotificationProviderInterface {
     });
 
     if (!response) {
-      console.error('Failed to send WhatsApp message to', to);
-      return;
+      this.logger.error('Failed to send WhatsApp message to', { to });
+      throw new Error('Failed to send WhatsApp message');
     }
 
-    console.log('Message Sent. Status:', response.status);
+    this.logger.info(`Message sent via WhatsApp. Status: ${response.status}`, );
   }
 }

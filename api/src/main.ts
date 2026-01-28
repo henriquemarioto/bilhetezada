@@ -23,7 +23,7 @@ async function bootstrap() {
   );
 
   redisClient.on('error', (err) =>
-    console.log('Unable to connect to redis. ' + err),
+    console.error('Unable to connect to redis. ' + err),
   );
 
   app.useGlobalPipes(
