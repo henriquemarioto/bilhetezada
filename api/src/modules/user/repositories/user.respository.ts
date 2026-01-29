@@ -46,11 +46,12 @@ export class UserRepository extends TypeOrmBaseRepository<User> {
           },
         })
         : null,
-      doc
-        ? this.findOne({
-          where: { document: doc },
-        })
-        : null,
+        null,
+      // doc
+      //   ? this.findOne({
+      //     where: { document: doc },
+      //   })
+      //   : null,
     ]);
     return userByEmail || userByDocument;
   }

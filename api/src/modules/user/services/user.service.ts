@@ -24,11 +24,12 @@ export class UserService {
             },
           })
         : null,
-      doc
-        ? this.usersRepository.findOne({
-            where: { document: doc },
-          })
-        : null,
+        null
+      // doc
+      //   ? this.usersRepository.findOne({
+      //       where: { document: doc },
+      //     })
+      //   : null,
     ]);
     return userByEmail || userByDocument;
   }

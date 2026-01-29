@@ -20,7 +20,10 @@ export class User {
   name: string;
 
   @Column({ type: 'varchar', nullable: true, unique: true })
-  document: string | null;
+  document_hash: string | null;
+
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  document_crypt: string | null;
 
   @Column({ type: 'timestamptz', nullable: true, default: null })
   birth_date?: string;
@@ -32,7 +35,7 @@ export class User {
   email_verified: boolean;
 
   @Column({ type: 'varchar', unique: true, nullable: true })
-  pix_key: string;
+  pix_key: string | null;
 
   @Column({ default: true })
   active: boolean;
