@@ -33,6 +33,6 @@ import { CreateTicketTypeUseCase } from './use-cases/create-ticket-type.use-case
     CreateBatchUseCase,
     CreateTicketTypeUseCase,
   ],
-  exports: [TicketService, TicketRepository, BatchService],
+  exports: [TicketService, TicketTypeService, TicketRepository, BatchService],
 })
 export class TicketModule {}

@@ -7,6 +7,8 @@ import { Ticket } from '../entities/ticket.entity';
 export type CreateTicketData = {
   orderItemId: string;
   batchId: string;
+  ticketTypeId: string;
+  sequence: number;
 };
 
 @Injectable()
@@ -22,6 +24,7 @@ export class TicketRepository extends TypeOrmBaseRepository<Ticket> {
     return this.createImplementation({
       order_item_id: createTicketData.orderItemId,
       batch_id: createTicketData.batchId,
+      ticket_type_id: createTicketData.ticketTypeId,
     });
   }
 
@@ -32,6 +35,7 @@ export class TicketRepository extends TypeOrmBaseRepository<Ticket> {
       createTicketsData.map((data) => ({
         order_item_id: data.orderItemId,
         batch_id: data.batchId,
+        ticket_type_id: data.ticketTypeId,
       })),
     );
   }

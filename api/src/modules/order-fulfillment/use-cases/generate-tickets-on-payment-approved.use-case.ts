@@ -67,7 +67,8 @@ export class GenerateTicketsOnPaymentApprovedUseCase {
     await Promise.all(
       orderItems.map(async (item) => {
         this.logger.info(
-          `Creating tickets for order item ${item.id}, tickets quantity ${item.ticket_quantity}.`,
+          `Creating tickets from ticket item`,
+          { orderId, orderItemId: item.id },
         );
 
         if (item.ticket_quantity <= 0) {
@@ -82,6 +83,7 @@ export class GenerateTicketsOnPaymentApprovedUseCase {
           item.id,
           item.batch_id,
           item.ticket_quantity,
+          item.ticket_type_id
         );
 
         ticketsIds.push(...tickets.map((ticket) => ticket.id));

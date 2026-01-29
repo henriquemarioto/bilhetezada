@@ -21,6 +21,9 @@ export class TicketType {
   @Column({ nullable: false, length: 50 })
   name: string;
 
+  @Column({ type: 'smallint', nullable: true })
+  sequence: number;
+
   @CreateDateColumn()
   created_at: string;
 
